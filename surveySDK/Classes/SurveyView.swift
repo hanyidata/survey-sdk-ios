@@ -147,6 +147,7 @@ extension SurveyView: WKScriptMessageHandler {
                 print("size heigt: \(self.layer.frame.size.height)")
             } else if type == "close" {
                 self.layer.frame.size.height = CGFloat(0)
+                self.removeFromSuperview()
             } else if type == "submit" {
                 self.finished = true
             } else if type == "init" {

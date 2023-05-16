@@ -2,19 +2,25 @@ import Foundation
 import SwiftUI
 import UIKit
 
-@available(iOS 13.0, *)
-struct HySurveyView: UIViewRepresentable {
+public struct HySurveyView: UIViewRepresentable {
     var surveyId : String = ""
-    var channelId : String = ""
+    var channeld : String = ""
     var parameters : Dictionary<String, Any>!
     var options : Dictionary<String, Any>!
     
-    func makeUIView(context: Context) -> SurveyView {
-        let survey = SurveyView.makeSurveyController(surveyId: self.surveyId, channelId: self.channelId, parameters: self.parameters, options: self.options)
+    public init(surveyId: String, channeld: String, parameters: Dictionary<String, Any> = Dictionary<String, Any>.init(), options: Dictionary<String, Any> = Dictionary<String, Any>.init()) {
+        self.surveyId = surveyId
+        self.channeld = channeld
+        self.parameters = parameters
+        self.options = options
+    }
+    
+    public func makeUIView(context: Context) -> SurveyView {
+        let survey = SurveyView.makeSurveyController(surveyId: self.surveyId, channelId: self.channeld, parameters: self.parameters, options: self.options)
         return survey
     }
     
-    func updateUIView(_ uiView: SurveyView, context: Context) {
+    public func updateUIView(_ uiView: SurveyView, context: Context) {
     }
 
 }
