@@ -65,14 +65,11 @@ public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationD
                         let dictionary = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments) as? [String:AnyObject]
                         self.version = (dictionary?["version"] as? String)
                         self.build = dictionary?["build"] as? Int
-                        
-//                        String.format("surveySDK/%s (Android) %s", version, build);
                         self.webView.customUserAgent =  "surveySDK/\(version!) (iOS)"
-                    } catch {
                     }
                 }
               } catch {
-                   // handle error
+                  print("unexpected error here!")
               }
         }
         let indexURL = myBundle.url(forResource: "index", withExtension: "html", subdirectory: "assets")
