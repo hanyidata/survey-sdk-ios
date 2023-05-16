@@ -1,0 +1,6 @@
+framework module Pods_surveySDK_Example {
+  umbrella header "Pods-surveySDK_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

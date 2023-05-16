@@ -1,0 +1,16 @@
+PODS:
+  - surveySDK (0.1.0)
+
+DEPENDENCIES:
+  - surveySDK (from `../`)
+
+EXTERNAL SOURCES:
+  surveySDK:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  surveySDK: 6057d894c769e81fc39e8d4373a852be21b09dbf
+
+PODFILE CHECKSUM: 1b5a54693b023d6ded30a7fd8fb1882a949d3fa9
+
+COCOAPODS: 1.12.1
