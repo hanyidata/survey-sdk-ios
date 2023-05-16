@@ -6,6 +6,8 @@
 # To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
 #
 
+platform :ios, '9.0'
+
 Pod::Spec.new do |s|
   s.name             = 'surveySDK'
   s.version          = '0.1.4'
@@ -34,10 +36,11 @@ Pod::Spec.new do |s|
 
   s.source_files = 'surveySDK/Classes/**/*'
   
-  s.resource_bundles = {
-    'surveySDK' => ['surveySDK/assets/*']
-  }
-
+#  s.resource_bundles = {
+#    'surveySDK' => ['surveySDK/Assets/*']
+#  }
+  s.resources = ['surveySDK/Assets/*']
+  
   # s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = 'UIKit', 'WebKit', 'JavaScriptCore'
   # s.dependency 'AFNetworking', '~> 2.3'

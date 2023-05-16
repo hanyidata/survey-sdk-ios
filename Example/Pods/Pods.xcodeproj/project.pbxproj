@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0BF012A83F4434D04AE8EC4014A3DD0A /* surveySDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7980E79F55C1C7BB1EB91A85CDD2EB23 /* surveySDK-dummy.m */; };
-		44031A522A09F8B300B082BA /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 44031A512A09F8B300B082BA /* assets */; };
+		44031A522A09F8B300B082BA /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 44031A512A09F8B300B082BA /* Assets */; };
 		44040B052A13694500977018 /* surveySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E996E5796D17C9D1C9A80658340ACC57 /* surveySDK.framework */; };
 		44040B062A13694500977018 /* surveySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E996E5796D17C9D1C9A80658340ACC57 /* surveySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		491001E364F2CB2DBB1F615A8789B15E /* surveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490E4802AE9A30566EF260BEF24BC951 /* surveyView.swift */; };
@@ -54,7 +54,7 @@
 		0AA262C74D71F1824B1137E3427329EF /* Pods_surveySDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_surveySDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11101CDF63BDDB12C2368D12D64E34C5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		16FA506376C38976141EC13B7E52BC37 /* Pods-surveySDK_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-surveySDK_Example-Info.plist"; sourceTree = "<group>"; };
-		44031A512A09F8B300B082BA /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = surveySDK/assets; sourceTree = "<group>"; };
+		44031A512A09F8B300B082BA /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = surveySDK/Assets; sourceTree = "<group>"; };
 		48C9A4BCAD812849FC774BC2C80D26C9 /* surveySDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "surveySDK-umbrella.h"; sourceTree = "<group>"; };
 		490E4802AE9A30566EF260BEF24BC951 /* surveyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = surveyView.swift; path = surveySDK/Classes/surveyView.swift; sourceTree = "<group>"; };
 		55D014BE33381FDA5418936578502E62 /* Pods-surveySDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-surveySDK_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 		8C490456F73B0576AAB4FCBDFB338CC5 /* surveySDK */ = {
 			isa = PBXGroup;
 			children = (
-				44031A512A09F8B300B082BA /* assets */,
+				44031A512A09F8B300B082BA /* Assets */,
 				490E4802AE9A30566EF260BEF24BC951 /* surveyView.swift */,
 				6C862F428B9E473B86BF0578D661D9B3 /* Pod */,
 				AFE767CE9B3BC1C7A86EAA5340A8EF0A /* Support Files */,
@@ -298,7 +298,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44031A522A09F8B300B082BA /* assets in Resources */,
+				44031A522A09F8B300B082BA /* Assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

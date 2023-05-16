@@ -54,7 +54,11 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.webView.uiDelegate = self;
         
         let myBundle = Bundle(for: Self.self)
-        if let path = myBundle.url(forResource: "version", withExtension: "json", subdirectory: "assets")
+        print(myBundle.bundlePath)
+//        let path1 = myBundle.path(forResource: "surveySDK", ofType: "bundle")
+        
+//        myb
+        if let path = myBundle.url(forResource: "version", withExtension: "json", subdirectory: "Assets")
         {
             do {
                 if let data = NSData(contentsOf: path) {
@@ -69,7 +73,7 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                   print("unexpected error here!")
               }
         }
-        let indexURL = myBundle.url(forResource: "index", withExtension: "html", subdirectory: "assets")
+        let indexURL = myBundle.url(forResource: "index", withExtension: "html", subdirectory: "Assets")
         let timestamp = Int(NSDate().timeIntervalSince1970)
         let url = URL(string: "\(indexURL!.absoluteString)?_t=\(timestamp)")
 
