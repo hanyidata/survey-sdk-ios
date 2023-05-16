@@ -13,15 +13,17 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var finished: Bool!
     var version: String?
     var build: Int?
+    var assets: String = ""
 
     @IBOutlet var webView: WKWebView!
 
     
-    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>) -> SurveyView {
+    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>, assets: String = "") -> SurveyView {
         let controller = SurveyView()
         controller.surveyId = surveyId
         controller.channelId = channelId
         controller.finished = false
+        controller.assets = assets
         
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
@@ -30,6 +32,11 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         return controller
     }
     
+    private func loadFile(res: String, ex: String) -> URL? {
+        let myBundle = Bundle(for: Self.self)
+        let path = myBundle.url(forResource: res, withExtension: ex, subdirectory: self.assets)
+        return path
+    }
     
     public func setup() {
         let configuration = WKWebViewConfiguration()
@@ -55,10 +62,9 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         
         let myBundle = Bundle(for: Self.self)
         print(myBundle.bundlePath)
-//        let path1 = myBundle.path(forResource: "surveySDK", ofType: "bundle")
         
 //        myb
-        if let path = myBundle.url(forResource: "version", withExtension: "json", subdirectory: "Assets")
+        if let path = loadFile(res: "version", ex: "json")
         {
             do {
                 if let data = NSData(contentsOf: path) {
@@ -73,7 +79,7 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                   print("unexpected error here!")
               }
         }
-        let indexURL = myBundle.url(forResource: "index", withExtension: "html", subdirectory: "Assets")
+        let indexURL = loadFile(res: "index", ex: "html")
         let timestamp = Int(NSDate().timeIntervalSince1970)
         let url = URL(string: "\(indexURL!.absoluteString)?_t=\(timestamp)")
 
@@ -85,14 +91,14 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.webView.layer.frame.size.height = CGFloat(0)
         self.webView.layer.frame.size.width = self.frame.width
         
-        if (debug) {
-            self.webView.layer.borderWidth = 2
-            self.webView.layer.borderColor = UIColor.yellow.cgColor
-            self.webView.layer.backgroundColor = UIColor.blue.cgColor
-
-            self.layer.borderWidth = 2
-            self.layer.borderColor = UIColor.red.cgColor
-        }
+//        if (debug) {
+//            self.webView.layer.borderWidth = 2
+//            self.webView.layer.borderColor = UIColor.yellow.cgColor
+//            self.webView.layer.backgroundColor = UIColor.blue.cgColor
+//
+//            self.layer.borderWidth = 2
+//            self.layer.borderColor = UIColor.red.cgColor
+//        }
         
         
         self.addSubview(self.webView)

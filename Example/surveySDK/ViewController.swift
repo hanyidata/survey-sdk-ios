@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         print("click show me \(sid) \(channel)")
 
         if ((_survey == nil)) {
-            self._survey = SurveyView.makeSurveyController(surveyId: sid, channelId: channel, parameters: ["externalUserId": euid], options: ["delay": 1000, "debug": true])
+            self._survey = SurveyView.makeSurveyController(surveyId: sid, channelId: channel, parameters: ["externalUserId": euid], options: ["delay": 1000, "debug": true], assets: "Assets")
             
             let newFrame = CGRectMake( 0, 300, self.view.frame.width, 0)
             self._survey?.frame = newFrame
