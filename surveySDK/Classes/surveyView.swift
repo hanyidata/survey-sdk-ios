@@ -2,12 +2,12 @@ import UIKit
 import WebKit
 import JavaScriptCore
 
-public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
+public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     
     var surveyId : String!
     var channelId : String!
-    var delay : Int!
-    var debug : Bool!
+    var delay : Int = 3000
+    var debug : Bool = false
     var parameters : Dictionary<String, Any>!
     var options : Dictionary<String, Any>!
     var finished: Bool!
@@ -15,26 +15,23 @@ public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationD
     var build: Int?
 
     @IBOutlet var webView: WKWebView!
+
     
-    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>) -> SurveyViewController {
-        let controller = SurveyViewController()
+    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>) -> SurveyView {
+        let controller = SurveyView()
         controller.surveyId = surveyId
         controller.channelId = channelId
         controller.finished = false
         
-        controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as? Int : 3000
-        controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as? Bool: false
+        controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
+        controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.parameters = parameters
+        controller.setup()
         return controller
     }
     
     
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        self.setup()
-    }
-    
-    private func setup() {
+    public func setup() {
         let configuration = WKWebViewConfiguration()
         
         configuration.userContentController = WKUserContentController()
@@ -52,7 +49,7 @@ public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationD
             print("setup controller")
         }
                 
-        self.webView = WKWebView(frame: view.frame, configuration: configuration)
+        self.webView = WKWebView(frame: self.frame, configuration: configuration)
         self.webView.navigationDelegate = self;
         self.webView.uiDelegate = self;
         
@@ -81,23 +78,28 @@ public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationD
         self.webView.isUserInteractionEnabled = true
         self.webView.scrollView.isScrollEnabled = true
 
-        self.webView.frame.size.height = CGFloat(0)
-        self.webView.frame.size.width = self.view.frame.width
+        self.webView.layer.frame.size.height = CGFloat(0)
+        self.webView.layer.frame.size.width = self.frame.width
         
-//        if (debug) {
-//            self.webView.layer.borderWidth = 2
-//            self.webView.layer.borderColor = UIColor.yellow.cgColor
-//
-//            self.view.layer.borderWidth = 2
-//            self.view.layer.borderColor = UIColor.red.cgColor
-//        }
+        if (debug) {
+            self.webView.layer.borderWidth = 2
+            self.webView.layer.borderColor = UIColor.yellow.cgColor
+            self.webView.layer.backgroundColor = UIColor.blue.cgColor
+
+            self.layer.borderWidth = 2
+            self.layer.borderColor = UIColor.red.cgColor
+        }
         
-        self.view.addSubview(self.webView)
         
-        
+        self.addSubview(self.webView)
         self.webView.loadFileURL(url!,
                                  allowingReadAccessTo: url!.deletingLastPathComponent())
 
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        self.webView.frame = bounds
     }
     
     public func getVersion() -> String {
@@ -117,7 +119,7 @@ public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationD
     
 }
 
-extension SurveyViewController: WKScriptMessageHandler {
+extension SurveyView: WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "logger" {
             print("log: \(message.body)")
@@ -131,12 +133,10 @@ extension SurveyViewController: WKScriptMessageHandler {
                 let value = event?["value"]! as? [String: Any]
                 let height = value?["height"]! as? Int
 //                print("size heigt: \(height!)")
-                self.webView?.frame.size.height = CGFloat(height!)
-                self.view.layer.frame.size.height = CGFloat(height!)
-                print("size heigt: \(self.view.layer.frame.size.height)")
+                self.layer.frame.size.height = CGFloat(height!)
+                print("size heigt: \(self.layer.frame.size.height)")
             } else if type == "close" {
-                self.view.layer.frame.size.height = CGFloat(0)
-                self.webView?.frame.size.height = CGFloat(0)
+                self.layer.frame.size.height = CGFloat(0)
             } else if type == "submit" {
                 self.finished = true
             } else if type == "init" {
