@@ -2,6 +2,6 @@ use_frameworks!
 
 platform :ios, '10.0'
 
-target 'survey-sdk-example' do
-  pod 'survey-sdk', :path => '../'
+target 'surveySDK-example' do
+  pod 'surveySDK', :path => '../'
 end

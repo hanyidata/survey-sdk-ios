@@ -17,7 +17,7 @@
 
 /* Begin PBXFileReference section */
 		5B63744E8428B33B866A395D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		607FACD01AFB9204008FA782 /* survey-sdk-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "survey-sdk-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		607FACD01AFB9204008FA782 /* surveySDK-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "surveySDK-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -28,7 +28,7 @@
 		A5D48015403C3B7CB2D3E75B /* Pods_surveySDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_surveySDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7868D0DCD98D77F31441702 /* Pods-surveySDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-surveySDK_Example.debug.xcconfig"; path = "Target Support Files/Pods-surveySDK_Example/Pods-surveySDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		F155B2F660D13ABA660C7747 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		F8ABBC8400564C21245E504D /* survey-sdk.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "survey-sdk.podspec"; path = "../survey-sdk.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F8ABBC8400564C21245E504D /* surveySDK.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = surveySDK.podspec; path = ../surveySDK.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +47,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
-				607FACD21AFB9204008FA782 /* Example for survey-sdk */,
+				607FACD21AFB9204008FA782 /* Example for surveySDK */,
 				607FACD11AFB9204008FA782 /* Products */,
 				F39EF0ADB9D79CE97063D870 /* Pods */,
 				E9B0C4C4368ADEEB7C42582F /* Frameworks */,
@@ -57,12 +57,12 @@
 		607FACD11AFB9204008FA782 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				607FACD01AFB9204008FA782 /* survey-sdk-example.app */,
+				607FACD01AFB9204008FA782 /* surveySDK-example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		607FACD21AFB9204008FA782 /* Example for survey-sdk */ = {
+		607FACD21AFB9204008FA782 /* Example for surveySDK */ = {
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
@@ -72,7 +72,7 @@
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 			);
-			name = "Example for survey-sdk";
+			name = "Example for surveySDK";
 			path = surveySDK;
 			sourceTree = "<group>";
 		};
@@ -87,7 +87,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				F8ABBC8400564C21245E504D /* survey-sdk.podspec */,
+				F8ABBC8400564C21245E504D /* surveySDK.podspec */,
 				F155B2F660D13ABA660C7747 /* README.md */,
 				5B63744E8428B33B866A395D /* LICENSE */,
 			);
@@ -114,9 +114,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		607FACCF1AFB9204008FA782 /* survey-sdk-example */ = {
+		607FACCF1AFB9204008FA782 /* surveySDK-example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "survey-sdk-example" */;
+			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "surveySDK-example" */;
 			buildPhases = (
 				49E99DCF35C8C15EC9831709 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
@@ -128,9 +128,9 @@
 			);
 			dependencies = (
 			);
-			name = "survey-sdk-example";
+			name = "surveySDK-example";
 			productName = surveySDK;
-			productReference = 607FACD01AFB9204008FA782 /* survey-sdk-example.app */;
+			productReference = 607FACD01AFB9204008FA782 /* surveySDK-example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -150,7 +150,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "survey-sdk" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "surveySDK" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -164,7 +164,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				607FACCF1AFB9204008FA782 /* survey-sdk-example */,
+				607FACCF1AFB9204008FA782 /* surveySDK-example */,
 			);
 		};
 /* End PBXProject section */
@@ -393,7 +393,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "survey-sdk" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "surveySDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -402,7 +402,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "survey-sdk-example" */ = {
+		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "surveySDK-example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF01AFB9204008FA782 /* Debug */,

@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/winston/Workspace/surveyplus/next-ui/survey-sdk-swift/Example/survey-sdk.xcodeproj">
+      location = "group:/Users/winston/Workspace/surveyplus/next-ui/survey-sdk-ios/Example/surveySDK.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

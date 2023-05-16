@@ -15,23 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "survey-sdk-example.app"
-               BlueprintName = "survey-sdk-example"
-               ReferencedContainer = "container:survey-sdk.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "survey-sdk_Tests.xctest"
-               BlueprintName = "survey-sdk_Tests"
-               ReferencedContainer = "container:survey-sdk.xcodeproj">
+               BuildableName = "surveySDK-example.app"
+               BlueprintName = "surveySDK-example"
+               ReferencedContainer = "container:surveySDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -41,26 +27,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "survey-sdk-example.app"
-            BlueprintName = "survey-sdk-example"
-            ReferencedContainer = "container:survey-sdk.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "survey-sdk_Tests.xctest"
-               BlueprintName = "survey-sdk_Tests"
-               ReferencedContainer = "container:survey-sdk.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -78,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "survey-sdk-example.app"
-            BlueprintName = "survey-sdk-example"
-            ReferencedContainer = "container:survey-sdk.xcodeproj">
+            BuildableName = "surveySDK-example.app"
+            BlueprintName = "surveySDK-example"
+            ReferencedContainer = "container:surveySDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -95,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "survey-sdk-example.app"
-            BlueprintName = "survey-sdk-example"
-            ReferencedContainer = "container:survey-sdk.xcodeproj">
+            BuildableName = "surveySDK-example.app"
+            BlueprintName = "surveySDK-example"
+            ReferencedContainer = "container:surveySDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

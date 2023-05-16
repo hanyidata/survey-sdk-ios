@@ -1,0 +1,6 @@
+framework module surveySDK {
+  umbrella header "surveySDK-umbrella.h"
+
+  export *
+  module * { export * }
+}

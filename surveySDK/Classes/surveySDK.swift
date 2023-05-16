@@ -57,22 +57,25 @@ public class SurveyViewController: UIViewController, WKUIDelegate, WKNavigationD
         self.webView.uiDelegate = self;
         
         let myBundle = Bundle(for: Self.self)
-        if let path = myBundle.url(forResource: "version", withExtension: "json", subdirectory: "Assets")
+        if let path = myBundle.url(forResource: "version", withExtension: "json", subdirectory: "assets")
         {
             do {
                 if let data = NSData(contentsOf: path) {
-                    let dictionary = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments) as? [String:AnyObject]
-                    self.version = (dictionary?["version"] as? String)
-                    self.build = dictionary?["build"] as? Int
-                    
-    //                        String.format("surveySDK/%s (Android) %s", version, build);
-                    self.webView.customUserAgent =  "surveySDK/\(version!) (iOS)"
+                    do {
+                        let dictionary = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments) as? [String:AnyObject]
+                        self.version = (dictionary?["version"] as? String)
+                        self.build = dictionary?["build"] as? Int
+                        
+//                        String.format("surveySDK/%s (Android) %s", version, build);
+                        self.webView.customUserAgent =  "surveySDK/\(version!) (iOS)"
+                    } catch {
+                    }
                 }
               } catch {
-                  print("unexpected error")
+                   // handle error
               }
         }
-        let indexURL = myBundle.url(forResource: "index", withExtension: "html", subdirectory: "Assets")
+        let indexURL = myBundle.url(forResource: "index", withExtension: "html", subdirectory: "assets")
         let timestamp = Int(NSDate().timeIntervalSince1970)
         let url = URL(string: "\(indexURL!.absoluteString)?_t=\(timestamp)")
 
