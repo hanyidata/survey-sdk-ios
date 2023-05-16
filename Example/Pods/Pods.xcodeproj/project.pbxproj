@@ -11,7 +11,8 @@
 		44031A522A09F8B300B082BA /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 44031A512A09F8B300B082BA /* Assets */; };
 		44040B052A13694500977018 /* surveySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E996E5796D17C9D1C9A80658340ACC57 /* surveySDK.framework */; };
 		44040B062A13694500977018 /* surveySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E996E5796D17C9D1C9A80658340ACC57 /* surveySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		491001E364F2CB2DBB1F615A8789B15E /* surveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490E4802AE9A30566EF260BEF24BC951 /* surveyView.swift */; };
+		44040B242A13E69400977018 /* HySurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44040B232A13E69400977018 /* HySurveyView.swift */; };
+		491001E364F2CB2DBB1F615A8789B15E /* SurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490E4802AE9A30566EF260BEF24BC951 /* SurveyView.swift */; };
 		667B8CAA0F56F2CD033193FD6C623AA4 /* Pods-surveySDK_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E72B185D7B6FABFD09B7A298D73806B9 /* Pods-surveySDK_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B30124DE7DC7BB47C228A8C92207366F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		CD033D21405E9091EF83B4A9BB438F23 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
@@ -55,8 +56,9 @@
 		11101CDF63BDDB12C2368D12D64E34C5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		16FA506376C38976141EC13B7E52BC37 /* Pods-surveySDK_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-surveySDK_Example-Info.plist"; sourceTree = "<group>"; };
 		44031A512A09F8B300B082BA /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = surveySDK/Assets; sourceTree = "<group>"; };
+		44040B232A13E69400977018 /* HySurveyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HySurveyView.swift; path = surveySDK/Classes/HySurveyView.swift; sourceTree = "<group>"; };
 		48C9A4BCAD812849FC774BC2C80D26C9 /* surveySDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "surveySDK-umbrella.h"; sourceTree = "<group>"; };
-		490E4802AE9A30566EF260BEF24BC951 /* surveyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = surveyView.swift; path = surveySDK/Classes/surveyView.swift; sourceTree = "<group>"; };
+		490E4802AE9A30566EF260BEF24BC951 /* SurveyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SurveyView.swift; path = surveySDK/Classes/SurveyView.swift; sourceTree = "<group>"; };
 		55D014BE33381FDA5418936578502E62 /* Pods-surveySDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-surveySDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		56328EA7B1318DA552B3E697188C70A4 /* surveySDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "surveySDK-prefix.pch"; sourceTree = "<group>"; };
 		57D8444699FACA78AA82635465980E77 /* Pods-surveySDK_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-surveySDK_Example-dummy.m"; sourceTree = "<group>"; };
@@ -136,8 +138,9 @@
 		8C490456F73B0576AAB4FCBDFB338CC5 /* surveySDK */ = {
 			isa = PBXGroup;
 			children = (
+				44040B232A13E69400977018 /* HySurveyView.swift */,
 				44031A512A09F8B300B082BA /* Assets */,
-				490E4802AE9A30566EF260BEF24BC951 /* surveyView.swift */,
+				490E4802AE9A30566EF260BEF24BC951 /* SurveyView.swift */,
 				6C862F428B9E473B86BF0578D661D9B3 /* Pod */,
 				AFE767CE9B3BC1C7A86EAA5340A8EF0A /* Support Files */,
 			);
@@ -316,7 +319,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				491001E364F2CB2DBB1F615A8789B15E /* surveyView.swift in Sources */,
+				491001E364F2CB2DBB1F615A8789B15E /* SurveyView.swift in Sources */,
+				44040B242A13E69400977018 /* HySurveyView.swift in Sources */,
 				0BF012A83F4434D04AE8EC4014A3DD0A /* surveySDK-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
