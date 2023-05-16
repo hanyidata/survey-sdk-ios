@@ -6,8 +6,6 @@
 # To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
 #
 
-platform :ios, '9.0'
-
 Pod::Spec.new do |s|
   s.name             = 'surveySDK'
   s.version          = '0.1.5'
