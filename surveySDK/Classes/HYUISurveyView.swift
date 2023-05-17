@@ -4,38 +4,55 @@ import JavaScriptCore
 
 public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     
-    var surveyId : String!
-    var channelId : String!
+    var surveyId : String?
+    var channelId : String?
     var delay : Int = 3000
     var debug : Bool = false
     var bord : Bool = false
-    var parameters : Dictionary<String, Any>!
-    var options : Dictionary<String, Any>!
-    var finished: Bool!
-    var version: String?
-    var build: Int?
+    var autoheight: Bool = false
+    var parameters : Dictionary<String, Any>?
+    var options : Dictionary<String, Any>?
+    var finished: Bool = false
+    var version: String = ""
+    var build: Int = 0
     var assets: String = ""
+    var callback: Optional<(_ event: String, _ params: Any?) -> Void> = nil
+    var _height: Int?
 
     @IBOutlet var webView: WKWebView!
-
     
-    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>, assets: String = "") -> HYUISurveyView {
+    
+    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>, callback: Optional<(_ event: String, _ params: Any?) -> Void> = nil, assets: String = "") -> HYUISurveyView {
         let controller = HYUISurveyView()
         controller.surveyId = surveyId
         controller.channelId = channelId
-        controller.finished = false
+        controller.parameters = parameters
+        controller.options = options
         controller.assets = assets
-        
+        controller.callback = callback
+
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
-        controller.parameters = parameters
+        controller.autoheight = options.index(forKey: "autoheight") != nil ? options["autoheight"] as! Bool: false
+
         controller.setup()
         return controller
     }
     
     deinit {
-        print("deinit uisurveyview")
+        print("deinit")
+    }
+    
+    open func addTarget(_ target: Any?, action: Selector) {
+        
+    }
+    
+    public override func willMove(toSuperview newSuperview: UIView?) {
+        print("willMove")
+        if newSuperview == nil {
+            print("removed from parent")
+        }
     }
     
     private func loadFile(res: String, ex: String) -> URL? {
@@ -76,9 +93,9 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                 if let data = NSData(contentsOf: path) {
                     do {
                         let dictionary = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments) as? [String:AnyObject]
-                        self.version = (dictionary?["version"] as? String)
-                        self.build = dictionary?["build"] as? Int
-                        self.webView.customUserAgent =  "surveySDK/\(version!) (iOS)"
+                        self.version = (dictionary?["version"] as! String)
+                        self.build = dictionary?["build"] as! Int
+                        self.webView.customUserAgent =  "surveySDK/\(version) (iOS)"
                     }
                 }
               } catch {
@@ -118,11 +135,11 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     }
     
     public func getVersion() -> String {
-        return self.version!;
+        return self.version;
     }
     
     public func getBuild() -> Int {
-        return self.build!;
+        return self.build;
     }
     
     public func show() {
@@ -145,14 +162,34 @@ extension HYUISurveyView: WKScriptMessageHandler {
             let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
             let type = event?["type"]! as? String
             if type == "size" {
-                let value = event?["value"]! as? [String: Any]
-                let height = value?["height"]! as? Int
-//                print("size heigt: \(height!)")
-                self.layer.frame.size.height = CGFloat(height!)
-                print("size heigt: \(self.layer.frame.size.height)")
+                if (self.superview != nil) {
+                    
+                    let value = event?["value"]! as? [String: Any]
+                    let height = value?["height"]! as! Int
+                    if autoheight && height != 0 && _height == nil {
+                        self.superview?.frame.size.height = CGFloat(height)
+                        _height = height
+                        if self.callback != nil {
+                            self.callback!("size", height)
+                        }
+                    }
+                    
+                    let maxHeight = Int((self.superview?.frame.size.height)!)
+                    
+                    if height < maxHeight {
+                        self.frame.size.height = CGFloat(height)
+                    }
+        
+                    print("size heigt: \(self.layer.frame.size.height)")
+                }
             } else if type == "close" {
                 self.layer.frame.size.height = CGFloat(0)
+                self.superview?.frame.size.height = CGFloat(0)
+                self.webView.removeFromSuperview()
                 self.removeFromSuperview()
+                if self.callback != nil {
+                    self.callback!("close", nil)
+                }
             } else if type == "submit" {
                 self.finished = true
             } else if type == "init" {
