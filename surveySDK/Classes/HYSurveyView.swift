@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-public struct HySurveyView: UIViewRepresentable {
+public struct HYSurveyView: UIViewRepresentable {
     var surveyId : String = ""
     var channeld : String = ""
     var parameters : Dictionary<String, Any>!
