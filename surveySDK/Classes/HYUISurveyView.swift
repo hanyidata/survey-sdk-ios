@@ -77,18 +77,19 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                 
         if let path = loadFile(res: "version", ex: "json")
         {
-            do {
-                if let data = NSData(contentsOf: path) {
+            if let data = NSData(contentsOf: path) {
+                do {
                     do {
-                        let dictionary = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments) as? [String:AnyObject]
-                        self.version = (dictionary?["version"] as! String)
-                        self.build = dictionary?["build"] as! Int
+                        let dict = try JSONSerialization.jsonObject(with: data as Data, options: []) as? [String : Any]
+                        self.version = (dict!["version"] as! String)
+                        self.build = dict!["build"] as! Int
                         self.webView.customUserAgent =  "surveySDK/\(version) (iOS)"
+                    } catch {
+                        print(error.localizedDescription)
                     }
+                    
                 }
-              } catch {
-                  print("unexpected error here!")
-              }
+            }
         }
         var indexURL = loadFile(res: "index", ex: "html")
         if force {
@@ -195,10 +196,9 @@ extension HYUISurveyView: WKScriptMessageHandler {
             } else if type == "submit" {
                 self.finished = true
             } else if type == "init" {
-                let data = ["surveyId": self.surveyId, "channelId": self.channelId, "delay": self.delay, "parameters": self.parameters] as [String : Any] as [String : Any]
+                let data = ["surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "parameters": self.parameters!] as [String: Any]
                 let jsonData = try? JSONSerialization.data(withJSONObject: data)
                 let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
-//                print("dispatch command \(jsonText!)")
                 self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
             }
         } else {
