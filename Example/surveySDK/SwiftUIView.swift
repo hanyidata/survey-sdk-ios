@@ -11,10 +11,9 @@ import surveySDK
 
 @available(iOS 13.0, *)
 struct SwiftUIView: View {
-    @State private var show: Bool = true
-    @State private var height: Int = 0
+    @State private var show: Bool = true // 显示控制
+    @State private var height: Int = 0   // 问卷高度
     
-
     var body: some View {
         VStack(alignment: .center) {
             Image(systemName: "globe")
@@ -23,9 +22,8 @@ struct SwiftUIView: View {
                         
             Text("list#1")
             Text("list#2")
-            
             if show {
-                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: [:], options: ["debug": true], callback: {event,arg  in
+                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: ["externalUserId":"winston"], options: ["debug": false], callback: {event,arg  in
                     if event == "close" {
                         show = false
                     } else if event == "size" {
@@ -36,7 +34,6 @@ struct SwiftUIView: View {
                 .frame(maxHeight: 200)
 //                .frame( height: CGFloat(height))
             }
-                
             Text("list#3")
             Text("list#4")
                 
