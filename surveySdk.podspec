@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'surveySDK'
-  s.version          = '0.1.8'
+  s.version          = '0.1.9'
   s.summary          = 'a tiny survey sdk for xmplus'
 
 # This description is used to generate tags and improve search results.
@@ -39,7 +39,6 @@ Pod::Spec.new do |s|
 #  }
   s.resources = ['surveySDK/Assets/*']
   
-  # s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = 'UIKit', 'WebKit', 'JavaScriptCore'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

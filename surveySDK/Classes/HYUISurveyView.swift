@@ -2,12 +2,13 @@ import UIKit
 import WebKit
 import JavaScriptCore
 
-public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
+public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     
     var surveyId : String!
     var channelId : String!
     var delay : Int = 3000
     var debug : Bool = false
+    var bord : Bool = false
     var parameters : Dictionary<String, Any>!
     var options : Dictionary<String, Any>!
     var finished: Bool!
@@ -18,8 +19,8 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     @IBOutlet var webView: WKWebView!
 
     
-    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>, assets: String = "") -> SurveyView {
-        let controller = SurveyView()
+    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>, assets: String = "") -> HYUISurveyView {
+        let controller = HYUISurveyView()
         controller.surveyId = surveyId
         controller.channelId = channelId
         controller.finished = false
@@ -27,9 +28,14 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
+        controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.parameters = parameters
         controller.setup()
         return controller
+    }
+    
+    deinit {
+        print("deinit uisurveyview")
     }
     
     private func loadFile(res: String, ex: String) -> URL? {
@@ -91,14 +97,13 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.webView.layer.frame.size.height = CGFloat(0)
         self.webView.layer.frame.size.width = self.frame.width
         
-//        if (debug) {
-//            self.webView.layer.borderWidth = 2
-//            self.webView.layer.borderColor = UIColor.yellow.cgColor
-//            self.webView.layer.backgroundColor = UIColor.blue.cgColor
-//
-//            self.layer.borderWidth = 2
-//            self.layer.borderColor = UIColor.red.cgColor
-//        }
+        if (bord) {
+            self.webView.layer.borderWidth = 2
+            self.webView.layer.borderColor = UIColor.yellow.cgColor
+            self.webView.layer.backgroundColor = UIColor.blue.cgColor
+            self.layer.borderWidth = 2
+            self.layer.borderColor = UIColor.red.cgColor
+        }
         
         
         self.addSubview(self.webView)
@@ -129,7 +134,7 @@ public class SurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     
 }
 
-extension SurveyView: WKScriptMessageHandler {
+extension HYUISurveyView: WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "logger" {
             print("log: \(message.body)")

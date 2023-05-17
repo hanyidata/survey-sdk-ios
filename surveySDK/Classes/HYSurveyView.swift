@@ -15,12 +15,12 @@ public struct HySurveyView: UIViewRepresentable {
         self.options = options
     }
     
-    public func makeUIView(context: Context) -> SurveyView {
-        let survey = SurveyView.makeSurveyController(surveyId: self.surveyId, channelId: self.channeld, parameters: self.parameters, options: self.options)
+    public func makeUIView(context: Context) -> HYUISurveyView {
+        let survey = HYUISurveyView.makeSurveyController(surveyId: self.surveyId, channelId: self.channeld, parameters: self.parameters, options: self.options)
         return survey
     }
     
-    public func updateUIView(_ uiView: SurveyView, context: Context) {
+    public func updateUIView(_ uiView: HYUISurveyView, context: Context) {
     }
 
 }
