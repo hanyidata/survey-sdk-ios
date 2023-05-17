@@ -7,11 +7,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-surveySDK is available through [CocoaPods](https://cocoapods.org). To install
+SurveySDK is available through [Github](https://github.com/hanyidata/survey-sdk-ios.git). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'surveySDK'
+pod 'surveySDK', :git => 'https://github.com/hanyidata/survey-sdk-ios.git'
 ```
 
 ## Author
