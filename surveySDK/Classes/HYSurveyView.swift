@@ -12,7 +12,10 @@ public struct HYSurveyView: UIViewRepresentable {
     var parameters : Dictionary<String, Any> = Dictionary()
     var options : Dictionary<String, Any> = Dictionary()
     var assets : String = ""
-    var callback: Optional<(_ event: String, _ params: Any?) -> Void> = nil
+    var onSubmit: Optional<(_ params: Any?) -> Void> = nil
+    var onCancel: Optional<(_ params: Any?) -> Void> = nil
+    var onSize: Optional<(_ params: Any?) -> Void> = nil
+    var onClose: Optional<(_ params: Any?) -> Void> = nil
 
 
     /**
@@ -23,13 +26,21 @@ public struct HYSurveyView: UIViewRepresentable {
      - options 设置项目 可选
      - callback 回调
      */
-    public init(surveyId: String, channelId: String, parameters: Dictionary<String, Any> = Dictionary<String, Any>.init(), options: Dictionary<String, Any> = Dictionary<String, Any>.init(), callback: Optional<(_ event: String, _ params: Any?) -> Void> = nil, assets: String = "") {
+    public init(surveyId: String, channelId: String, parameters: Dictionary<String, Any> = Dictionary<String, Any>.init(), options: Dictionary<String, Any> = Dictionary<String, Any>.init(),
+                onSubmit: Optional<(_ params: Any?) -> Void> = nil,
+                onCancel: Optional<(_ params: Any?) -> Void> = nil,
+                onSize: Optional<(_ params: Any?) -> Void> = nil,
+                onClose: Optional<(_ params: Any?) -> Void> = nil,
+                assets: String = "") {
         self.surveyId = surveyId
         self.channelId = channelId
         self.parameters = parameters
         self.options = options
         self.assets = assets
-        self.callback = callback
+        self.onSubmit = onSubmit
+        self.onSize = onSize
+        self.onCancel = onCancel
+        self.onClose = onClose
 
     }
     
@@ -37,7 +48,7 @@ public struct HYSurveyView: UIViewRepresentable {
         Swift 版本接口
      */
     public func makeUIView(context: Context) -> HYUISurveyView {
-        let survey = HYUISurveyView.makeSurveyController(surveyId: self.surveyId, channelId: self.channelId, parameters: self.parameters, options: self.options, callback: self.callback, assets: self.assets)
+        let survey = HYUISurveyView.makeSurveyController(surveyId: self.surveyId, channelId: self.channelId, parameters: self.parameters, options: self.options, onSubmit: self.onSubmit, onCancel: self.onCancel, onSize: self.onSize, onClose: self.onClose, assets: self.assets)
         return survey
     }
     

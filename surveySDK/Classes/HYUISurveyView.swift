@@ -21,19 +21,30 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var version: String = ""
     var build: Int = 0
     var assets: String = ""
-    var callback: Optional<(_ event: String, _ params: Any?) -> Void> = nil
+    var onSubmit: Optional<(_ params: Any?) -> Void> = nil
+    var onCancel: Optional<(_ params: Any?) -> Void> = nil
+    var onSize: Optional<(_ params: Any?) -> Void> = nil
+    var onClose: Optional<(_ params: Any?) -> Void> = nil
     var _height: Int?
 
     @IBOutlet var webView: WKWebView!
     
-    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>, callback: Optional<(_ event: String, _ params: Any?) -> Void> = nil, assets: String = "") -> HYUISurveyView {
+    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                            onSubmit: Optional<(_ params: Any?) -> Void> = nil,
+                                            onCancel: Optional<(_ params: Any?) -> Void> = nil,
+                                            onSize: Optional<(_ params: Any?) -> Void> = nil,
+                                            onClose: Optional<(_ params: Any?) -> Void> = nil,
+                                            assets: String = "") -> HYUISurveyView {
         let controller = HYUISurveyView()
         controller.surveyId = surveyId
         controller.channelId = channelId
         controller.parameters = parameters
         controller.options = options
         controller.assets = assets
-        controller.callback = callback
+        controller.onSubmit = onSubmit
+        controller.onSize = onSize
+        controller.onCancel = onCancel
+        controller.onClose = onClose
 
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
@@ -102,7 +113,6 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.webView.scrollView.isScrollEnabled = true
 
         self.webView.frame.size.height = CGFloat(0)
-//        self.webView.frame.size.width = self.frame.width
         
         if (bord) {
             self.webView.layer.borderWidth = 2
@@ -173,8 +183,8 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     if autoheight && height != 0 && _height == nil {
                         self.superview?.frame.size.height = CGFloat(height)
                         _height = height
-                        if self.callback != nil {
-                            self.callback!("size", height)
+                        if self.onSize != nil {
+                            self.onSize!(height)
                         }
                     }
                     let maxHeight = Int((self.superview?.frame.size.height)!)
@@ -190,11 +200,25 @@ extension HYUISurveyView: WKScriptMessageHandler {
                 self.superview?.frame.size.height = CGFloat(0)
                 self.webView.removeFromSuperview()
                 self.removeFromSuperview()
-                if self.callback != nil {
-                    self.callback!("close", nil)
+                if self.onClose != nil {
+                    self.onClose!(nil)
                 }
             } else if type == "submit" {
                 self.finished = true
+                if self.onSubmit != nil {
+                    self.onSubmit!(nil)
+                }
+            } else if type == "cancel" {b
+                if self.onCancel != nil {
+                    self.onCancel!(nil)
+                }
+                self.layer.frame.size.height = CGFloat(0)
+                self.superview?.frame.size.height = CGFloat(0)
+                self.webView.removeFromSuperview()
+                self.removeFromSuperview()
+                if self.onClose != nil {
+                    self.onClose!(nil)
+                }
             } else if type == "init" {
                 let data = ["surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "parameters": self.parameters!] as [String: Any]
                 let jsonData = try? JSONSerialization.data(withJSONObject: data)
