@@ -26,7 +26,7 @@ struct SwiftUIView: View {
             Text("list#1")
             Text("list#2")
             if show {
-                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: ["externalUserId":"winston"], options: ["debug": true, "force": true], onSubmit: {arg  in
+                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: ["externalUserId":"winston"], options: ["authheight": true], onSubmit: {arg  in
                     message = "问卷已经填答"
                     showingAlert = true
                 }, onCancel: {arg  in
@@ -38,8 +38,7 @@ struct SwiftUIView: View {
                     show = false
                 }, assets: "Assets")
                 .border(.green)
-                .frame(maxHeight: 400)
-//                .frame( height: CGFloat(height))
+                .frame(maxHeight: 300, alignment: .top)
             }
             Text("list#3")
             Text("list#4")

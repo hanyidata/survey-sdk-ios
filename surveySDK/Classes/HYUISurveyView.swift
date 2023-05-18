@@ -29,6 +29,22 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
 
     @IBOutlet var webView: WKWebView!
     
+    public func setOnSubmit(callback: @escaping (_ params: Any?) -> Void) {
+        self.onSubmit = callback
+    }
+    
+    public func setOnCancel(callback: @escaping (_ params: Any?) -> Void) {
+        self.onCancel = callback
+    }
+    
+    public func setOnClose(callback: @escaping (_ params: Any?) -> Void) {
+        self.onClose = callback
+    }
+    
+    public func setOnSize(callback: @escaping (_ params: Any?) -> Void) {
+        self.onSize = callback
+    }
+    
     public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                             onSubmit: Optional<(_ params: Any?) -> Void> = nil,
                                             onCancel: Optional<(_ params: Any?) -> Void> = nil,
@@ -196,7 +212,7 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     }
                 }
             } else if type == "close" {
-                self.layer.frame.size.height = CGFloat(0)
+                self.frame.size.height = CGFloat(0)
                 self.superview?.frame.size.height = CGFloat(0)
                 self.webView.removeFromSuperview()
                 self.removeFromSuperview()
@@ -208,11 +224,11 @@ extension HYUISurveyView: WKScriptMessageHandler {
                 if self.onSubmit != nil {
                     self.onSubmit!(nil)
                 }
-            } else if type == "cancel" {b
+            } else if type == "cancel" {
                 if self.onCancel != nil {
                     self.onCancel!(nil)
                 }
-                self.layer.frame.size.height = CGFloat(0)
+                self.frame.size.height = CGFloat(0)
                 self.superview?.frame.size.height = CGFloat(0)
                 self.webView.removeFromSuperview()
                 self.removeFromSuperview()
