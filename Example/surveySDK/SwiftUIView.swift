@@ -26,18 +26,16 @@ struct SwiftUIView: View {
             Text("list#1")
             Text("list#2")
             if show {
-                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: ["externalUserId":"winston"], options: ["authheight": true], onSubmit: {arg  in
-                    message = "问卷已经填答"
-                    showingAlert = true
+                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: ["externalUserId":"winston"], options: ["autoheight": true], onSubmit: {arg  in
+                    showAlert(msg: "问卷已经填答")
                 }, onCancel: {arg  in
-                    message = "填答取消"
-                    showingAlert = true
+                    showAlert(msg: "填答取消")
                 }, onSize: {arg  in
                     height = arg as! Int
                 }, onClose: {arg  in
                     show = false
                 }, assets: "Assets")
-                .border(.green)
+//                .border(.green)
                 .frame(maxHeight: 300, alignment: .top)
             }
             Text("list#3")
@@ -57,10 +55,9 @@ struct SwiftUIView: View {
         
     }
     
-    func handleClick() -> Void {
-        print("click")
-        
-        
+    func showAlert(msg: String) -> Void {
+        message = msg
+        showingAlert = true
     }
 }
 
