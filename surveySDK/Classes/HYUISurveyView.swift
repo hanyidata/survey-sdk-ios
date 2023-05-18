@@ -196,19 +196,21 @@ extension HYUISurveyView: WKScriptMessageHandler {
                 if (self.superview != nil) {
                     let value = event?["value"]! as? [String: Any]
                     let height = value?["height"]! as! Int
-                    if autoheight && height != 0 && _height == nil {
-                        self.superview?.frame.size.height = CGFloat(height)
-                        _height = height
-                        if self.onSize != nil {
-                            self.onSize!(height)
-                        }
-                    }
-                    let maxHeight = Int((self.superview?.frame.size.height)!)
-                    if height < maxHeight {
-                        self.frame.size.height = CGFloat(height)
-                    }
-                    if debug {
-                        print("size heigt: \(self.layer.frame.size.height)")
+//                    if autoheight && height != 0 && _height == nil {
+//                        self.superview?.frame.size.height = CGFloat(height)
+//                        _height = height
+//                    }
+//                    if autoheight {
+//                        self.frame.size.height = CGFloat(height)
+//                    } else {
+//                        let maxHeight = Int((self.superview?.frame.size.height)!)
+//                        if height >= maxHeight {
+//                            self.frame.size.height = CGFloat(height)
+//                        }
+//                    }
+                    self.superview?.frame.size.height = CGFloat(height)
+                    if self.onSize != nil {
+                        self.onSize!(height)
                     }
                 }
             } else if type == "close" {
