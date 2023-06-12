@@ -7,6 +7,7 @@ import JavaScriptCore
  */
 public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     
+    var server : String = "production"
     var surveyId : String?
     var channelId : String?
     var delay : Int = 3000
@@ -21,35 +22,37 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var version: String = ""
     var build: Int = 0
     var assets: String = ""
-    var onSubmit: Optional<(_ params: Any?) -> Void> = nil
-    var onCancel: Optional<(_ params: Any?) -> Void> = nil
-    var onSize: Optional<(_ params: Any?) -> Void> = nil
-    var onClose: Optional<(_ params: Any?) -> Void> = nil
+    var onSubmit: Optional<() -> Void> = nil
+    var onCancel: Optional<() -> Void> = nil
+    var onSize: Optional<(_ height: Int) -> Void> = nil
+    var onClose: Optional<() -> Void> = nil
     var _height: Int?
+    var _constraint: NSLayoutConstraint? = nil
 
     @IBOutlet var webView: WKWebView!
     
-    public func setOnSubmit(callback: @escaping (_ params: Any?) -> Void) {
+    
+    @objc public func setOnSubmit(callback: @escaping () -> Void) {
         self.onSubmit = callback
     }
     
-    public func setOnCancel(callback: @escaping (_ params: Any?) -> Void) {
+    @objc public func setOnCancel(callback: @escaping () -> Void) {
         self.onCancel = callback
     }
     
-    public func setOnClose(callback: @escaping (_ params: Any?) -> Void) {
+    @objc public func setOnClose(callback: @escaping () -> Void) {
         self.onClose = callback
     }
     
-    public func setOnSize(callback: @escaping (_ params: Any?) -> Void) {
+    @objc public func setOnSize(callback: @escaping (_ height: Int) -> Void) {
         self.onSize = callback
     }
     
-    public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
-                                            onSubmit: Optional<(_ params: Any?) -> Void> = nil,
-                                            onCancel: Optional<(_ params: Any?) -> Void> = nil,
-                                            onSize: Optional<(_ params: Any?) -> Void> = nil,
-                                            onClose: Optional<(_ params: Any?) -> Void> = nil,
+    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                            onSubmit: Optional<() -> Void> = nil,
+                                            onCancel: Optional<() -> Void> = nil,
+                                            onSize: Optional<(_ height: Int) -> Void> = nil,
+                                            onClose: Optional<() -> Void> = nil,
                                             assets: String = "") -> HYUISurveyView {
         let controller = HYUISurveyView()
         controller.surveyId = surveyId
@@ -67,6 +70,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
+        controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
         controller.autoheight = options.index(forKey: "autoheight") != nil ? options["autoheight"] as! Bool: false
 
         controller.setup()
@@ -85,7 +89,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     /**
      创建组件
      */
-    public func setup() {
+    @objc public func setup() {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
         configuration.userContentController.add(self, name: "surveyProxy")
@@ -97,7 +101,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             print("already setup skip!")
             return
         }
-        
+                
         self.webView = WKWebView(frame: self.frame, configuration: configuration)
         self.webView.navigationDelegate = self;
         self.webView.uiDelegate = self;
@@ -119,11 +123,13 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             }
         }
         var indexURL = loadFile(res: "index", ex: "html")
+        indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?")
         if force {
             let timestamp = Int(NSDate().timeIntervalSince1970)
-            indexURL = URL(string: "\(indexURL!.absoluteString)?_t=\(timestamp)")
+            indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?_t=\(timestamp)")
             URLCache.shared.removeAllCachedResponses()
         }
+        print("load: \(String(describing: indexURL?.absoluteURL))")
                 
         self.webView.isUserInteractionEnabled = true
         self.webView.scrollView.isScrollEnabled = true
@@ -146,7 +152,11 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(-1 * padding))
         ]
         NSLayoutConstraint.activate(constraints)
-
+        if (self.autoheight) {
+            self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
+            self._constraint?.isActive = true
+        }
+        
         self.webView.loadFileURL(indexURL!,
                                  allowingReadAccessTo: indexURL!.deletingLastPathComponent())
 
@@ -155,26 +165,28 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     /**
      获取版本号
      */
-    public func getVersion() -> String {
+    @objc public func getVersion() -> String {
         return self.version;
     }
     
     /**
      获取版本构建号
      */
-    public func getBuild() -> Int {
+    @objc public func getBuild() -> Int {
         return self.build;
     }
     
     /**
     显示
      */
-    public func show() {
+    @objc public func show() {
         if finished {
             self.webView.reload()
         }
         self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('show'))")
     }
+    
+ 
     
 }
 
@@ -193,52 +205,51 @@ extension HYUISurveyView: WKScriptMessageHandler {
             let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
             let type = event?["type"]! as? String
             if type == "size" {
-                if (self.superview != nil) {
+//                if (self.superview != nil) {
                     let value = event?["value"]! as? [String: Any]
-                    let height = value?["height"]! as! Int
-//                    if autoheight && height != 0 && _height == nil {
-//                        self.superview?.frame.size.height = CGFloat(height)
-//                        _height = height
-//                    }
-//                    if autoheight {
-//                        self.frame.size.height = CGFloat(height)
-//                    } else {
-//                        let maxHeight = Int((self.superview?.frame.size.height)!)
-//                        if height >= maxHeight {
-//                            self.frame.size.height = CGFloat(height)
-//                        }
-//                    }
-                    self.superview?.frame.size.height = CGFloat(height)
+                    let height = Int(value?["height"]! as! Double)
+                    self.frame.size.height = CGFloat(height)
+                    
+                    if (_constraint != nil) {
+                        _constraint?.constant = CGFloat(height);
+                        superview?.updateConstraintsIfNeeded();
+                        superview?.layoutIfNeeded();
+                        superview?.layoutSubviews();
+                        superview?.sizeToFit();
+                    }
+                                    
                     if self.onSize != nil {
                         self.onSize!(height)
                     }
-                }
+//                } else {
+//                    print("seems no superview")
+//                }
             } else if type == "close" {
                 self.frame.size.height = CGFloat(0)
-                self.superview?.frame.size.height = CGFloat(0)
+//                self.superview?.frame.size.height = CGFloat(0)
                 self.webView.removeFromSuperview()
                 self.removeFromSuperview()
                 if self.onClose != nil {
-                    self.onClose!(nil)
+                    self.onClose!()
                 }
             } else if type == "submit" {
                 self.finished = true
                 if self.onSubmit != nil {
-                    self.onSubmit!(nil)
+                    self.onSubmit!()
                 }
             } else if type == "cancel" {
                 if self.onCancel != nil {
-                    self.onCancel!(nil)
+                    self.onCancel!()
                 }
                 self.frame.size.height = CGFloat(0)
-                self.superview?.frame.size.height = CGFloat(0)
-                self.webView.removeFromSuperview()
+//                self.superview?.frame.size.height = CGFloat(0)
+//                self.webView.removeFromSuperview()
                 self.removeFromSuperview()
                 if self.onClose != nil {
-                    self.onClose!(nil)
+                    self.onClose!()
                 }
             } else if type == "init" {
-                let data = ["surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "parameters": self.parameters!] as [String: Any]
+                let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "parameters": self.parameters!] as [String: Any]
                 let jsonData = try? JSONSerialization.data(withJSONObject: data)
                 let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                 self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")

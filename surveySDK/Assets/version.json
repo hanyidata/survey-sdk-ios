@@ -1,5 +1,6 @@
 {
-  "name":       "survey-ui-next",
-  "build":  1684374362694,
-  "version":    "0.1.1"
+  "name":     "survey",
+  "build":    1686294462987,
+  "version":  "0.1.4",
+  "core":     "0.0.16"
 }

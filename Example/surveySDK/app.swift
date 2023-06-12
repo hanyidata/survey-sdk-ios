@@ -9,7 +9,7 @@
 import SwiftUI
 
 @available(iOS 15.0, *)
-@main
+//@main
 struct survey_sdk_demo_liveApp: App {
     var body: some Scene {
         WindowGroup {

@@ -15,6 +15,7 @@ struct SwiftUIView: View {
     @State private var height: Int = 0   // 问卷高度
     @State private var showingAlert = false
     @State private var message = ""
+//    @State private var version = HYSurveyView.getVersion()
 
     
     var body: some View {
@@ -22,19 +23,17 @@ struct SwiftUIView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
-                        
+//            Text("Version: " + version)
             Text("list#1")
             Text("list#2")
             if show {
-                HYSurveyView(surveyId: "4186159406162944", channelId: "4186160160881664", parameters: ["externalUserId":"winston"], options: ["debug": true, "autoheight": true], onSubmit: {arg  in
-                    showAlert(msg: "问卷已经填答")
-                }, onCancel: {arg  in
+                HYSurveyView(surveyId: "3512748182348800", channelId: "3512750347396096", parameters: ["externalUserId":"winston"], options: ["server": "test", "debug": true, "autoheight": false], onSubmit: {
+                    showAlert(msg: "问卷填答完成")
+                }, onCancel: {
                     showAlert(msg: "填答取消")
                 }, onSize: {arg  in
                     height = arg as! Int
-                }, onClose: {arg  in
-                    show = false
-                }, assets: "Assets")
+                }, onClose: {show = false}, assets: "Assets")
 //                .border(.green)
 //                .frame(maxHeight: 300, alignment: .top)
                 .frame(height: CGFloat(height))

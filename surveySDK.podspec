@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-体验家(xmplus.cn) survey sdk for iosb
+体验家(xmplus.cn) survey sdk for ios
                        DESC
 
   s.swift_versions   = '4.0'

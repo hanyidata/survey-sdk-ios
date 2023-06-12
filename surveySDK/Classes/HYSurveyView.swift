@@ -12,12 +12,12 @@ public struct HYSurveyView: UIViewRepresentable {
     var parameters : Dictionary<String, Any> = Dictionary()
     var options : Dictionary<String, Any> = Dictionary()
     var assets : String = ""
-    var onSubmit: Optional<(_ params: Any?) -> Void> = nil
-    var onCancel: Optional<(_ params: Any?) -> Void> = nil
-    var onSize: Optional<(_ params: Any?) -> Void> = nil
-    var onClose: Optional<(_ params: Any?) -> Void> = nil
+    var onSubmit: Optional<() -> Void> = nil
+    var onCancel: Optional<() -> Void> = nil
+    var onSize: Optional<(_ height: Int) -> Void> = nil
+    var onClose: Optional<() -> Void> = nil
 
-
+    
     /**
      初始化问卷
      - surveyId 问卷id
@@ -27,10 +27,10 @@ public struct HYSurveyView: UIViewRepresentable {
      - callback 回调
      */
     public init(surveyId: String, channelId: String, parameters: Dictionary<String, Any> = Dictionary<String, Any>.init(), options: Dictionary<String, Any> = Dictionary<String, Any>.init(),
-                onSubmit: Optional<(_ params: Any?) -> Void> = nil,
-                onCancel: Optional<(_ params: Any?) -> Void> = nil,
-                onSize: Optional<(_ params: Any?) -> Void> = nil,
-                onClose: Optional<(_ params: Any?) -> Void> = nil,
+                onSubmit: Optional<() -> Void> = nil,
+                onCancel: Optional<() -> Void> = nil,
+                onSize: Optional<(_ height: Any?) -> Void> = nil,
+                onClose: Optional<() -> Void> = nil,
                 assets: String = "") {
         self.surveyId = surveyId
         self.channelId = channelId
