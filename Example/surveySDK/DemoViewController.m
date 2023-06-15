@@ -67,7 +67,7 @@
     } onSize:^(NSInteger height) {
     } onClose:^() {
         NSLog(@"关闭");
-    } assets:@"Assets"];
+    } assets: @"Assets"];
     
     _stackview = [[UIStackView alloc] initWithFrame:self.view.bounds];
 
