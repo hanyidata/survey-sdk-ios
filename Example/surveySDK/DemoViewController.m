@@ -54,10 +54,11 @@
     _label2 = [[UILabel alloc] init];
     _label2.text = @"item2";
 
-    NSString* surveyId = @"3512748182348800";
-    NSString* channelId = @"3512750347396096";
+    NSString* surveyId = @"3478834285002752";
+    NSString* channelId = @"4418880725796864";
     NSDictionary* params = [NSDictionary dictionary];
     NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
+                             @(true), @"debug",
         @"test", @"server", @(true), @"autoheight", nil];
 
     _survey = [HYUISurveyView makeSurveyControllerWithSurveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^() {
@@ -65,6 +66,7 @@
     } onCancel:^() {
         NSLog(@"取消");
     } onSize:^(NSInteger height) {
+        NSLog(@"Size %ld", (long)height);
     } onClose:^() {
         NSLog(@"关闭");
     } assets:@"Assets"];

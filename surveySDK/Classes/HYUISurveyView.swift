@@ -20,7 +20,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var options : Dictionary<String, Any>?
     var finished: Bool = false
     var version: String = ""
-    var build: Int = 0
+    var build: String = ""
     var assets: String = ""
     var onSubmit: Optional<() -> Void> = nil
     var onCancel: Optional<() -> Void> = nil
@@ -113,7 +113,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                     do {
                         let dict = try JSONSerialization.jsonObject(with: data as Data, options: []) as? [String : Any]
                         self.version = (dict!["version"] as! String)
-                        self.build = dict!["build"] as! Int
+                        self.build = (dict!["build"] as! String)
                         self.webView.customUserAgent =  "surveySDK/\(version) (iOS)"
                     } catch {
                         print(error.localizedDescription)
@@ -172,7 +172,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     /**
      获取版本构建号
      */
-    @objc public func getBuild() -> Int {
+    @objc public func getBuild() -> String {
         return self.build;
     }
     
