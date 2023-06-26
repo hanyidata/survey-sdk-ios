@@ -23,6 +23,7 @@ NSDictionary *options;
         params = [NSDictionary dictionary];
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
+                   @"Assets", @"assets",
                    @"BOTTOM", @"embedVerticalAlign",
 //                   @("40%"), @"embedHeight",
 //                   @"FIX", @"embedHeightMode",
@@ -52,7 +53,7 @@ NSDictionary *options;
         NSLog(@"Size %ld", (long)height);
     } onClose:^() {
         NSLog(@"关闭");
-    } assets:@"Assets"];
+    }];
     
     
     _label2 = [[UILabel alloc] init];

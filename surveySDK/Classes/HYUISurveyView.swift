@@ -59,19 +59,19 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                                             onSubmit: Optional<() -> Void> = nil,
                                             onCancel: Optional<() -> Void> = nil,
                                             onSize: Optional<(_ height: Int) -> Void> = nil,
-                                            onClose: Optional<() -> Void> = nil,
-                                            assets: String = "") -> HYUISurveyView {
+                                            onClose: Optional<() -> Void> = nil
+                                            ) -> HYUISurveyView {
         let controller = HYUISurveyView()
         controller.surveyId = surveyId
         controller.channelId = channelId
         controller.parameters = parameters
         controller.options = options
-        controller.assets = assets
         controller.onSubmit = onSubmit
         controller.onSize = onSize
         controller.onCancel = onCancel
         controller.onClose = onClose
 
+        controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false

@@ -40,7 +40,7 @@ public class HYPopupDialog: UIViewController {
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, assets: assets);
+                    let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel);
                     context.present(dialog, animated: true)
                 }
             } else if (onError != nil) {
@@ -56,8 +56,7 @@ public class HYPopupDialog: UIViewController {
     private init(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                config: Dictionary<String, Any>,
             onSubmit: Optional<() -> Void> = nil,
-            onCancel: Optional<() -> Void> = nil,
-            assets: String = "") {
+            onCancel: Optional<() -> Void> = nil) {
         let window = UIApplication.shared.windows.first;
         self.options = options;
         self.config = config;
@@ -107,7 +106,7 @@ public class HYPopupDialog: UIViewController {
         }
         
         survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
-                                                     onSubmit:  onSubmit, onCancel: onCancel, onSize: self.onSize, onClose: self.onClose, assets: assets);
+                                                     onSubmit:  onSubmit, onCancel: onCancel, onSize: self.onSize, onClose: self.onClose);
         popupView.addSubview(survey!);
         survey!.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
