@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'surveySDK'
-  s.version          = '0.1.1'
+  s.version          = '0.1.6'
   s.summary          = 'a tiny survey sdk for xmplus'
 
 # This description is used to generate tags and improve search results.
@@ -24,11 +24,9 @@ Pod::Spec.new do |s|
   s.swift_versions   = '4.0'
 
   s.homepage         = 'https://github.com/hanyidata/survey-sdk-ios'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'boyd4y' => 'yangjun@surveyplus.cn' }
   s.source           = { :git => 'https://github.com/hanyidata/survey-sdk-ios.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '11.0'
 

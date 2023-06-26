@@ -10,13 +10,17 @@
 #define DemoViewController_h
 
 #import "surveySDK-Swift.h"
+
+
 @import UIKit;
 
 @interface DemoViewController : UIViewController
 @property(strong) HYUISurveyView *survey;
-@property(strong) UIButton *button;
+@property(strong) UIButton *button1;
+@property(strong) UIButton *button2;
 @property(strong) UILabel *label1;
 @property(strong) UILabel *label2;
+@property(strong) UITextField *text1;
 @property(strong) UIStackView *stackview;
 @end
 

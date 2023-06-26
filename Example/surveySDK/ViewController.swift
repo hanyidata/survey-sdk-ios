@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         print("click show me")
 
         if (_survey == nil) {
-            self._survey = HYUISurveyView.makeSurveyController(surveyId: "4332348965224448", channelId: "4333597795516416", parameters: ["externalUserId": "winston"], options: ["server": "test", "delay": 1000], assets: "Assets")
+            self._survey = HYUISurveyView.makeSurveyController(surveyId: "4332348965224448", channelId: "4333597795516416", parameters: ["externalUserId": "winston"], options: ["server": "test", "delay": 1000, "assets": "Assets"])
             
             let newFrame = CGRectMake( 0, 300, self.view.frame.width, 0)
             self._survey?.frame = newFrame

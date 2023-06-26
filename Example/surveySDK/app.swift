@@ -1,19 +1,19 @@
+////
+////  app.swift
+////  surveySDK-example
+////
+////  Created by Winston on 2023/5/17.
+////  Copyright © 2023 CocoaPods. All rights reserved.
+////
 //
-//  app.swift
-//  surveySDK-example
+//import SwiftUI
 //
-//  Created by Winston on 2023/5/17.
-//  Copyright © 2023 CocoaPods. All rights reserved.
-//
-
-import SwiftUI
-
-@available(iOS 15.0, *)
-//@main
-struct survey_sdk_demo_liveApp: App {
-    var body: some Scene {
-        WindowGroup {
-            SwiftUIView()
-        }
-    }
-}
+////@available(iOS 15.0, *)
+////@main
+//struct survey_sdk_demo_liveApp: App {
+//    var body: some Scene {
+//        WindowGroup {
+////            SwiftUIView()
+//        }
+//    }
+//}
