@@ -31,8 +31,8 @@ public class HYPopupDialog: UIViewController {
     @objc public static func makeDialog(context: UIViewController, surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                          onSubmit: Optional<() -> Void> = nil,
                                          onCancel: Optional<() -> Void> = nil,
-                                         onError: Optional<(_: String) -> Void> = nil,
-                                         assets: String = "") -> Void {
+                                         onError: Optional<(_: String) -> Void> = nil
+                                         ) -> Void {
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         var mOptions : Dictionary<String, Any> = options;
