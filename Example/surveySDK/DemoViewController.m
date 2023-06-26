@@ -73,7 +73,7 @@ NSDictionary *options;
         NSLog(@"cancel");
     } onError:^(NSString*  error) {
         NSLog(@"error: %@", error);
-    } assets:@"Assets"];
+    }];
 
 }
 
