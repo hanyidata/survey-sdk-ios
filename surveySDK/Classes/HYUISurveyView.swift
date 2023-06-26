@@ -13,6 +13,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var delay : Int = 3000
     var debug : Bool = false
     var force : Bool = false
+    var ignorePadding : Bool = false
     var padding : Int = 0
     var bord : Bool = false
     var autoheight: Bool = false
@@ -26,9 +27,12 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var onCancel: Optional<() -> Void> = nil
     var onSize: Optional<(_ height: Int) -> Void> = nil
     var onClose: Optional<() -> Void> = nil
+    var onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
     var _height: Int?
     var _constraint: NSLayoutConstraint? = nil
-
+    var _width_constraint: NSLayoutConstraint? = nil
+    var appPaddingWidth: Int = 0;
+    
     @IBOutlet var webView: WKWebView!
     
     
@@ -46,6 +50,10 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     
     @objc public func setOnSize(callback: @escaping (_ height: Int) -> Void) {
         self.onSize = callback
+    }
+    
+    @objc public func setOnLoad(callback: @escaping (_ config: Dictionary<String, Any>) -> Void) {
+        self.onLoad = callback
     }
     
     @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
@@ -72,6 +80,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
         controller.autoheight = options.index(forKey: "autoheight") != nil ? options["autoheight"] as! Bool: false
+        controller.ignorePadding = options.index(forKey: "ignorePadding") != nil ? options["ignorePadding"] as! Bool: false
 
         controller.setup()
         return controller
@@ -90,6 +99,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
      创建组件
      */
     @objc public func setup() {
+                
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
         configuration.userContentController.add(self, name: "surveyProxy")
@@ -105,7 +115,9 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.webView = WKWebView(frame: self.frame, configuration: configuration)
         self.webView.navigationDelegate = self;
         self.webView.uiDelegate = self;
-                
+        
+//        self.backgroundColor = UIColor.black.withAlphaComponent(1);
+
         if let path = loadFile(res: "version", ex: "json")
         {
             if let data = NSData(contentsOf: path) {
@@ -132,31 +144,20 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         print("load: \(String(describing: indexURL?.absoluteURL))")
                 
         self.webView.isUserInteractionEnabled = true
-        self.webView.scrollView.isScrollEnabled = true
-
+//        self.webView.scrollView.isScrollEnabled = true
         self.webView.frame.size.height = CGFloat(0)
         
-        if (bord) {
-            self.webView.layer.borderWidth = 2
-            self.webView.layer.borderColor = UIColor.yellow.cgColor
-            self.webView.layer.backgroundColor = UIColor.blue.cgColor
-            self.layer.borderWidth = 2
-            self.layer.borderColor = UIColor.red.cgColor
-        }
+    
         webView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
-        let constraints = [
-            webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(padding)),
-            webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * padding)),
-            webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(padding)),
-            webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(-1 * padding))
-        ]
-        NSLayoutConstraint.activate(constraints)
+        
         if (self.autoheight) {
             self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
             self._constraint?.isActive = true
         }
         
+        self._width_constraint = self.widthAnchor.constraint(equalToConstant: layer.frame.width);
+        self._width_constraint?.isActive = true;
         self.webView.loadFileURL(indexURL!,
                                  allowingReadAccessTo: indexURL!.deletingLastPathComponent())
 
@@ -198,14 +199,14 @@ extension HYUISurveyView: WKScriptMessageHandler {
         if message.name == "logger" {
             print("log: \(message.body)")
         } else if message.name == "surveyProxy"  {
-            if debug {
-                print("proxy: \(message.body)")
-            }
+//            if debug {
+//                print("proxy: \(message.body)")
+//            }
             let msg = message.body as? String
             let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
             let type = event?["type"]! as? String
             if type == "size" {
-//                if (self.superview != nil) {
+                if (self.superview != nil) {
                     let value = event?["value"]! as? [String: Any]
                     let height = Int(value?["height"]! as! Double)
                     self.frame.size.height = CGFloat(height)
@@ -221,9 +222,9 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     if self.onSize != nil {
                         self.onSize!(height)
                     }
-//                } else {
-//                    print("seems no superview")
-//                }
+                } else {
+                    print("seems no superview")
+                }
             } else if type == "close" {
                 self.frame.size.height = CGFloat(0)
 //                self.superview?.frame.size.height = CGFloat(0)
@@ -237,6 +238,36 @@ extension HYUISurveyView: WKScriptMessageHandler {
                 if self.onSubmit != nil {
                     self.onSubmit!()
                 }
+            } else if type == "load" {
+                //embedBackGround, embedHeightMode, embedVerticalAlign
+                var config : [String: Any] = [:];
+                if (event?["configure"] != nil) {
+                    config = (event?["configure"]! as? [String: Any])!;
+                }
+                
+                if (!ignorePadding){
+                    let parentWidth = Int(layer.frame.width);
+                    let parentHeight = Int(layer.frame.height);
+                    let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
+                    appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+
+                    if (appBorderRadius > 0) {
+                        webView.clipsToBounds = true;
+                        webView.layer.cornerRadius = CGFloat(20);
+                    }
+                }
+                let constraints = [
+                    webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                    webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * appPaddingWidth)),
+                    webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(0)),
+                    webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(-1))
+                ]
+                NSLayoutConstraint.activate(constraints)
+                                
+                if self.onLoad != nil {
+                    self.onLoad!(config);
+                }
+                
             } else if type == "cancel" {
                 if self.onCancel != nil {
                     self.onCancel!()
