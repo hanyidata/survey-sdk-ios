@@ -30,7 +30,6 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
     var _height: Int?
     var _constraint: NSLayoutConstraint? = nil
-    var _width_constraint: NSLayoutConstraint? = nil
     var appPaddingWidth: Int = 0;
     
     @IBOutlet var webView: WKWebView!
@@ -141,7 +140,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?_t=\(timestamp)")
             URLCache.shared.removeAllCachedResponses()
         }
-        print("load: \(String(describing: indexURL?.absoluteURL))")
+//        print("load: \(String(describing: indexURL?.absoluteURL))")
                 
         self.webView.isUserInteractionEnabled = true
 //        self.webView.scrollView.isScrollEnabled = true
@@ -156,8 +155,6 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             self._constraint?.isActive = true
         }
         
-        self._width_constraint = self.widthAnchor.constraint(equalToConstant: layer.frame.width);
-        self._width_constraint?.isActive = true;
         self.webView.loadFileURL(indexURL!,
                                  allowingReadAccessTo: indexURL!.deletingLastPathComponent())
 
@@ -260,7 +257,7 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(appPaddingWidth)),
                     webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * appPaddingWidth)),
                     webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(0)),
-                    webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(-1))
+                    webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))
                 ]
                 NSLayoutConstraint.activate(constraints)
                                 
