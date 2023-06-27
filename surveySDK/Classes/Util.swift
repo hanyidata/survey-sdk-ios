@@ -12,7 +12,7 @@ public struct Util {
         if (value.hasSuffix("px")) {
             return Int(value.dropLast(2))!;
         } else if (value.hasSuffix("%")) {
-            return Int(Float(value.dropLast(1))! * Float(max));
+            return Int(Float(value.dropLast(1))! * Float(max) / 100);
         }
         return 0;
     }

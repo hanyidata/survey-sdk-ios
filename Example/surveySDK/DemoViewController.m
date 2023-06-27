@@ -13,8 +13,12 @@
 
 @implementation DemoViewController
 
-NSString* surveyId = @"4445329530320896";
-NSString* channelId = @"4446931357162496";
+NSString* surveyId = @"4451130473798656";
+NSString* channelId = @"4451141705161728";
+
+//NSString* surveyId = @"4445329530320896";
+//NSString* channelId = @"4446931357162496";
+
 NSDictionary* params;
 NSDictionary *options;
 
@@ -105,14 +109,7 @@ NSDictionary *options;
     _label2 = [[UILabel alloc] init];
     _label2.text = @"item2";
 
-    _survey = [HYUISurveyView makeSurveyControllerWithSurveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^() {
-        NSLog(@"提交");
-    } onCancel:^() {
-        NSLog(@"取消");
-    } onSize:^(NSInteger height) {
-    } onClose:^() {
-        NSLog(@"关闭");
-    }];
+  
     
     _stackview = [[UIStackView alloc] initWithFrame:self.view.bounds];
 

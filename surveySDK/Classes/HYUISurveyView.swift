@@ -195,9 +195,9 @@ extension HYUISurveyView: WKScriptMessageHandler {
         if message.name == "logger" {
             print("log: \(message.body)")
         } else if message.name == "surveyProxy"  {
-//            if debug {
-//                print("proxy: \(message.body)")
-//            }
+            if debug {
+                print("proxy: \(message.body)")
+            }
             let msg = message.body as? String
             let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
             let type = event?["type"]! as? String
@@ -249,7 +249,7 @@ extension HYUISurveyView: WKScriptMessageHandler {
 
                     if (appBorderRadius > 0) {
                         webView.clipsToBounds = true;
-                        webView.layer.cornerRadius = CGFloat(20);
+                        webView.layer.cornerRadius = CGFloat(appBorderRadius);
                     }
                 }
                 let constraints = [
