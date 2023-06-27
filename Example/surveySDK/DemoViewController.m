@@ -13,18 +13,21 @@
 
 @implementation DemoViewController
 
-NSString* surveyId = @"4451130473798656";
-NSString* channelId = @"4451141705161728";
+//NSString* surveyId = @"4451130473798656";
+//NSString* channelId = @"4451141705161728";
 
-//NSString* surveyId = @"4445329530320896";
-//NSString* channelId = @"4446931357162496";
+NSString* surveyId = @"4445329530320896";
+NSString* channelId = @"4446931357162496";
 
 NSDictionary* params;
 NSDictionary *options;
 
 + (void)initialize {
     if(!params)
-        params = [NSDictionary dictionary];
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:
+                  @(""), @"accessCode",
+                  nil];
+    
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
                    @"Assets", @"assets",
@@ -34,7 +37,7 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @(true), @"debug", @"https://jltest.xmplus.cn/api/survey", @"server", @(true), @"autoheight", nil];
+                   @(false), @"debug", @"https://jltest.xmplus.cn/api/survey", @"server", @(true), @"autoheight", nil];
 }
 
 

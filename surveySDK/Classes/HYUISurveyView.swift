@@ -1,3 +1,4 @@
+import os
 import UIKit
 import WebKit
 import JavaScriptCore
@@ -6,7 +7,6 @@ import JavaScriptCore
  Survey视图 UIKit版本
  */
 public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
-    
     var server : String = "production"
     var surveyId : String?
     var channelId : String?
@@ -205,6 +205,11 @@ extension HYUISurveyView: WKScriptMessageHandler {
                 if (self.superview != nil) {
                     let value = event?["value"]! as? [String: Any]
                     let height = Int(value?["height"]! as! Double)
+                    let width = Int(value?["width"]! as! Double)
+                    
+                    if (width == 0) {
+                        return
+                    }
                     self.frame.size.height = CGFloat(height)
                     
                     if (_constraint != nil) {
@@ -216,6 +221,7 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     }
                                     
                     if self.onSize != nil {
+                        print("onSize \(height)")
                         self.onSize!(height)
                     }
                 } else {
