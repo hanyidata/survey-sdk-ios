@@ -15,6 +15,7 @@
 
 
 NSString* accessCode = @"1125859680937918464";
+//NSString* accessCode = @"";
 
 //NSString* surveyId = @"4451130473798656";
 //NSString* channelId = @"4451141705161728";
@@ -47,7 +48,7 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
+                   @(false), @"debug", server, @"server", @(true), @"autoheight", nil];
 }
 
 
