@@ -35,9 +35,11 @@ public class HYPopupDialog: UIViewController {
                                          ) -> Void {
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
+        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "ignorePadding")
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, onCallback: { config, error in
+        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {
                     let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel);

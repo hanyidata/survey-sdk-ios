@@ -13,11 +13,21 @@
 
 @implementation DemoViewController
 
+
+NSString* accessCode = @"1125859680937918464";
+
 //NSString* surveyId = @"4451130473798656";
 //NSString* channelId = @"4451141705161728";
 
-NSString* surveyId = @"4445329530320896";
-NSString* channelId = @"4446931357162496";
+//NSString* surveyId = @"4445329530320896";
+//NSString* channelId = @"4446931357162496";
+//NSString* server = @"https://jltest.xmplus.cn/api/survey";
+
+
+//UAT
+NSString* surveyId = @"4475002070663168";
+NSString* channelId = @"4475389028433920";
+NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -25,7 +35,7 @@ NSDictionary *options;
 + (void)initialize {
     if(!params)
         params = [[NSDictionary alloc] initWithObjectsAndKeys:
-                  @(""), @"accessCode",
+                  accessCode, @"accessCode",
                   nil];
     
     if(!options)
@@ -37,7 +47,7 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @(false), @"debug", @"https://jltest.xmplus.cn/api/survey", @"server", @(true), @"autoheight", nil];
+                   @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
 }
 
 
@@ -52,8 +62,13 @@ NSDictionary *options;
 
 -(void) button1Clicked:(UIButton*)sender {
     NSLog(@"you clicked on nested survey");
-    
-    _survey = [HYUISurveyView makeSurveyControllerWithSurveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^() {
+    [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
+        NSLog(@"ready");
+        _survey = view;
+        [_stackview addArrangedSubview:_survey];
+    }  onError:^(NSString* error) {
+        NSLog(@"%@", error);
+    }  onSubmit:^() {
         NSLog(@"提交");
     } onCancel:^() {
         NSLog(@"取消");
@@ -64,11 +79,11 @@ NSDictionary *options;
     }];
     
     
-    _label2 = [[UILabel alloc] init];
-    _label2.text = @"item2";
-
-    [_stackview addArrangedSubview:_survey];
-    [_stackview addArrangedSubview:_label2];
+//    _label2 = [[UILabel alloc] init];
+//    _label2.text = @"item2";
+//
+//    [_stackview addArrangedSubview:_survey];
+//    [_stackview addArrangedSubview:_label2];
 
 }
 

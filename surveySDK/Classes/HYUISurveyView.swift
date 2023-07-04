@@ -54,7 +54,10 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     @objc public func setOnLoad(callback: @escaping (_ config: Dictionary<String, Any>) -> Void) {
         self.onLoad = callback
     }
-        
+    
+    /**
+        内部构造SurveyController
+     */
     @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
         onSubmit: Optional<() -> Void> = nil,
         onCancel: Optional<() -> Void> = nil,
@@ -82,6 +85,37 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
 
         controller.setup()
         return controller
+    }
+    
+    /**
+        构建popupview async version
+     */
+    @objc public static func makeSurveyControllerAsync(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                                       onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
+                                                       onError: Optional<(_ error: String) -> Void> = nil,
+                                                       onSubmit: Optional<() -> Void> = nil,
+                                                       onCancel: Optional<() -> Void> = nil,
+                                                       onSize: Optional<(_ height: Int) -> Void> = nil,
+                                                       onClose: Optional<() -> Void> = nil
+                                                           ) -> Void {
+        if (onReady == nil || onError == nil) {
+            print("onReady and onError is required in async call")
+            return;
+        }
+        
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
+        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+
+        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
+            if (config != nil && error == nil) {
+                DispatchQueue.main.async {
+                    let view : HYUISurveyView = makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
+                    onReady!(view);
+                }
+            } else {
+                onError!(error!);
+            }
+        });
     }
     
     /**
