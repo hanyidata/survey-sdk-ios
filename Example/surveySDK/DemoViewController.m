@@ -17,8 +17,9 @@
 NSString* accessCode = @"1125859680937918464";
 //NSString* accessCode = @"";
 
-//NSString* surveyId = @"4451130473798656";
-//NSString* channelId = @"4451141705161728";
+NSString* surveyId = @"3937853687522304";
+NSString* channelId = @"3937854297465856";
+NSString* server = @"https://test.xmplus.cn/api/survey";
 
 //NSString* surveyId = @"4445329530320896";
 //NSString* channelId = @"4446931357162496";
@@ -26,9 +27,9 @@ NSString* accessCode = @"1125859680937918464";
 
 
 //UAT
-NSString* surveyId = @"4475002070663168";
-NSString* channelId = @"4475389028433920";
-NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+//NSString* surveyId = @"4475002070663168";
+//NSString* channelId = @"4475389028433920";
+//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -48,7 +49,7 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @(false), @"debug", server, @"server", @(true), @"autoheight", nil];
+                   @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
 }
 
 

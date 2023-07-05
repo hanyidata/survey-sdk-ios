@@ -143,10 +143,14 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             print("already setup skip!")
             return
         }
-                
+        
+        
         self.webView = WKWebView(frame: self.frame, configuration: configuration)
         self.webView.navigationDelegate = self;
         self.webView.uiDelegate = self;
+        webView.isOpaque = false;
+        webView.backgroundColor = UIColor.clear;
+        
         
 //        self.backgroundColor = UIColor.black.withAlphaComponent(1);
 
@@ -179,7 +183,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
 //        self.webView.scrollView.isScrollEnabled = true
         self.webView.frame.size.height = CGFloat(0)
         
-    
+        
         webView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
         
