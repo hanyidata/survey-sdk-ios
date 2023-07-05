@@ -66,7 +66,15 @@ NSDictionary *options;
     [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
         NSLog(@"ready");
         _survey = view;
+//        CGRect frame = CGRectMake(0, 0, view.frame.size.width, 0);
         [_stackview addArrangedSubview:_survey];
+//        [self.view addSubview:_survey];
+        [_survey show];
+
+        _label2 = [[UILabel alloc] init];
+        _label2.text = @"item2";
+        [_stackview addArrangedSubview:_label2];
+
     }  onError:^(NSString* error) {
         NSLog(@"%@", error);
     }  onSubmit:^() {
@@ -75,6 +83,10 @@ NSDictionary *options;
         NSLog(@"取消");
     } onSize:^(NSInteger height) {
         NSLog(@"Size %ld", (long)height);
+//        CGRect frameReact = _survey.frame;
+//        frameReact.size.height = height;
+//        frameReact.size.width = self.view.frame.size.width;
+//        _survey.frame = frameReact;
     } onClose:^() {
         NSLog(@"关闭");
     }];
@@ -105,6 +117,12 @@ NSDictionary *options;
     [super viewDidLoad];
     //  [self setTitle:@"My Child View"];
 //    view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+//    table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+//    table.delegate = self;
+//    table.dataSource = self;
+//
+//    [self.view addSubview:tableView];
+
     [self.view setBackgroundColor:UIColor.lightGrayColor];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];

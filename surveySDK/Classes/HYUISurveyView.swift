@@ -241,9 +241,9 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     let height = Int(value?["height"]! as! Double)
                     let width = Int(value?["width"]! as! Double)
                     
-//                    if (width == 0) {
-//                        return
-//                    }
+                    if (width == 0) {
+                        return
+                    }
                     self.frame.size.height = CGFloat(height)
                     
                     if (_constraint != nil) {

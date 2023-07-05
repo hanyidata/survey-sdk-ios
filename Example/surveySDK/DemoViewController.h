@@ -16,6 +16,7 @@
 
 @interface DemoViewController : UIViewController
 @property(strong) HYUISurveyView *survey;
+@property(strong) UITableView *table;
 @property(strong) UIButton *button1;
 @property(strong) UIButton *button2;
 @property(strong) UILabel *label1;
