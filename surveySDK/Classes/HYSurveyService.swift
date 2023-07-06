@@ -32,8 +32,12 @@ public struct HYSurveyService {
                     if (config != nil) {
                         let surveyStatus = config!["surveyStatus"] as? String;
                         let channelStatus = config!["channelStatus"] as? String;
-                        if (surveyStatus == "STOPPED" && channelStatus == "STOPPED" ) {
+                        let doNotDisturb = config!["doNotDisturb"] as? Bool;
+                        if (surveyStatus == "STOPPED" && channelStatus == "PAUSE" ) {
                             onCallback!(config, "问卷停用");
+                            return
+                        } else if (doNotDisturb == true) {
+                            onCallback!(config, "免打扰屏蔽");
                             return
                         }
                         onCallback!(config, nil);

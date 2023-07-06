@@ -38,7 +38,7 @@ public class HYPopupDialog: UIViewController {
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
 
         var mOptions : Dictionary<String, Any> = options;
-        mOptions.updateValue(true, forKey: "ignorePadding")
+        mOptions.updateValue(true, forKey: "isDialogMode")
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {

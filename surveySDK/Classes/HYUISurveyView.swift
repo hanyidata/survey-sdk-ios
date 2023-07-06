@@ -13,7 +13,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var delay : Int = 3000
     var debug : Bool = false
     var force : Bool = false
-    var ignorePadding : Bool = false
+    var isDialogMode : Bool = false
     var padding : Int = 0
     var bord : Bool = false
     var autoheight: Bool = false
@@ -81,7 +81,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
         controller.autoheight = options.index(forKey: "autoheight") != nil ? options["autoheight"] as! Bool: false
-        controller.ignorePadding = options.index(forKey: "ignorePadding") != nil ? options["ignorePadding"] as! Bool: false
+        controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
 
         controller.setup()
         return controller
@@ -242,9 +242,10 @@ extension HYUISurveyView: WKScriptMessageHandler {
             if type == "size" {
                 if (self.superview != nil) {
                     let value = event?["value"]! as? [String: Any]
-                    let height = Int(value?["height"]! as! Double)
+                    var height = Int(value?["height"]! as! Double)
                     let width = Int(value?["width"]! as! Double)
-                    
+
+                    height = min(Int(UIScreen.main.bounds.height) - 100, height);
                     if (width == 0) {
                         return
                     }
@@ -285,7 +286,7 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     config = (event?["configure"]! as? [String: Any])!;
                 }
                 
-                if (!ignorePadding){
+                if (!isDialogMode){
                     let parentWidth = Int(layer.frame.width);
                     let parentHeight = Int(layer.frame.height);
                     let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);

@@ -14,16 +14,16 @@
 @implementation DemoViewController
 
 
-NSString* accessCode = @"1125859680937918464";
+NSString* accessCode = @"";
 //NSString* accessCode = @"";
+//
+//NSString* surveyId = @"3937853687522304";
+//NSString* channelId = @"3937854297465856";
+//NSString* server = @"https://test.xmplus.cn/api/survey";
 
-NSString* surveyId = @"3937853687522304";
-NSString* channelId = @"3937854297465856";
-NSString* server = @"https://test.xmplus.cn/api/survey";
-
-//NSString* surveyId = @"4445329530320896";
-//NSString* channelId = @"4446931357162496";
-//NSString* server = @"https://jltest.xmplus.cn/api/survey";
+NSString* surveyId = @"4445329530320896";
+NSString* channelId = @"4446931357162496";
+NSString* server = @"https://jltest.xmplus.cn/api/survey";
 
 
 //UAT
