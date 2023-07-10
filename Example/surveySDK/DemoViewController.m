@@ -49,7 +49,6 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @(4000), @"delay",
                    @(false), @"debug", server, @"server", @(true), @"autoheight", nil];
 }
 

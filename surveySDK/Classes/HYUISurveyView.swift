@@ -10,7 +10,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var server : String = "production"
     var surveyId : String?
     var channelId : String?
-    var delay : Int = 3000
+    var delay : Int = 1000
     var debug : Bool = false
     var force : Bool = false
     var isDialogMode : Bool = false
@@ -74,7 +74,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         controller.onClose = onClose
 
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
-        controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 3000
+        controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 1000
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
