@@ -20,16 +20,19 @@ NSString* accessCode = @"";
 //NSString* surveyId = @"3937853687522304";
 //NSString* channelId = @"3937854297465856";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
-//
-//NSString* surveyId = @"4445329530320896";
-//NSString* channelId = @"4446931357162496";
-//NSString* server = @"https://jltest.xmplus.cn/api/survey";
+
+NSString* surveyId = @"4445329530320896";
+NSString* channelId = @"4446931357162496";
+NSString* server = @"https://jltest.xmplus.cn/api/survey";
 
 
 //UAT
-NSString* surveyId = @"4475002070663168";
-NSString* channelId = @"4475389028433920";
-NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+//NSString* surveyId = @"4475002070663168";
+//NSString* channelId = @"4475389028433920";
+//NSString* surveyId =  @"4475020361170944";
+//NSString* channelId = @"4496490408345600";
+
+//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -49,7 +52,7 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @(false), @"debug", server, @"server", @(true), @"autoheight", nil];
+                   @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
 }
 
 
@@ -124,7 +127,7 @@ NSDictionary *options;
 //
 //    [self.view addSubview:tableView];
 
-    [self.view setBackgroundColor:UIColor.lightGrayColor];
+    [self.view setBackgroundColor:UIColor.systemRedColor];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_button1 addTarget:self action:@selector(button1Clicked:) forControlEvents:UIControlEventTouchUpInside];
