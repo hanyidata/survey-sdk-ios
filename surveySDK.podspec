@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
 
   s.homepage         = 'https://github.com/hanyidata/survey-sdk-ios'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'boyd4y' => 'yangjun@surveyplus.cn' }
+  s.author           = { 'yangjun' => 'yangjun@surveyplus.cn' }
   s.source           = { :git => 'https://github.com/hanyidata/survey-sdk-ios.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '11.0'
