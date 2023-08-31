@@ -21,9 +21,9 @@ NSString* accessCode = @"";
 //NSString* channelId = @"3937854297465856";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
 
-NSString* surveyId = @"4445329530320896";
-NSString* channelId = @"4446931357162496";
-NSString* server = @"https://jltest.xmplus.cn/api/survey";
+NSString* surveyId = @"4475002070663168";
+NSString* channelId = @"4475389028433920";
+NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 
 //UAT
@@ -127,7 +127,7 @@ NSDictionary *options;
 //
 //    [self.view addSubview:tableView];
 
-    [self.view setBackgroundColor:UIColor.systemRedColor];
+    [self.view setBackgroundColor:UIColor.systemGray3Color];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_button1 addTarget:self action:@selector(button1Clicked:) forControlEvents:UIControlEventTouchUpInside];
