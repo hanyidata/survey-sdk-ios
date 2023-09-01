@@ -39,13 +39,17 @@ public class HYPopupDialog: UIViewController {
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
+        NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {
                     let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel);
+                    NSLog("surveySDK->makeDialog will show up")
+                    dialog.modalPresentationStyle = .overFullScreen
                     context.present(dialog, animated: true)
                 }
             } else if (onError != nil) {
+                NSLog("surveySDK->makeDialog failed to load config %@", error!)
                 onError!(error!);
             }
             
