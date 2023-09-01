@@ -45,7 +45,13 @@ public class HYPopupDialog: UIViewController {
                 DispatchQueue.main.async {
                     let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel);
                     NSLog("surveySDK->makeDialog will show up")
-                    dialog.modalPresentationStyle = .overFullScreen
+                    
+                    let style  = options.index(forKey: "style") != nil ? options["style"] as? String : nil
+                    if (style == "overFullScreen") {
+                        dialog.modalPresentationStyle = .overFullScreen
+                    } else if (style == "fullScreen") {
+                        dialog.modalPresentationStyle = .fullScreen
+                    }
                     context.view.window?.rootViewController?.present(dialog, animated: true)
                 }
             } else if (onError != nil) {
