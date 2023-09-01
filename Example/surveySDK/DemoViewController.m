@@ -16,8 +16,30 @@
 //NSString* surveyId = @"4451130473798656";
 //NSString* channelId = @"4451141705161728";
 
+<<<<<<< Updated upstream
 NSString* surveyId = @"4445329530320896";
 NSString* channelId = @"4446931357162496";
+=======
+//NSString* accessCode = @"";
+NSString* accessCode = @"";
+//
+//NSString* surveyId = @"3937853687522304";
+//NSString* channelId = @"3937854297465856";
+//NSString* server = @"https://test.xmplus.cn/api/survey";
+//
+NSString* surveyId = @"4445329530320896";
+NSString* channelId = @"4446931357162496";
+NSString* server = @"https://jltest.xmplus.cn/api/survey";
+
+
+//UAT
+//NSString* surveyId = @"4475002070663168";
+//NSString* channelId = @"4475389028433920";
+//NSString* surveyId = @"4475020361170944";
+//NSString* channelId = @"4475389028433920";
+//
+//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+>>>>>>> Stashed changes
 
 NSDictionary* params;
 NSDictionary *options;
@@ -37,12 +59,17 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
+<<<<<<< Updated upstream
                    @(false), @"debug", @"https://jltest.xmplus.cn/api/survey", @"server", @(true), @"autoheight", nil];
+=======
+                   @(false), @"debug", server, @"server", @(true), @"autoheight", nil];
+>>>>>>> Stashed changes
 }
 
 
 - (id)initWithText:(NSString *)details {
   self = [super init];
+
   return self;
 }
 
@@ -89,6 +116,15 @@ NSDictionary *options;
     [super viewDidLoad];
     //  [self setTitle:@"My Child View"];
 //    view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+<<<<<<< Updated upstream
+=======
+//    table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+//    table.delegate = self;
+//    table.dataSource = self;
+//
+//    [self.view addSubview:tableView];
+
+>>>>>>> Stashed changes
     [self.view setBackgroundColor:UIColor.lightGrayColor];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];

@@ -8,14 +8,33 @@
 
 import UIKit
 
-@UIApplicationMain
+//@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var tabBarController: UITabBarController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        window?.makeKeyAndVisible()
+        var controllers : Array = Array<UIViewController>.init()
+
+        let dvc = UIViewController()
+        let dvc_nc = UINavigationController(rootViewController: dvc)
+        dvc_nc.tabBarItem.title = "Home"
+        controllers.append(dvc_nc)
+
+        let ovc = UIViewController()
+        let ovc_nc = UINavigationController(rootViewController: ovc)
+            ovc_nc.tabBarItem.title = "Profile"
+        controllers.append(ovc_nc)
+
+        let tbc = UITabBarController()
+            tbc.viewControllers = controllers
+        
+        window?.rootViewController = tbc
+        window?.backgroundColor = UIColor.white
+
         return true
     }
 

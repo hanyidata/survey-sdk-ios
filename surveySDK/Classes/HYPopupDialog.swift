@@ -36,11 +36,18 @@ public class HYPopupDialog: UIViewController {
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         var mOptions : Dictionary<String, Any> = options;
+<<<<<<< Updated upstream
         mOptions.updateValue(true, forKey: "ignorePadding")
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, onCallback: { config, error in
+=======
+        mOptions.updateValue(true, forKey: "isDialogMode")
+        NSLog("makeDialog will download config for survey %@", surveyId)
+        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
+>>>>>>> Stashed changes
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {
                     let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel);
+                    context.modalPresentationStyle = .overFullScreen;
                     context.present(dialog, animated: true)
                 }
             } else if (onError != nil) {

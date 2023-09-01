@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		44040B262A14845100977018 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44040B252A14845100977018 /* SwiftUIView.swift */; };
 		44040B282A1484F300977018 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44040B272A1484F300977018 /* app.swift */; };
+		449EFA552AA0A376003CEEEB /* AppDelegateOC.m in Sources */ = {isa = PBXBuildFile; fileRef = 449EFA542AA0A376003CEEEB /* AppDelegateOC.m */; };
+		449EFA582AA0A41E003CEEEB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 449EFA572AA0A41E003CEEEB /* main.m */; };
+		449EFA5A2AA0A5A3003CEEEB /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 449EFA592AA0A5A3003CEEEB /* Profile.storyboard */; };
 		44D388A72A332465009ED633 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D388A62A332465009ED633 /* DemoViewController.m */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -21,6 +24,14 @@
 /* Begin PBXFileReference section */
 		44040B252A14845100977018 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		44040B272A1484F300977018 /* app.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = app.swift; sourceTree = "<group>"; };
+<<<<<<< Updated upstream
+=======
+		449EFA532A9D9EC6003CEEEB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		449EFA542AA0A376003CEEEB /* AppDelegateOC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegateOC.m; sourceTree = "<group>"; };
+		449EFA562AA0A3A2003CEEEB /* AppDelegateOC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegateOC.h; sourceTree = "<group>"; };
+		449EFA572AA0A41E003CEEEB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		449EFA592AA0A5A3003CEEEB /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
+>>>>>>> Stashed changes
 		44D388A32A332392009ED633 /* DemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
 		44D388A62A332465009ED633 /* DemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 		5B63744E8428B33B866A395D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -82,6 +93,10 @@
 				44040B272A1484F300977018 /* app.swift */,
 				44D388A32A332392009ED633 /* DemoViewController.h */,
 				44D388A62A332465009ED633 /* DemoViewController.m */,
+				449EFA542AA0A376003CEEEB /* AppDelegateOC.m */,
+				449EFA562AA0A3A2003CEEEB /* AppDelegateOC.h */,
+				449EFA572AA0A41E003CEEEB /* main.m */,
+				449EFA592AA0A5A3003CEEEB /* Profile.storyboard */,
 			);
 			name = "Example for surveySDK";
 			path = surveySDK;
@@ -187,6 +202,7 @@
 			files = (
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
+				449EFA5A2AA0A5A3003CEEEB /* Profile.storyboard in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,8 +259,10 @@
 			files = (
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				44040B282A1484F300977018 /* app.swift in Sources */,
+				449EFA552AA0A376003CEEEB /* AppDelegateOC.m in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				44D388A72A332465009ED633 /* DemoViewController.m in Sources */,
+				449EFA582AA0A41E003CEEEB /* main.m in Sources */,
 				44040B262A14845100977018 /* SwiftUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
