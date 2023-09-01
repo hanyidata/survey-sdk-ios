@@ -99,7 +99,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                                                        onClose: Optional<() -> Void> = nil
                                                            ) -> Void {
         if (onReady == nil || onError == nil) {
-            print("onReady and onError is required in async call")
+            NSLog("onReady and onError is required in async call")
             return;
         }
         
@@ -140,7 +140,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         }
         
         if (self.webView != nil) {
-            print("already setup skip!")
+            NSLog("already setup skip!")
             return
         }
         
@@ -164,7 +164,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
                         self.build = (dict!["build"] as! String)
                         self.webView.customUserAgent =  "surveySDK/\(version) (iOS)"
                     } catch {
-                        print(error.localizedDescription)
+                        NSLog(error.localizedDescription)
                     }
                     
                 }
@@ -177,7 +177,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?_t=\(timestamp)")
             URLCache.shared.removeAllCachedResponses()
         }
-//        print("load: \(String(describing: indexURL?.absoluteURL))")
+//        NSLog("load: \(String(describing: indexURL?.absoluteURL))")
                 
         self.webView.isUserInteractionEnabled = true
 //        self.webView.scrollView.isScrollEnabled = true
@@ -231,10 +231,10 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
 extension HYUISurveyView: WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "logger" {
-            print("log: \(message.body)")
+            NSLog("log: \(message.body)")
         } else if message.name == "surveyProxy"  {
             if debug {
-                print("proxy: \(message.body)")
+                NSLog("proxy: \(message.body)")
             }
             let msg = message.body as? String
             let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
@@ -260,11 +260,11 @@ extension HYUISurveyView: WKScriptMessageHandler {
                     }
                                     
                     if self.onSize != nil {
-                        print("onSize \(height)")
+                        NSLog("onSize \(height)")
                         self.onSize!(height)
                     }
                 } else {
-                    print("seems no superview")
+                    NSLog("seems no superview")
                 }
             } else if type == "close" {
                 self.frame.size.height = CGFloat(0)
@@ -327,7 +327,7 @@ extension HYUISurveyView: WKScriptMessageHandler {
                 self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
             }
         } else {
-            print("unexpected message received \(message.body)")
+            NSLog("unexpected message received \(message.body)")
         }
     }
 }
