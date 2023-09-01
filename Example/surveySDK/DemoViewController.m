@@ -21,8 +21,11 @@ NSString* accessCode = @"";
 //NSString* channelId = @"3937854297465856";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
 
-NSString* surveyId = @"4475020361170944";
-NSString* channelId = @"4496490408345600";
+NSString* surveyId = @"4831576886942720";
+NSString* channelId = @"4831596133686272";
+//NSString* surveyId =  @"4475020361170944";
+//NSString* channelId = @"4496490408345600";
+
 NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 
