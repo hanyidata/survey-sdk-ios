@@ -171,11 +171,12 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
             }
         }
         var indexURL = loadFile(res: "index", ex: "html")
-        indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?")
         if force {
             let timestamp = Int(NSDate().timeIntervalSince1970)
             indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?_t=\(timestamp)")
             URLCache.shared.removeAllCachedResponses()
+        } else {
+            indexURL = URL(string: "\(indexURL!.absoluteString)#/pages/bridge?")
         }
 //        NSLog("load: \(String(describing: indexURL?.absoluteURL))")
                 
