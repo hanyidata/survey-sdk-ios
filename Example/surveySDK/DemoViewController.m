@@ -48,9 +48,7 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets",
-                   @(200), @"height",
-                   @"overFullScreen", @"style", @(true), @"force", @(true), @"debug", server, @"server", nil];
+                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", server, @"server", nil];
 }
 
 
