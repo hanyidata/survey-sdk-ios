@@ -55,7 +55,7 @@ NSDictionary *options;
 //                   @(20), @"cornerRadius",
 //                   @(true), @"embedBackGround",
 //                   @"BOTTOM", @"embedVerticalAlign",
-                   @"fullScreen", @"style", @(true), @"force", @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
+                   @"overFullScreen", @"style", @(true), @"force", @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
 }
 
 

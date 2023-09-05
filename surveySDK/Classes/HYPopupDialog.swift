@@ -47,12 +47,8 @@ public class HYPopupDialog: UIViewController {
                     NSLog("surveySDK->makeDialog will show up")
                     
                     let style  = options.index(forKey: "style") != nil ? options["style"] as? String : nil
-                    if (style == "overFullScreen") {
-                        dialog.modalPresentationStyle = .overFullScreen
-                    } else if (style == "fullScreen") {
-                        dialog.modalPresentationStyle = .fullScreen
-                    }
-                    context.view.window?.rootViewController?.present(dialog, animated: true)
+                    dialog.modalPresentationStyle = .overFullScreen
+                    context.present(dialog, animated: true)
                 }
             } else if (onError != nil) {
                 NSLog("surveySDK->makeDialog failed to load config %@", error!)
@@ -127,13 +123,10 @@ public class HYPopupDialog: UIViewController {
             survey!.widthAnchor.constraint(equalTo: popupView.widthAnchor, multiplier: CGFloat(1))
         ])
 
-        modalPresentationStyle = .overCurrentContext;
+        modalPresentationStyle = .overFullScreen;
         modalTransitionStyle = .crossDissolve;
         
-        
         view.addSubview(popupView)
-
-        
         
         if (embedVerticalAlign == "CENTER") {
             NSLayoutConstraint.activate([
