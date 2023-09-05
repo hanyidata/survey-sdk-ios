@@ -16,7 +16,6 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var isDialogMode : Bool = false
     var padding : Int = 0
     var bord : Bool = false
-    var autoheight: Bool = false
     var parameters : Dictionary<String, Any>?
     var options : Dictionary<String, Any>?
     var finished: Bool = false
@@ -80,7 +79,6 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
-        controller.autoheight = options.index(forKey: "autoheight") != nil ? options["autoheight"] as! Bool: false
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
 
         controller.setup()
@@ -188,11 +186,9 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         webView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
         
-        if (self.autoheight) {
-            self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
-            self._constraint?.isActive = true
-        }
-        
+        self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
+        self._constraint?.isActive = true
+
         self.webView.loadFileURL(indexURL!,
                                  allowingReadAccessTo: indexURL!.deletingLastPathComponent())
 

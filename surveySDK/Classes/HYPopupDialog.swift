@@ -162,7 +162,8 @@ public class HYPopupDialog: UIViewController {
             self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(embedHeight));
         } else {
             // AUTO or default
-            self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(1));
+            var initHeight = options.index(forKey: "height") != nil ? options["height"] as! Int : 1
+            self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(initHeight));
         }
         self._constraint?.isActive = true;
         

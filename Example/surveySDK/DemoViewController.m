@@ -49,13 +49,8 @@ NSDictionary *options;
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
                    @"Assets", @"assets",
-                   @"BOTTOM", @"embedVerticalAlign",
-//                   @("40%"), @"embedHeight",
-//                   @"FIX", @"embedHeightMode",
-//                   @(20), @"cornerRadius",
-//                   @(true), @"embedBackGround",
-//                   @"BOTTOM", @"embedVerticalAlign",
-                   @"overFullScreen", @"style", @(true), @"force", @(true), @"debug", server, @"server", @(true), @"autoheight", nil];
+                   @(200), @"height",
+                   @"overFullScreen", @"style", @(true), @"force", @(true), @"debug", server, @"server", nil];
 }
 
 
