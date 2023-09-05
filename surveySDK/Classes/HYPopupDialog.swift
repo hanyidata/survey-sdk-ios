@@ -48,7 +48,9 @@ public class HYPopupDialog: UIViewController {
                     
                     let style  = options.index(forKey: "style") != nil ? options["style"] as? String : nil
                     dialog.modalPresentationStyle = .overFullScreen
-                    context.present(dialog, animated: true)
+                    context.present(dialog, animated: true) {
+                        NSLog("Modal present!")
+                    }
                 }
             } else if (onError != nil) {
                 NSLog("surveySDK->makeDialog failed to load config %@", error!)
