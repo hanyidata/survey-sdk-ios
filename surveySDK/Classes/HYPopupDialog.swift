@@ -19,10 +19,20 @@ public class HYPopupDialog: UIViewController {
     var options : Dictionary<String, Any>?;
     var animation: Bool = true;
     var animationDuration: Double = 0.5;
-
-    public override func viewDidLoad() {
+    
+    override public func viewDidLoad() {
         super.viewDidLoad()
-//        setupViews()
+        
+        var clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : true
+        if (clickDismiss) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleClick(_:)))
+            self.view.addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    @objc func handleClick(_ sender: UITapGestureRecognizer) {
+        NSLog("dismiss survey")
+        self.dismissView()
     }
     
     /**
@@ -58,6 +68,7 @@ public class HYPopupDialog: UIViewController {
         });
     }
     
+
     /**
      初始化view
      */
@@ -69,7 +80,6 @@ public class HYPopupDialog: UIViewController {
         self.options = options;
         self.config = config;
 
-        
         popupView = UIScrollView();
         popupView.translatesAutoresizingMaskIntoConstraints = false
         popupView.isScrollEnabled = true;
@@ -86,11 +96,11 @@ public class HYPopupDialog: UIViewController {
         let appPaddingWidth: Int = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px")
 , max: Int(view.frame.width));
         let embedVerticalAlign = Util.optString(config: config, key: "embedVerticalAlign", fallback: "CENTER");
-        let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
-        
-        if (embedBackGround) {
-            self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;
-        }
+//        let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
+//
+//        if (embedBackGround) {
+//            self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;
+//        }
         
 
         if (appBorderRadius > 0) {
@@ -114,7 +124,7 @@ public class HYPopupDialog: UIViewController {
         }
         
         survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
-                                                     onSubmit:  onSubmit, onCancel: onCancel, onSize: self.onSize, onClose: self.onClose);
+                                                     onSubmit:  onSubmit, onCancel: onCancel, onSize: self.onSize, onClose: self.onClose, onLoad: self.onLoad);
         popupView.addSubview(survey!);
         survey!.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -123,7 +133,6 @@ public class HYPopupDialog: UIViewController {
             survey!.widthAnchor.constraint(equalTo: popupView.widthAnchor, multiplier: CGFloat(1))
         ])
 
-        modalPresentationStyle = .overFullScreen;
         modalTransitionStyle = .crossDissolve;
         
         view.addSubview(popupView)
@@ -188,6 +197,17 @@ public class HYPopupDialog: UIViewController {
             UIView.animate(withDuration: animationDuration, animations: {
                 self.view.layoutIfNeeded()
             })
+        }
+    }
+    
+    /**
+        响应Close
+     */
+    func onLoad(config: Dictionary<String, Any>) {
+        NSLog("popupDialog->onLoad")
+        let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
+        if (embedBackGround) {
+            self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;
         }
     }
     
