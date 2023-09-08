@@ -54,6 +54,14 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.onLoad = callback
     }
     
+    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+        onSubmit: Optional<() -> Void> = nil,
+        onCancel: Optional<() -> Void> = nil,
+        onSize: Optional<(_ height: Int) -> Void> = nil,
+        onClose: Optional<() -> Void> = nil
+    ) -> HYUISurveyView {
+        return makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil)
+    }
     /**
         内部构造SurveyController
      */
