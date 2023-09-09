@@ -14,7 +14,7 @@
 
 @import UIKit;
 
-@interface DemoViewController : UITabBarController
+@interface DemoViewController : UIViewController
 @property(strong) HYUISurveyView *survey;
 @property(strong) UITableView *table;
 @property(strong) UIButton *button1;
