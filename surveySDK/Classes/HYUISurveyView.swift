@@ -6,7 +6,7 @@ import JavaScriptCore
 /**
  Survey视图 UIKit版本
  */
-public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
+public class HYUISurveyView: UIView, WKUIDelegate {
     var server : String = "production"
     var surveyId : String?
     var channelId : String?
@@ -24,6 +24,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
     var assets: String = ""
     var onSubmit: Optional<() -> Void> = nil
     var onCancel: Optional<() -> Void> = nil
+    var onError: Optional<() -> Void> = nil
     var onSize: Optional<(_ height: Int) -> Void> = nil
     var onClose: Optional<() -> Void> = nil
     var onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
@@ -54,13 +55,17 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.onLoad = callback
     }
     
+    @objc public func setOnError(callback: @escaping () -> Void) {
+        self.onError = callback
+    }
+    
     @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
         onSubmit: Optional<() -> Void> = nil,
         onCancel: Optional<() -> Void> = nil,
         onSize: Optional<(_ height: Int) -> Void> = nil,
         onClose: Optional<() -> Void> = nil
     ) -> HYUISurveyView {
-        return makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil)
+        return makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil, onError: nil)
     }
     /**
         内部构造SurveyController
@@ -70,7 +75,8 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         onCancel: Optional<() -> Void> = nil,
         onSize: Optional<(_ height: Int) -> Void> = nil,
         onClose: Optional<() -> Void> = nil,
-        onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+        onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil,
+        onError: Optional<() -> Void> = nil
     ) -> HYUISurveyView {
         let controller = HYUISurveyView()
         controller.surveyId = surveyId
@@ -82,6 +88,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         controller.onCancel = onCancel
         controller.onClose = onClose
         controller.onLoad = onLoad
+        controller.onError = onError
         
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 1000
@@ -144,6 +151,7 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
         configuration.userContentController.add(self, name: "surveyProxy")
+        configuration.userContentController.add(self, name: "error")
         if debug {
             configuration.userContentController.add(self, name: "logger")
         }
@@ -200,8 +208,8 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
         self._constraint?.isActive = true
 
-        self.webView.loadFileURL(indexURL!,
-                                 allowingReadAccessTo: indexURL!.deletingLastPathComponent())
+//        self.webView.load(URLRequest(url: URL(string: "http://192.168.50.63:8080/#/pages/bridge")!));
+        self.webView.loadFileURL(indexURL!, allowingReadAccessTo: indexURL!.deletingLastPathComponent());
 
     }
     
@@ -229,17 +237,40 @@ public class HYUISurveyView: UIView, WKUIDelegate, WKNavigationDelegate {
         self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('show'))")
     }
     
- 
-    
 }
 
 /**
  Webview扩展
  */
-extension HYUISurveyView: WKScriptMessageHandler {
+extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
+    
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        NSLog("survey page start load")
+    }
+
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        NSLog("survey page load finished")
+    }
+    
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        NSLog("survey page load fail \(error.localizedDescription)")
+    }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        NSLog("survey page load fail provision \(error.localizedDescription)")
+        if (onError != nil) {
+            onError!()
+        }
+        if (onClose != nil) {
+            onClose!()
+        }
+    }
+    
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "logger" {
             NSLog("log: \(message.body)")
+        } else if message.name == "error" {
+            NSLog("error: \(message.body)")
         } else if message.name == "surveyProxy"  {
             if debug {
                 NSLog("proxy: \(message.body)")

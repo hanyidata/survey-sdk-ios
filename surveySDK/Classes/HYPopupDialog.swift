@@ -201,7 +201,14 @@ public class HYPopupDialog: UIViewController {
     }
     
     /**
-        响应Close
+        响应onError
+     */
+    func onError(config: Dictionary<String, Any>) {
+        self.dismissView();
+    }
+    
+    /**
+        响应Load
      */
     func onLoad(config: Dictionary<String, Any>) {
         NSLog("popupDialog->onLoad")
@@ -222,6 +229,7 @@ public class HYPopupDialog: UIViewController {
         popup消失
      */
     @objc func dismissView(){
+        NSLog("dismiss popup")
         self.dismiss(animated: animation, completion: nil)
     }
 
