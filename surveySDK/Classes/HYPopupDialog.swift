@@ -23,7 +23,7 @@ public class HYPopupDialog: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        var clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : true
+        var clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : false
         if (clickDismiss) {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleClick(_:)))
             self.view.addGestureRecognizer(tapGesture)
