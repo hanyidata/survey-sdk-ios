@@ -18,7 +18,7 @@ Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
 NSString* euid = @"";
-NSString* project = @"lynkco";
+NSString* project = @"";
 
 //
 NSString* surveyId = @"3937853687522304";

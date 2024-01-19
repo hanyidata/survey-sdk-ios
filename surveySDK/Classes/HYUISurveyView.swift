@@ -378,7 +378,8 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     self.onClose!()
                 }
             } else if type == "init" {
-                let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
+                // lynkco hardcode project (only available for lynkco version)
+                let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": "lynkco",  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
                 let jsonData = try? JSONSerialization.data(withJSONObject: data)
                 let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                 self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
