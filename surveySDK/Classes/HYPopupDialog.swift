@@ -36,6 +36,14 @@ public class HYPopupDialog: UIViewController {
         self.dismissView()
     }
     
+    @objc public static func makeDialog(context: UIViewController, surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil
+    ) -> Void {
+        makeDialog(context: context, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onError: onError, onLoad: nil)
+    }
+    
     /**
         构建popupview
      */

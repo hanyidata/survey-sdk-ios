@@ -117,9 +117,10 @@ NSDictionary *options;
         NSLog(@"cancel");
     } onError:^(NSString*  error) {
         NSLog(@"error: %@", error);
-    } onLoad:^(NSDictionary<NSString *,id> * _) {
-        NSLog(@"onLoad");
     }];
+//                                  onLoad:^(NSDictionary<NSString *,id> * _) {
+//        NSLog(@"onLoad");
+//    }];
 
 }
 
