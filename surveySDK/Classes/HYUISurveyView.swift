@@ -12,6 +12,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var channelId : String?
     var delay : Int = 1000
     var debug : Bool = false
+    var halfscreen : Bool = false
+    var project : String = ""
     var force : Bool = false
     var isDialogMode : Bool = false
     var padding : Int = 0
@@ -59,14 +61,16 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.onError = callback
     }
     
-    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
-        onSubmit: Optional<() -> Void> = nil,
-        onCancel: Optional<() -> Void> = nil,
-        onSize: Optional<(_ height: Int) -> Void> = nil,
-        onClose: Optional<() -> Void> = nil
-    ) -> HYUISurveyView {
-        return makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil, onError: nil)
-    }
+//    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+//        onSubmit: Optional<() -> Void> = nil,
+//        onCancel: Optional<() -> Void> = nil,
+//        onSize: Optional<(_ height: Int) -> Void> = nil,
+//        onClose: Optional<() -> Void> = nil,
+//        onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
+//        onError: Optional<() -> Void> = nil
+//    ) -> HYUISurveyView {
+//        return makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
+//    }
     /**
         内部构造SurveyController
      */
@@ -75,7 +79,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         onCancel: Optional<() -> Void> = nil,
         onSize: Optional<(_ height: Int) -> Void> = nil,
         onClose: Optional<() -> Void> = nil,
-        onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil,
+        onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
         onError: Optional<() -> Void> = nil
     ) -> HYUISurveyView {
         let controller = HYUISurveyView()
@@ -91,9 +95,11 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.onError = onError
         
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
+        controller.project = options.index(forKey: "project") != nil ? options["project"] as! String : "";
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 1000
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
+        controller.halfscreen = options.index(forKey: "halfscreen") != nil ? options["halfscreen"] as! Bool: false
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
@@ -112,6 +118,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
                                                        onSubmit: Optional<() -> Void> = nil,
                                                        onCancel: Optional<() -> Void> = nil,
                                                        onSize: Optional<(_ height: Int) -> Void> = nil,
+                                                       onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
                                                        onClose: Optional<() -> Void> = nil
                                                            ) -> Void {
         if (onReady == nil || onError == nil) {
@@ -121,11 +128,12 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
 
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
+        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
+                    let view : HYUISurveyView = makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad);
                     onReady!(view);
                 }
             } else {
@@ -360,7 +368,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     self.onClose!()
                 }
             } else if type == "init" {
-                let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "parameters": self.parameters!] as [String: Any]
+                let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
                 let jsonData = try? JSONSerialization.data(withJSONObject: data)
                 let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                 self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")

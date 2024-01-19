@@ -14,19 +14,23 @@
 @implementation DemoViewController
 
 
+Boolean halfscreen = true;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
+NSString* euid = @"23";
+NSString* project = @"lynkco";
+
 //
-//NSString* surveyId = @"3937853687522304";
-//NSString* channelId = @"3937854297465856";
-//NSString* server = @"https://test.xmplus.cn/api/survey";
+NSString* surveyId = @"5623325575501824";
+NSString* channelId = @"5623326819536896";
+NSString* server = @"https://test.xmplus.cn/api/survey";
 
-NSString* surveyId = @"4831576886942720";
-NSString* channelId = @"4831596133686272";
-//NSString* surveyId =  @"4475020361170944";
-//NSString* channelId = @"4496490408345600";
-
-NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+//NSString* surveyId = @"4831576886942720";
+//NSString* channelId = @"4831596133686272";
+////NSString* surveyId =  @"4475020361170944";
+////NSString* channelId = @"4496490408345600";
+//
+//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 
 //UAT
@@ -44,11 +48,12 @@ NSDictionary *options;
     if(!params)
         params = [[NSDictionary alloc] initWithObjectsAndKeys:
                   accessCode, @"accessCode",
+                  euid, @"externalUserId",
                   nil];
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", server, @"server", nil];
+                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
 }
 
 
@@ -87,9 +92,12 @@ NSDictionary *options;
 //        frameReact.size.height = height;
 //        frameReact.size.width = self.view.frame.size.width;
 //        _survey.frame = frameReact;
+    } onLoad:^(NSDictionary<NSString *,id> * _) {
+        NSLog(@"onLoad");
     } onClose:^() {
         NSLog(@"关闭");
-    }];
+    }
+    ];
     
     
 //    _label2 = [[UILabel alloc] init];
@@ -108,6 +116,8 @@ NSDictionary *options;
         NSLog(@"cancel");
     } onError:^(NSString*  error) {
         NSLog(@"error: %@", error);
+    } onLoad:^(NSDictionary<NSString *,id> * _) {
+        NSLog(@"onLoad");
     }];
 
 }

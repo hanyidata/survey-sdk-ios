@@ -12,13 +12,21 @@ import Foundation
   */
 public struct HYSurveyService {
     
-    public static func donwloadConfig(server: String, surveyId: String, channelId: String, accessCode: String, onCallback: Optional<([String : Any]?, String?) -> Void> = nil) {
+    public static func donwloadConfig(server: String, surveyId: String, channelId: String, accessCode: String, externalUserId: String, onCallback: Optional<([String : Any]?, String?) -> Void> = nil) {
         if (onCallback == nil) {
             return;
         }
+                
+        var url = "\(server)/surveys/\(surveyId)/embed?channelId=\(channelId)";
         
-        let url = URL(string:  "\(server)/surveys/\(surveyId)/embed?channelId=\(channelId)&accessCode=\(accessCode)")!;
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        if (!accessCode.isEmpty) {
+            url = "\(url)&accessCode=\(accessCode)"
+        }
+
+        if (!externalUserId.isEmpty) {
+            url = "\(url)&externalUserId=\(externalUserId)"
+        }
+        let task = URLSession.shared.dataTask(with: URL(string: url)!) { data, response, error in
             
             guard let data = data else {
                   return

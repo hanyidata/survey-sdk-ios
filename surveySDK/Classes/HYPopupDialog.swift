@@ -19,6 +19,7 @@ public class HYPopupDialog: UIViewController {
     var options : Dictionary<String, Any>?;
     var animation: Bool = true;
     var animationDuration: Double = 0.5;
+    var onLoadCallback: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil;
     
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -41,19 +42,21 @@ public class HYPopupDialog: UIViewController {
     @objc public static func makeDialog(context: UIViewController, surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                          onSubmit: Optional<() -> Void> = nil,
                                          onCancel: Optional<() -> Void> = nil,
-                                         onError: Optional<(_: String) -> Void> = nil
+                                         onError: Optional<(_: String) -> Void> = nil,
+                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
                                          ) -> Void {
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
         NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, onCallback: { config, error in
+        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel);
+                    let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
                     NSLog("surveySDK->makeDialog will show up")
                     dialog.modalPresentationStyle = .overFullScreen
                     context.present(dialog, animated: true) {
@@ -75,10 +78,13 @@ public class HYPopupDialog: UIViewController {
     private init(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                config: Dictionary<String, Any>,
             onSubmit: Optional<() -> Void> = nil,
-            onCancel: Optional<() -> Void> = nil) {
+            onCancel: Optional<() -> Void> = nil,
+            onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+    ) {
         let window = UIApplication.shared.windows.first;
         self.options = options;
         self.config = config;
+        self.onLoadCallback = onLoad;
 
         popupView = UIScrollView();
         popupView.translatesAutoresizingMaskIntoConstraints = false
@@ -215,6 +221,9 @@ public class HYPopupDialog: UIViewController {
         let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
         if (embedBackGround) {
             self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;
+        }
+        if self.onLoadCallback != nil {
+            self.onLoadCallback!(config);
         }
     }
     
