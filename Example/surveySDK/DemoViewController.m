@@ -14,15 +14,15 @@
 @implementation DemoViewController
 
 
-Boolean halfscreen = true;
+Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
-NSString* euid = @"23";
+NSString* euid = @"";
 NSString* project = @"lynkco";
 
 //
-NSString* surveyId = @"5623325575501824";
-NSString* channelId = @"5623326819536896";
+NSString* surveyId = @"3937853687522304";
+NSString* channelId = @"5624361339637760";
 NSString* server = @"https://test.xmplus.cn/api/survey";
 
 //NSString* surveyId = @"4831576886942720";
@@ -92,11 +92,12 @@ NSDictionary *options;
 //        frameReact.size.height = height;
 //        frameReact.size.width = self.view.frame.size.width;
 //        _survey.frame = frameReact;
-    } onLoad:^(NSDictionary<NSString *,id> * _) {
-        NSLog(@"onLoad");
     } onClose:^() {
         NSLog(@"关闭");
     }
+//    } onLoad:^(NSDictionary<NSString *,id> * _) {
+//        NSLog(@"onLoad");
+//    }
     ];
     
     
