@@ -21,8 +21,8 @@ NSString* euid = @"";
 NSString* project = @"";
 
 //
-NSString* surveyId = @"3937853687522304";
-NSString* channelId = @"5624361339637760";
+NSString* surveyId = @"5623325575501824";
+NSString* channelId = @"5623326819536896";
 NSString* server = @"https://test.xmplus.cn/api/survey";
 
 //NSString* surveyId = @"4831576886942720";
@@ -69,17 +69,9 @@ NSDictionary *options;
 -(void) button1Clicked:(UIButton*)sender {
     NSLog(@"you clicked on nested survey");
     [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
-        NSLog(@"ready");
-        _survey = view;
-//        CGRect frame = CGRectMake(0, 0, view.frame.size.width, 0);
-        [_stackview addArrangedSubview:_survey];
-//        [self.view addSubview:_survey];
-        [_survey show];
-
-        _label2 = [[UILabel alloc] init];
-        _label2.text = @"item2";
-        [_stackview addArrangedSubview:_label2];
-
+            NSLog(@"ready");
+            _survey = view;
+            [_stackview addArrangedSubview:_survey];
     }  onError:^(NSString* error) {
         NSLog(@"%@", error);
     }  onSubmit:^() {
@@ -88,24 +80,9 @@ NSDictionary *options;
         NSLog(@"取消");
     } onSize:^(NSInteger height) {
         NSLog(@"Size %ld", (long)height);
-//        CGRect frameReact = _survey.frame;
-//        frameReact.size.height = height;
-//        frameReact.size.width = self.view.frame.size.width;
-//        _survey.frame = frameReact;
     } onClose:^() {
         NSLog(@"关闭");
-    }
-//    } onLoad:^(NSDictionary<NSString *,id> * _) {
-//        NSLog(@"onLoad");
-//    }
-    ];
-    
-    
-//    _label2 = [[UILabel alloc] init];
-//    _label2.text = @"item2";
-//
-//    [_stackview addArrangedSubview:_survey];
-//    [_stackview addArrangedSubview:_label2];
+    }];
 
 }
 
@@ -118,9 +95,6 @@ NSDictionary *options;
     } onError:^(NSString*  error) {
         NSLog(@"error: %@", error);
     }];
-//                                  onLoad:^(NSDictionary<NSString *,id> * _) {
-//        NSLog(@"onLoad");
-//    }];
 
 }
 
