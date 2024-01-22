@@ -109,6 +109,16 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         return controller
     }
     
+    @objc public static func makeSurveyControllerAsync(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                                       onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
+                                                       onError: Optional<(_ error: String) -> Void> = nil,
+                                                       onSubmit: Optional<() -> Void> = nil,
+                                                       onCancel: Optional<() -> Void> = nil,
+                                                       onSize: Optional<(_ height: Int) -> Void> = nil,
+                                                       onClose: Optional<() -> Void> = nil
+    ) -> Void {
+        makeSurveyControllerAsync(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onReady: onReady, onError: onError, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil)
+    }
     /**
         构建popupview async version
      */
@@ -118,8 +128,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
                                                        onSubmit: Optional<() -> Void> = nil,
                                                        onCancel: Optional<() -> Void> = nil,
                                                        onSize: Optional<(_ height: Int) -> Void> = nil,
-                                                       onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
-                                                       onClose: Optional<() -> Void> = nil
+                                                       onClose: Optional<() -> Void> = nil,
+                                                       onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil
                                                            ) -> Void {
         if (onReady == nil || onError == nil) {
             NSLog("onReady and onError is required in async call")
@@ -368,6 +378,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     self.onClose!()
                 }
             } else if type == "init" {
+                // lynkco hardcode project (only available for lynkco version)
                 let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
                 let jsonData = try? JSONSerialization.data(withJSONObject: data)
                 let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)

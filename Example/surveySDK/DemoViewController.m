@@ -14,11 +14,11 @@
 @implementation DemoViewController
 
 
-Boolean halfscreen = true;
+Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
-NSString* euid = @"23";
-NSString* project = @"lynkco";
+NSString* euid = @"";
+NSString* project = @"";
 
 //
 NSString* surveyId = @"5623325575501824";
@@ -69,17 +69,9 @@ NSDictionary *options;
 -(void) button1Clicked:(UIButton*)sender {
     NSLog(@"you clicked on nested survey");
     [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
-        NSLog(@"ready");
-        _survey = view;
-//        CGRect frame = CGRectMake(0, 0, view.frame.size.width, 0);
-        [_stackview addArrangedSubview:_survey];
-//        [self.view addSubview:_survey];
-        [_survey show];
-
-        _label2 = [[UILabel alloc] init];
-        _label2.text = @"item2";
-        [_stackview addArrangedSubview:_label2];
-
+            NSLog(@"ready");
+            _survey = view;
+            [_stackview addArrangedSubview:_survey];
     }  onError:^(NSString* error) {
         NSLog(@"%@", error);
     }  onSubmit:^() {
@@ -88,23 +80,9 @@ NSDictionary *options;
         NSLog(@"取消");
     } onSize:^(NSInteger height) {
         NSLog(@"Size %ld", (long)height);
-//        CGRect frameReact = _survey.frame;
-//        frameReact.size.height = height;
-//        frameReact.size.width = self.view.frame.size.width;
-//        _survey.frame = frameReact;
-    } onLoad:^(NSDictionary<NSString *,id> * _) {
-        NSLog(@"onLoad");
     } onClose:^() {
         NSLog(@"关闭");
-    }
-    ];
-    
-    
-//    _label2 = [[UILabel alloc] init];
-//    _label2.text = @"item2";
-//
-//    [_stackview addArrangedSubview:_survey];
-//    [_stackview addArrangedSubview:_label2];
+    }];
 
 }
 
@@ -116,8 +94,6 @@ NSDictionary *options;
         NSLog(@"cancel");
     } onError:^(NSString*  error) {
         NSLog(@"error: %@", error);
-    } onLoad:^(NSDictionary<NSString *,id> * _) {
-        NSLog(@"onLoad");
     }];
 
 }
