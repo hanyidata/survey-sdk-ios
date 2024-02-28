@@ -24,7 +24,7 @@ public class HYPopupDialog: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        var clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : false
+        let clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : false
         if (clickDismiss) {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleClick(_:)))
             self.view.addGestureRecognizer(tapGesture)
@@ -98,8 +98,15 @@ public class HYPopupDialog: UIViewController {
         popupView.translatesAutoresizingMaskIntoConstraints = false
         popupView.isScrollEnabled = true;
         
+        survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
+                                                     onSubmit:  onSubmit, onCancel: onCancel)
+                
         super.init(nibName: nil, bundle: nil);
         
+        survey?.setOnSize(callback: self.onSize);
+        survey?.setOnClose(callback: self.onClose);
+        survey?.setOnLoad(callback: self.onLoad);
+
         let parentWidth = Int(self.view.frame.height);
         self.animation = options.index(forKey: "animation") != nil ? options["animation"] as! Bool : false
         self.animationDuration = options.index(forKey: "animationDuration") != nil ? options["animationDuration"] as! Double : 0.5
@@ -137,8 +144,7 @@ public class HYPopupDialog: UIViewController {
             }
         }
         
-        survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
-                                                     onSubmit:  onSubmit, onCancel: onCancel, onSize: self.onSize, onClose: self.onClose, onLoad: self.onLoad);
+        
         popupView.addSubview(survey!);
         survey!.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -183,7 +189,7 @@ public class HYPopupDialog: UIViewController {
             self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(embedHeight));
         } else {
             // AUTO or default
-            var initHeight = options.index(forKey: "height") != nil ? options["height"] as! Int : 1
+            let initHeight = options.index(forKey: "height") != nil ? options["height"] as! Int : 1
             self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(initHeight));
         }
         self._constraint?.isActive = true;
