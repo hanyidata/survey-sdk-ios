@@ -223,6 +223,15 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         webView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
         
+        let constraints = [
+            webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+            webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * appPaddingWidth)),
+            webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(0)),
+            webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))
+        ]
+        NSLayoutConstraint.activate(constraints)
+
+        
         self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
         self._constraint?.isActive = true
 
@@ -306,15 +315,16 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     if (width == 0) {
                         return
                     }
-                    self.frame.size.height = CGFloat(height)
+//                    self.frame.size.height = CGFloat(height)
                     
                     if (_constraint != nil) {
                         _constraint?.constant = CGFloat(height);
-                        superview?.updateConstraintsIfNeeded();
-                        superview?.layoutIfNeeded();
-                        superview?.layoutSubviews();
-                        superview?.sizeToFit();
+//                        superview?.updateConstraintsIfNeeded();
+//                        superview?.layoutIfNeeded();
+//                        superview?.layoutSubviews();
+//                        superview?.sizeToFit();
                     }
+                    self.layoutIfNeeded();
                                     
                     if self.onSize != nil {
                         NSLog("onSize \(height)")
@@ -354,13 +364,6 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                         webView.layer.cornerRadius = CGFloat(appBorderRadius);
                     }
                 }
-                let constraints = [
-                    webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(appPaddingWidth)),
-                    webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * appPaddingWidth)),
-                    webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(0)),
-                    webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))
-                ]
-                NSLayoutConstraint.activate(constraints)
                                 
                 if self.onLoad != nil {
                     self.onLoad!(config);
