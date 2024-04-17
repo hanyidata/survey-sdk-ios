@@ -11,7 +11,7 @@ import Foundation
  问卷全局配置
  */
 public class HYGlobalConfig : NSObject {
-    static var accessCode : Optional<String>;
+    static var accessCode : String = "";
     static var server : String = "https://www.xmplus.cn/api/survey";
     static var authRequired : Bool = false;
     static var verified : Bool = false;

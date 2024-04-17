@@ -60,9 +60,9 @@ public class HYPopupDialog: UIViewController {
             return;
         }
         
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server;
+        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : HYGlobalConfig.accessCode;
+        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : "";
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")

@@ -143,8 +143,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             return;
         }
         
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server;
+        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : HYGlobalConfig.accessCode;
         let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
 
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
