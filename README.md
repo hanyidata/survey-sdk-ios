@@ -21,3 +21,10 @@ yangjun@surveyplus.cn
 ## License
 
 surveySDK is available under the MIT license. See the LICENSE file for more info.
+
+## Version
+- 0.2.101 
+    - access code global init
+    - half screen
+
+

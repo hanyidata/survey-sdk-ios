@@ -16,14 +16,14 @@
 
 Boolean halfscreen = false;
 //NSString* accessCode = @"";
-NSString* accessCode = @"";
+NSString* accessCode = @"1230171880850325504";
 NSString* euid = @"";
 NSString* project = @"";
 
 //
-NSString* surveyId = @"3937853687522304";
-NSString* channelId = @"5624361339637760";
-NSString* server = @"https://test.xmplus.cn/api/survey";
+//NSString* surveyId = @"3937853687522304";
+//NSString* channelId = @"5624361339637760";
+//NSString* server = @"https://test.xmplus.cn/api/survey";
 
 //NSString* surveyId = @"4831576886942720";
 //NSString* channelId = @"4831596133686272";
@@ -32,14 +32,13 @@ NSString* server = @"https://test.xmplus.cn/api/survey";
 //
 //NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
-
 //UAT
-//NSString* surveyId = @"4475002070663168";
-//NSString* channelId = @"4475389028433920";
+NSString* surveyId = @"4475002070663168";
+NSString* channelId = @"4475389028433920";
 //NSString* surveyId =  @"4475020361170944";
 //NSString* channelId = @"4496490408345600";
 
-//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -134,7 +133,9 @@ NSDictionary *options;
 //    table.dataSource = self;
 //
 //    [self.view addSubview:tableView];
-
+    
+//    [HYG]
+    [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:true];
     [self.view setBackgroundColor:UIColor.grayColor];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];

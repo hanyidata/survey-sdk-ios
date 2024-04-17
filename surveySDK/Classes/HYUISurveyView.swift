@@ -136,6 +136,13 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             return;
         }
         
+        if (!HYGlobalConfig.check()) {
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+        
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
         let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""

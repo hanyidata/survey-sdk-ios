@@ -53,6 +53,12 @@ public class HYPopupDialog: UIViewController {
                                          onError: Optional<(_: String) -> Void> = nil,
                                          onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
                                          ) -> Void {
+        if (!HYGlobalConfig.check()) {
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
