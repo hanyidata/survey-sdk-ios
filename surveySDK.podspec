@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'HYSurveySDK'
-  s.version          = '0.2.104'
+  s.version          = '0.2.105'
   s.summary          = 'a tiny survey sdk for xmplus'
 
 # This description is used to generate tags and improve search results3000.
