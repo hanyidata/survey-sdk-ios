@@ -109,6 +109,7 @@ NSDictionary *options;
 }
 
 -(void) button2Clicked:(UIButton*)sender {
+    
     NSLog(@"you clicked on popup survey");
     [HYPopupDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
         NSLog(@"onSubmit");
