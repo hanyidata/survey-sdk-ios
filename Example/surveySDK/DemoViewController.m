@@ -14,9 +14,9 @@
 @implementation DemoViewController
 
 
-Boolean halfscreen = false;
-//NSString* accessCode = @"";
-NSString* accessCode = @"1230171880850325504";
+Boolean halfscreen = true;
+NSString* accessCode = @"";
+//NSString* accessCode = @"1230171880850325504";
 NSString* euid = @"";
 NSString* project = @"";
 
@@ -32,6 +32,7 @@ NSString* project = @"";
 //
 //NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
+//https://mktcslynkco-uat.geely-test.com/cem/touchs/surveyPublish/app?id=6138603223408640&cid=6138605818109952
 //UAT
 NSString* surveyId = @"4475002070663168";
 NSString* channelId = @"4475389028433920";
@@ -87,10 +88,10 @@ NSDictionary *options;
         NSLog(@"取消");
     } onSize:^(NSInteger height) {
         NSLog(@"Size %ld", (long)height);
-//        CGRect frameReact = _survey.frame;
+        CGRect frameReact = _survey.frame;
 //        frameReact.size.height = height;
-//        frameReact.size.width = self.view.frame.size.width;
-//        _survey.frame = frameReact;
+//        frameReact.size.width = self.view.frame.size.width / 2;
+        _survey.frame = frameReact;
     } onClose:^() {
         NSLog(@"关闭");
     }
@@ -136,7 +137,7 @@ NSDictionary *options;
 //    [self.view addSubview:tableView];
     
 //    [HYG]
-    [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:true];
+//    [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:true];
     [self.view setBackgroundColor:UIColor.grayColor];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -175,9 +176,10 @@ NSDictionary *options;
     [_stackview addArrangedSubview:_label1];
     [self.view addSubview:_stackview];
         
+    CGFloat width = halfscreen ? self.view.frame.size.width / 2 : self.view.frame.size.width;
     [_stackview.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor].active = true;
     [_stackview.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor].active = true;
-    [_stackview.widthAnchor constraintEqualToConstant:self.view.frame.size.width].active = true;
+    [_stackview.widthAnchor constraintEqualToConstant:width].active = true;
 }
 
 @end
