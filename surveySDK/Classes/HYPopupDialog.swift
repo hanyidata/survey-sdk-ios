@@ -66,7 +66,7 @@ public class HYPopupDialog: UIViewController {
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
-        NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
+        NSLog("surveySDK->makeDialog will download config for survey %@ from server %@ with code %@", surveyId, server, accessCode)
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
             if (config != nil && error == nil) {
                 DispatchQueue.main.async {

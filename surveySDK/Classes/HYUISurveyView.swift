@@ -7,7 +7,7 @@ import JavaScriptCore
  Survey视图 UIKit版本
  */
 public class HYUISurveyView: UIView, WKUIDelegate {
-    var server : String = "production"
+    var server : String = ""
     var surveyId : String?
     var channelId : String?
     var delay : Int = 1000
@@ -102,7 +102,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.halfscreen = options.index(forKey: "halfscreen") != nil ? options["halfscreen"] as! Bool: false
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
-        controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
+        controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
 
         controller.setup()

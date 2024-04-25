@@ -15,8 +15,9 @@
 
 
 Boolean halfscreen = true;
-NSString* accessCode = @"";
-//NSString* accessCode = @"1230171880850325504";
+Boolean globalConfig = true;
+//NSString* accessCode = @"";
+NSString* accessCode = @"1233114638330048512";
 NSString* euid = @"";
 NSString* project = @"";
 
@@ -44,6 +45,7 @@ NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 NSDictionary* params;
 NSDictionary *options;
 
+
 + (void)initialize {
     if(!params)
         params = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -51,9 +53,14 @@ NSDictionary *options;
                   euid, @"externalUserId",
                   nil];
     
-    if(!options)
+    if (globalConfig) {
+        options = [[NSDictionary alloc] initWithObjectsAndKeys:
+                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", project, @"project", @(halfscreen), @"halfscreen", nil];
+        
+    } else {
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
                    @"Assets", @"assets", @(true), @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
+    }
 }
 
 
@@ -137,7 +144,9 @@ NSDictionary *options;
 //    [self.view addSubview:tableView];
     
 //    [HYG]
-//    [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:true];
+    if (globalConfig) {
+        [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:true];
+    }
     [self.view setBackgroundColor:UIColor.grayColor];
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
