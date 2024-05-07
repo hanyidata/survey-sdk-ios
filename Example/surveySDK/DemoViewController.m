@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DemoViewController.h"
+#import "DemoDialogViewController.h"
 
 #import "surveySDK-Swift.h"
 
@@ -21,9 +22,13 @@ NSString* euid = @"";
 NSString* project = @"";
 
 //
-NSString* surveyId = @"5623325575501824";
-NSString* channelId = @"5623326819536896";
-NSString* server = @"https://test.xmplus.cn/api/survey";
+//NSString* surveyId = @"5623325575501824";
+//NSString* channelId = @"5623326819536896";
+//NSString* server = @"https://test.xmplus.cn/api/survey";
+NSString* surveyId = @"6167069344957440";
+NSString* channelId = @"6195126609692672";
+NSString* server = @"https://www.xmplus.cn/api/survey";
+
 
 //NSString* surveyId = @"4831576886942720";
 //NSString* channelId = @"4831596133686272";
@@ -53,7 +58,7 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay",  @(true), @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
 }
 
 
@@ -87,29 +92,21 @@ NSDictionary *options;
 }
 
 -(void) button2Clicked:(UIButton*)sender {
-    NSLog(@"you clicked on popup survey");
-    [HYPopupDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
-        NSLog(@"onSubmit");
-    } onCancel:^{
-        NSLog(@"cancel");
-    } onError:^(NSString*  error) {
-        NSLog(@"error: %@", error);
-    }];
+    DemoDialogViewController *newViewController = [DemoDialogViewController setUpWithSurveyId:surveyId channelId:channelId server:server parameters:params options:options];
+    newViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
+    [self presentViewController:newViewController animated:YES completion:^{
+//        [newViewController showUp];
+    }];
 }
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //  [self setTitle:@"My Child View"];
-//    view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-//    table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-//    table.delegate = self;
-//    table.dataSource = self;
-//
-//    [self.view addSubview:tableView];
+    [self.view setBackgroundColor: [UIColor whiteColor]];
 
     [self.view setBackgroundColor:UIColor.grayColor];
+    
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_button1 addTarget:self action:@selector(button1Clicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -119,23 +116,19 @@ NSDictionary *options;
 
     _button2 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_button2 addTarget:self action:@selector(button2Clicked:) forControlEvents:UIControlEventTouchUpInside];
-    [_button2 setTitle:@"Popup Survey" forState:UIControlStateNormal];
+    [_button2 setTitle:@"Popup Demo" forState:UIControlStateNormal];
     [_button2 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
     [_button2 setExclusiveTouch:YES];
 
-    
-    //    button.widthAnchor.constraint(equalToConstant: 80).isActive = true
-    
     _label1 = [[UILabel alloc] init];
     _label1.text = @"item1";
 
     _label2 = [[UILabel alloc] init];
     _label2.text = @"item2";
 
-  
-    
     _stackview = [[UIStackView alloc] initWithFrame:self.view.bounds];
 
+    self.view.translatesAutoresizingMaskIntoConstraints = false;
     _stackview.translatesAutoresizingMaskIntoConstraints = false;
     _stackview.alignment = UIStackViewAlignmentFill;
     _stackview.axis = UILayoutConstraintAxisVertical;

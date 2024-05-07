@@ -8,12 +8,12 @@
 import Foundation
 import UIKit
 
+
 ///**
 //  问卷弹窗
 // */
 public class HYPopupDialog: UIViewController {
     var survey : Optional<HYUISurveyView>;
-    var popupView : UIScrollView;
     var config: Optional<Dictionary<String, Any>>;
     var _constraint: NSLayoutConstraint? = nil;
     var options : Dictionary<String, Any>?;
@@ -21,6 +21,12 @@ public class HYPopupDialog: UIViewController {
     var animationDuration: Double = 0.5;
     var onLoadCallback: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil;
     
+    static var lastInstance: HYPopupDialog? = nil;
+    static var observation: NSKeyValueObservation?
+    static var parentViewController: UIViewController?
+    static var _context: UIViewController? = nil;
+    static var _close: Bool = false;
+
     override public func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,11 +35,63 @@ public class HYPopupDialog: UIViewController {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleClick(_:)))
             self.view.addGestureRecognizer(tapGesture)
         }
+        
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardFrame.cgRectValue.height;
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        // Reset your view's Y position back to 0
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
+
+    
+    static func setupObservation(for parent: UIViewController) {
+        HYPopupDialog.parentViewController = parent
+        // 开始观察
+        HYPopupDialog.observation = parent.observe(\.view.window, options: [.new]) { _, change in
+            print("any change")
+            if change.newValue == nil {
+                print("Parent view controller is no longer in the window")
+            }
+        }
     }
     
     @objc func handleClick(_ sender: UITapGestureRecognizer) {
         NSLog("dismiss survey")
         self.dismissView()
+    }
+    
+    static func checkContextStatus() -> Bool{
+        if (HYPopupDialog._context == nil) {
+            return false;
+        }
+        if (HYPopupDialog._context!.isViewLoaded && HYPopupDialog._context!.view.window != nil) {
+            return true;
+        }
+        NSLog("context already dismissed, will skip the popup")
+        return false;
     }
     
     @objc public static func makeDialog(context: UIViewController, surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
@@ -42,6 +100,17 @@ public class HYPopupDialog: UIViewController {
                                          onError: Optional<(_: String) -> Void> = nil
     ) -> Void {
         makeDialog(context: context, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onError: onError, onLoad: nil)
+    }
+    
+    /**
+            主动关闭弹窗
+     */
+    @objc public static func close() -> Void {
+        NSLog("close survey dialog")
+        HYPopupDialog._close = true;
+        if (HYPopupDialog.lastInstance != nil) {
+            HYPopupDialog.lastInstance?.dismissView()
+        }
     }
     
     /**
@@ -54,20 +123,29 @@ public class HYPopupDialog: UIViewController {
                                          onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
                                          ) -> Void {
         
+        HYPopupDialog._context = context;
+        HYPopupDialog._close = false;
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
         let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
+        let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
         NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
+                
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
             if (config != nil && error == nil) {
-                DispatchQueue.main.async {
-                    let dialog: HYPopupDialog = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
+                    let canPop = HYPopupDialog.checkContextStatus()
+                    if (!canPop || HYPopupDialog._close) {
+                        NSLog("skip the popup");
+                        return;
+                    }
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
                     NSLog("surveySDK->makeDialog will show up")
-                    dialog.modalPresentationStyle = .overFullScreen
-                    context.present(dialog, animated: true) {
+                    HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
+                    context.present(HYPopupDialog.lastInstance!, animated: true) {
                         NSLog("Modal present!")
                     }
                 }
@@ -93,10 +171,6 @@ public class HYPopupDialog: UIViewController {
         self.options = options;
         self.config = config;
         self.onLoadCallback = onLoad;
-
-        popupView = UIScrollView();
-        popupView.translatesAutoresizingMaskIntoConstraints = false
-        popupView.isScrollEnabled = true;
         
         survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
                                                      onSubmit:  onSubmit, onCancel: onCancel)
@@ -117,26 +191,20 @@ public class HYPopupDialog: UIViewController {
         let appPaddingWidth: Int = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px")
 , max: Int(view.frame.width));
         let embedVerticalAlign = Util.optString(config: config, key: "embedVerticalAlign", fallback: "CENTER");
-//        let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
-//
-//        if (embedBackGround) {
-//            self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;
-//        }
-        
 
         if (appBorderRadius > 0) {
             if #available(iOS 11.0, *) {
-                popupView.clipsToBounds = true
-                popupView.layer.cornerRadius = CGFloat(appBorderRadius);
+                survey!.clipsToBounds = true
+                survey!.layer.cornerRadius = CGFloat(appBorderRadius);
                 switch (embedVerticalAlign) {
                     case "CENTER":
-                        popupView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+                    survey!.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
                         break
                     case "TOP":
-                        popupView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+                    survey!.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
                         break;
                     case "BOTTOM":
-                        popupView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+                    survey!.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
                         break
                     default:
                         break
@@ -145,23 +213,25 @@ public class HYPopupDialog: UIViewController {
         }
         
         
-        popupView.addSubview(survey!);
+//        popupView.addSubview(survey!);
         survey!.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            survey!.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
-            survey!.topAnchor.constraint(equalTo: popupView.topAnchor),
-            survey!.widthAnchor.constraint(equalTo: popupView.widthAnchor, multiplier: CGFloat(1))
-        ])
+//        NSLayoutConstraint.activate([
+//            survey!.centerXAnchor.constraint(equalTo: survey!.centerXAnchor),
+//            survey!.topAnchor.constraint(equalTo: survey!.topAnchor),
+//            survey!.widthAnchor.constraint(equalTo: survey!.widthAnchor, multiplier: CGFloat(1))
+//        ])
 
         modalTransitionStyle = .crossDissolve;
         
-        view.addSubview(popupView)
+        view.addSubview(survey!)
+        
+        view.bringSubview(toFront: survey!)
         
         if (embedVerticalAlign == "CENTER") {
             NSLayoutConstraint.activate([
-                popupView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                popupView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                popupView.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                survey!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
             ])
         } else if (embedVerticalAlign == "TOP") {
             //window.safeAreaInsets.top
@@ -172,26 +242,30 @@ public class HYPopupDialog: UIViewController {
             };
             
             NSLayoutConstraint.activate([
-                popupView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                popupView.topAnchor.constraint(equalTo: view.topAnchor, constant: top),
-                popupView.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                survey!.topAnchor.constraint(equalTo: view.topAnchor, constant: top),
+                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
             ])
         } else {
             // bottom or default
             NSLayoutConstraint.activate([
-                popupView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                popupView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                popupView.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                survey!.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
             ])
         }
 
+        if (self._constraint != nil) {
+            self._constraint?.isActive = false
+        }
         if (embedHeightMode == "FIX") {
-            self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(embedHeight));
+            self._constraint = survey!.heightAnchor.constraint(equalToConstant: CGFloat(embedHeight));
         } else {
             // AUTO or default
             let initHeight = options.index(forKey: "height") != nil ? options["height"] as! Int : 1
-            self._constraint = popupView.heightAnchor.constraint(equalToConstant: CGFloat(initHeight));
+            self._constraint = survey!.heightAnchor.constraint(equalToConstant: CGFloat(initHeight));
         }
+        self._constraint?.priority = UILayoutPriority(1000)
         self._constraint?.isActive = true;
         
     }
@@ -204,11 +278,12 @@ public class HYPopupDialog: UIViewController {
         响应onSize
      */
     func onSize(height: Int) {
-        self.popupView.contentSize = CGSizeMake(self.popupView.contentSize.width, CGFloat(height));
+//        self.popupView.contentSize = CGSizeMake(self.popupView.contentSize.width, CGFloat(height));
         let embedHeightMode = Util.optString(config: config!, key: "embedHeightMode", fallback: "AUTO");
 
         if (embedHeightMode != "FIX" && _constraint != nil) {
-            _constraint?.constant = CGFloat(height);
+            let embedHeight: Int = Util.parsePx(value: config!["embedHeight"] as! String, max: Int(view.frame.height));
+            _constraint?.constant = CGFloat(min(embedHeight, height));
         }
         
         view.layoutIfNeeded()
@@ -246,6 +321,7 @@ public class HYPopupDialog: UIViewController {
      */
     func onClose() {
         self.dismissView();
+        
     }
     
     /**
@@ -254,7 +330,15 @@ public class HYPopupDialog: UIViewController {
     @objc func dismissView(){
         NSLog("dismiss popup")
         self.dismiss(animated: animation, completion: nil)
+        HYPopupDialog.lastInstance = nil;
     }
+    
+//    public override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        let window = UIApplication.shared.windows.first
+//        let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+//        additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: -bottomPadding, right: 0)
+//    }
 
 }
 

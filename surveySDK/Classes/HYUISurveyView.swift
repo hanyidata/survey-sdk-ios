@@ -3,6 +3,12 @@ import UIKit
 import WebKit
 import JavaScriptCore
 
+class NoInputAccessoryWebView: WKWebView {
+    override var inputAccessoryView: UIView? {
+        return nil
+    }
+}
+
 /**
  Survey视图 UIKit版本
  */
@@ -187,7 +193,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         webView.backgroundColor = UIColor.clear;
         
         
-//        self.backgroundColor = UIColor.black.withAlphaComponent(1);
+//        self.backgroundColor = UIColor.red.withAlphaComponent(0.4);
+        self.backgroundColor = UIColor.clear;
 
         if let path = loadFile(res: "version", ex: "json")
         {
@@ -216,11 +223,16 @@ public class HYUISurveyView: UIView, WKUIDelegate {
 //        NSLog("load: \(String(describing: indexURL?.absoluteURL))")
                 
         self.webView.isUserInteractionEnabled = true
-//        self.webView.scrollView.isScrollEnabled = true
+        self.webView.scrollView.isScrollEnabled = true
+        self.webView.scrollView.bounces = false
         self.webView.frame.size.height = CGFloat(0)
+        self.webView.scrollView.alwaysBounceVertical = false
+        self.webView.scrollView.alwaysBounceHorizontal = false
+        //self.webView.scrollView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
         
         
         webView.translatesAutoresizingMaskIntoConstraints = false
+        self.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
         
         let constraints = [
@@ -231,8 +243,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         ]
         NSLayoutConstraint.activate(constraints)
 
-        
         self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
+        self._constraint?.priority = UILayoutPriority(100)
         self._constraint?.isActive = true
 
 //        self.webView.load(URLRequest(url: URL(string: "http://192.168.50.63:8080/#/pages/bridge")!));
@@ -264,6 +276,20 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('show'))")
     }
     
+    // KVO 回调
+//    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+//        if keyPath == "contentSize", let scrollView = object as? UIScrollView {
+//            let newSize = scrollView.contentSize
+//            print("New content size: \(newSize)")
+//            // 这里可以根据 newSize 做进一步处理onSize:
+//        }
+//    }
+
+    deinit {
+        // 移除观察者
+        // webView.scrollView.removeObserver(self, forKeyPath: "contentSize")
+    }
+    
 }
 
 /**
@@ -277,6 +303,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         NSLog("survey page load finished")
+        print("Content Size: \(webView.scrollView.contentSize)")
     }
     
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -294,101 +321,105 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
     }
     
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "logger" {
-            NSLog("log: \(message.body)")
-        } else if message.name == "error" {
-            NSLog("error: \(message.body)")
-        } else if message.name == "surveyProxy"  {
-            if debug {
-                NSLog("proxy: \(message.body)")
-            }
-            let msg = message.body as? String
-            let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
-            let type = event?["type"]! as? String
-            if type == "size" {
-                if (self.superview != nil) {
-                    let value = event?["value"]! as? [String: Any]
-                    var height = Int(value?["height"]! as! Double)
-                    let width = Int(value?["width"]! as! Double)
+        DispatchQueue.main.async {
+            if message.name == "logger" {
+                NSLog("log: \(message.body)")
+            } else if message.name == "error" {
+                NSLog("error: \(message.body)")
+            } else if message.name == "surveyProxy"  {
+//                if debug {
+//                    NSLog("proxy: \(message.body)")
+//                }
+                let msg = message.body as? String
+                let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
+                let type = event?["type"]! as? String
+                if type == "size" {
+                    if (self.superview != nil) {
+                        let value = event?["value"]! as? [String: Any]
+                        var height = Int(value?["height"]! as! Double)
+                        let width = Int(value?["width"]! as! Double)
 
-                    height = min(Int(UIScreen.main.bounds.height) - 100, height);
-                    if (width == 0) {
-                        return
+                        height = min(Int(UIScreen.main.bounds.height) - 100, height);
+                        if (width == 0) {
+                            return
+                        }
+    //                    self.frame.size.height = CGFloat(height)
+                        
+                        if (self._constraint != nil) {
+                            self._constraint?.constant = CGFloat(height);
+                            self.webView.layoutIfNeeded();
+    //                        superview?.updateConstraintsIfNeeded();
+    //                        superview?.layoutIfNeeded();
+    //                        superview?.layoutSubviews();
+    //                        superview?.sizeToFit();
+                        }
+                        self.layoutIfNeeded();
+                                        
+                        if self.onSize != nil {
+    //                        NSLog("onSize \(height)")
+                            self.onSize!(height)
+                        }
+                    } else {
+                        NSLog("seems no superview")
                     }
-//                    self.frame.size.height = CGFloat(height)
+                } else if type == "close" {
+                    self.frame.size.height = CGFloat(0)
+    //                self.superview?.frame.size.height = CGFloat(0)
+                    self.webView.removeFromSuperview()
+                    self.removeFromSuperview()
+                    if self.onClose != nil {
+                        self.onClose!()
+                    }
+                } else if type == "submit" {
+                    self.finished = true
+                    if self.onSubmit != nil {
+                        self.onSubmit!()
+                    }
+                } else if type == "load" {
+                    //embedBackGround, embedHeightMode, embedVerticalAlign
+                    print("Content Size: \(self.webView.scrollView.contentSize)")
+                    var config : [String: Any] = [:];
+                    if (event?["configure"] != nil) {
+                        config = (event?["configure"]! as? [String: Any])!;
+                    }
                     
-                    if (_constraint != nil) {
-                        _constraint?.constant = CGFloat(height);
-//                        superview?.updateConstraintsIfNeeded();
-//                        superview?.layoutIfNeeded();
-//                        superview?.layoutSubviews();
-//                        superview?.sizeToFit();
-                    }
-                    self.layoutIfNeeded();
-                                    
-                    if self.onSize != nil {
-                        NSLog("onSize \(height)")
-                        self.onSize!(height)
-                    }
-                } else {
-                    NSLog("seems no superview")
-                }
-            } else if type == "close" {
-                self.frame.size.height = CGFloat(0)
-//                self.superview?.frame.size.height = CGFloat(0)
-                self.webView.removeFromSuperview()
-                self.removeFromSuperview()
-                if self.onClose != nil {
-                    self.onClose!()
-                }
-            } else if type == "submit" {
-                self.finished = true
-                if self.onSubmit != nil {
-                    self.onSubmit!()
-                }
-            } else if type == "load" {
-                //embedBackGround, embedHeightMode, embedVerticalAlign
-                var config : [String: Any] = [:];
-                if (event?["configure"] != nil) {
-                    config = (event?["configure"]! as? [String: Any])!;
-                }
-                
-                if (!isDialogMode){
-                    let parentWidth = Int(layer.frame.width);
-                    let parentHeight = Int(layer.frame.height);
-                    let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
-                    appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+                    if (!self.isDialogMode){
+                        let parentWidth = Int(self.layer.frame.width);
+                        let parentHeight = Int(self.layer.frame.height);
+                        let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
+                        self.appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
 
-                    if (appBorderRadius > 0) {
-                        webView.clipsToBounds = true;
-                        webView.layer.cornerRadius = CGFloat(appBorderRadius);
+                        if (appBorderRadius > 0) {
+                            self.webView.clipsToBounds = true;
+                            self.webView.layer.cornerRadius = CGFloat(appBorderRadius);
+                        }
                     }
+                                    
+                    if self.onLoad != nil {
+                        self.onLoad!(config);
+                    }
+                    
+                } else if type == "cancel" {
+                    if self.onCancel != nil {
+                        self.onCancel!()
+                    }
+                    self.frame.size.height = CGFloat(0)
+    //                self.superview?.frame.size.height = CGFloat(0)
+    //                self.webView.removeFromSuperview()
+                    self.removeFromSuperview()
+                    if self.onClose != nil {
+                        self.onClose!()
+                    }
+                } else if type == "init" {
+                    // lynkco hardcode project (only available for lynkco version)
+                    let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
+                    let jsonData = try? JSONSerialization.data(withJSONObject: data)
+                    let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
+                    self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
                 }
-                                
-                if self.onLoad != nil {
-                    self.onLoad!(config);
-                }
-                
-            } else if type == "cancel" {
-                if self.onCancel != nil {
-                    self.onCancel!()
-                }
-                self.frame.size.height = CGFloat(0)
-//                self.superview?.frame.size.height = CGFloat(0)
-//                self.webView.removeFromSuperview()
-                self.removeFromSuperview()
-                if self.onClose != nil {
-                    self.onClose!()
-                }
-            } else if type == "init" {
-                // lynkco hardcode project (only available for lynkco version)
-                let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
-                let jsonData = try? JSONSerialization.data(withJSONObject: data)
-                let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
-                self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
+            } else {
+                NSLog("unexpected message received \(message.body)")
             }
-        } else {
-            NSLog("unexpected message received \(message.body)")
         }
     }
 }
