@@ -1,8 +1,8 @@
 # Version 0.1.107
- - HYPopupDialog 弹出增加检测context，如果context不再显示状态不再弹出
- - HYPopupDialog 增加 close 方法，允许取消关闭。
- - 优化SurveyView视图结构解决卡顿问题
- - HYPopupDialog 增加键盘状态布局处理
+ - HYPopupDialog 弹出增加检测context，如果context不再显示状态不再弹出。 合并解决 Bug#2， 需要精确设置context，如果PageA切换到PageB。context不能是全局的，必须是PageA。只要PageA不再显示了问卷就不再弹出
+ - HYPopupDialog 增加 close 方法，允许取消关闭。[HYPopupDialog close] 合并解决 Bug#2， 如果无法做到控制context，那么也可以主动调用close方法关闭PopupDialog。
+ - 优化SurveyView视图结构解决卡顿问题 优化 Bug#3
+ - HYPopupDialog 增加键盘状态布局处理 解决 Bug#3
 
 # Bugs
 1、一加GM1900安卓手机的CEM弹窗弹出很慢，需要等6-8秒才出来&这个手机连接代理后CEM弹窗弹不出来
