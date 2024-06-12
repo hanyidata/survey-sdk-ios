@@ -16,15 +16,15 @@
 
 Boolean halfscreen = true;
 Boolean globalConfig = true;
-//NSString* accessCode = @"";
-NSString* accessCode = @"1233114638330048512";
+NSString* accessCode = NULL;
+//NSString* accessCode = @"1233114638330048512";
 NSString* euid = @"";
 NSString* project = @"";
 
 //
-//NSString* surveyId = @"3937853687522304";
-//NSString* channelId = @"5624361339637760";
-//NSString* server = @"https://test.xmplus.cn/api/survey";
+NSString* surveyId = @"6417370258754560";
+NSString* channelId = @"6417382901173248";
+NSString* server = @"https://test.xmplus.cn/api/survey";
 
 //NSString* surveyId = @"4831576886942720";
 //NSString* channelId = @"4831596133686272";
@@ -35,12 +35,12 @@ NSString* project = @"";
 
 //https://mktcslynkco-uat.geely-test.com/cem/touchs/surveyPublish/app?id=6138603223408640&cid=6138605818109952
 //UAT
-NSString* surveyId = @"4475002070663168";
-NSString* channelId = @"4475389028433920";
+//NSString* surveyId = @"4475002070663168";
+//NSString* channelId = @"4475389028433920";
 //NSString* surveyId =  @"4475020361170944";
 //NSString* channelId = @"4496490408345600";
 
-NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -145,7 +145,7 @@ NSDictionary *options;
     
 //    [HYG]
     if (globalConfig) {
-        [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:true];
+        [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:false];
     }
     [self.view setBackgroundColor:UIColor.grayColor];
     
