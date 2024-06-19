@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'HYSurveySDK'
-  s.version          = '0.1.1013'
+  s.version          = '0.1.1014'
   s.summary          = 'a tiny survey sdk for xmplus'
 
   s.swift_versions   = '4.0'

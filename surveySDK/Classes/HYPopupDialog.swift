@@ -132,6 +132,7 @@ public class HYPopupDialog: UIViewController {
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
+        mOptions.updateValue("dialog", forKey: "showType")
         NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
                 
         HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
@@ -234,16 +235,9 @@ public class HYPopupDialog: UIViewController {
                 survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
             ])
         } else if (embedVerticalAlign == "TOP") {
-            //window.safeAreaInsets.top
-            var top : CGFloat = CGFloat(0);
-            if #available(iOS 11.0, *) {
-                top = (window?.safeAreaInsets.top)!
-            } else {
-            };
-            
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                survey!.topAnchor.constraint(equalTo: view.topAnchor, constant: top),
+                survey!.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
                 survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
             ])
         } else {

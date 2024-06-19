@@ -19,6 +19,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var delay : Int = 1000
     var debug : Bool = false
     var halfscreen : Bool = false
+    var showType : String = ""
     var project : String = ""
     var force : Bool = false
     var isDialogMode : Bool = false
@@ -106,6 +107,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.halfscreen = options.index(forKey: "halfscreen") != nil ? options["halfscreen"] as! Bool: false
+        controller.showType = options.index(forKey: "showType") != nil ? options["showType"] as! String: ""
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
@@ -412,7 +414,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                 } else if type == "init" {
                     // lynkco hardcode project (only available for lynkco version)
-                    let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "parameters": self.parameters!] as [String: Any]
+                    let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
                     let jsonData = try? JSONSerialization.data(withJSONObject: data)
                     let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                     self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")

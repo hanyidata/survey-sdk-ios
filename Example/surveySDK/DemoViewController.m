@@ -27,6 +27,9 @@ NSString* project = @"";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
 NSString* surveyId = @"6167069344957440";
 NSString* channelId = @"6195126609692672";
+//NSString* surveyId = @"6094902492655616";
+//NSString* channelId = @"6094905475723264";
+
 NSString* server = @"https://www.xmplus.cn/api/survey";
 
 
@@ -92,11 +95,18 @@ NSDictionary *options;
 }
 
 -(void) button2Clicked:(UIButton*)sender {
-    DemoDialogViewController *newViewController = [DemoDialogViewController setUpWithSurveyId:surveyId channelId:channelId server:server parameters:params options:options];
-    newViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-
-    [self presentViewController:newViewController animated:YES completion:^{
-//        [newViewController showUp];
+//    DemoDialogViewController *newViewController = [DemoDialogViewController setUpWithSurveyId:surveyId channelId:channelId server:server parameters:params options:options];
+//    newViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+//
+//    [self presentViewController:newViewController animated:YES completion:^{
+////        [newViewController showUp];
+//    }];
+    NSLog(@"you clicked on popup survey");
+    [HYPopupDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
+        NSLog(@"onSubmit");
+    } onCancel:^{
+        NSLog(@"cancel");
+    } onError:^(NSString*  error) {
     }];
 }
 
