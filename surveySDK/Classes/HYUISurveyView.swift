@@ -33,7 +33,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var assets: String = ""
     var onSubmit: Optional<() -> Void> = nil
     var onCancel: Optional<() -> Void> = nil
-    var onError: Optional<() -> Void> = nil
+    var onError: Optional<(_ error: String) -> Void> = nil
     var onSize: Optional<(_ height: Int) -> Void> = nil
     var onClose: Optional<() -> Void> = nil
     var onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
@@ -64,7 +64,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.onLoad = callback
     }
     
-    @objc public func setOnError(callback: @escaping () -> Void) {
+    @objc public func setOnError(callback: @escaping (_ error: String) -> Void) {
         self.onError = callback
     }
     
@@ -87,7 +87,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         onSize: Optional<(_ height: Int) -> Void> = nil,
         onClose: Optional<() -> Void> = nil,
         onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
-        onError: Optional<() -> Void> = nil
+        onError: Optional<(_ error: String) -> Void> = nil
     ) -> HYUISurveyView {
         let controller = HYUISurveyView()
         controller.surveyId = surveyId
@@ -127,6 +127,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     ) -> Void {
         makeSurveyControllerAsync(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onReady: onReady, onError: onError, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil)
     }
+    
     /**
         构建popupview async version
      */
@@ -156,6 +157,35 @@ public class HYUISurveyView: UIView, WKUIDelegate {
                 }
             } else {
                 onError!(error!);
+            }
+        });
+    }
+    
+    @objc public static func makeSurveyControllerAsync(sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                                       onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
+                                                       onError: Optional<(_ error: String) -> Void> = nil,
+                                                       onSubmit: Optional<() -> Void> = nil,
+                                                       onCancel: Optional<() -> Void> = nil,
+                                                       onSize: Optional<(_ height: Int) -> Void> = nil,
+                                                       onClose: Optional<() -> Void> = nil
+    ) -> Void {
+        if (onReady == nil || onError == nil) {
+            NSLog("onReady and onError is required in async call")
+            return;
+        }
+        
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
+        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
+
+        HYSurveyService.downloadBySendId(server: server, sendId: sendId,  accessCode: accessCode, externalUserId: externalUserId, onCallback: { sid, cid, config, error in
+            if (sid != nil && config != nil && error == nil) {
+                DispatchQueue.main.async {
+                    let view : HYUISurveyView = makeSurveyController(surveyId: sid!, channelId: cid!, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
+                    onReady!(view);
+                }
+            } else {
+                onError!(error ?? "系统错误");
             }
         });
     }
@@ -314,9 +344,6 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         NSLog("survey page load fail provision \(error.localizedDescription)")
-        if (onError != nil) {
-            onError!()
-        }
         if (onClose != nil) {
             onClose!()
         }
@@ -325,13 +352,13 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         DispatchQueue.main.async {
             if message.name == "logger" {
-                NSLog("log: \(message.body)")
+                NSLog("[surveySDK] log: \(message.body)")
             } else if message.name == "error" {
-                NSLog("error: \(message.body)")
+                NSLog("[surveySDK] error: \(message.body)")
             } else if message.name == "surveyProxy"  {
-//                if debug {
-//                    NSLog("proxy: \(message.body)")
-//                }
+                if self.debug {
+                    NSLog("[surveySDK] proxy: \(message.body)")
+                }
                 let msg = message.body as? String
                 let event = try! JSONSerialization.jsonObject(with: msg!.data(using: .utf8)!, options: []) as? [String: Any]
                 let type = event?["type"]! as? String
@@ -362,7 +389,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                             self.onSize!(height)
                         }
                     } else {
-                        NSLog("seems no superview")
+                        NSLog("[surveySDK] seems no superview")
                     }
                 } else if type == "close" {
                     self.frame.size.height = CGFloat(0)

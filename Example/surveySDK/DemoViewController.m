@@ -25,10 +25,15 @@ NSString* project = @"";
 //NSString* surveyId = @"5623325575501824";
 //NSString* channelId = @"5623326819536896";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
-NSString* surveyId = @"6167069344957440";
-NSString* channelId = @"6195126609692672";
+//NSString* surveyId = @"5697821736660992";
+//NSString* channelId = @"5697830732525568";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
+
+NSString* surveyId = @"6451594545514496";
+NSString* channelId = @"6489516166858752";
+NSString* sendId = @"BddfddRImjktRzRk";
+
 
 NSString* server = @"https://www.xmplus.cn/api/survey";
 
@@ -76,21 +81,41 @@ NSDictionary *options;
 
 -(void) button1Clicked:(UIButton*)sender {
     NSLog(@"you clicked on nested survey");
-    [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
-            NSLog(@"ready");
-            _survey = view;
-            [_stackview addArrangedSubview:_survey];
-    }  onError:^(NSString* error) {
-        NSLog(@"%@", error);
-    }  onSubmit:^() {
-        NSLog(@"提交");
-    } onCancel:^() {
-        NSLog(@"取消");
-    } onSize:^(NSInteger height) {
-        NSLog(@"Size %ld", (long)height);
-    } onClose:^() {
-        NSLog(@"关闭");
-    }];
+    if (sendId.length > 0) {
+        [HYUISurveyView makeSurveyControllerAsyncWithSendId:sendId parameters:params options:options  onReady:^(HYUISurveyView* view) {
+                NSLog(@"ready");
+                _survey = view;
+                [_stackview addArrangedSubview:_survey];
+        }  onError:^(NSString* error) {
+            NSLog(@"%@", error);
+        }  onSubmit:^() {
+            NSLog(@"提交");
+        } onCancel:^() {
+            NSLog(@"取消");
+        } onSize:^(NSInteger height) {
+            NSLog(@"Size %ld", (long)height);
+        } onClose:^() {
+            NSLog(@"关闭");
+        }];
+
+    } else {
+        [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
+                NSLog(@"ready");
+                _survey = view;
+                [_stackview addArrangedSubview:_survey];
+        }  onError:^(NSString* error) {
+            NSLog(@"%@", error);
+        }  onSubmit:^() {
+            NSLog(@"提交");
+        } onCancel:^() {
+            NSLog(@"取消");
+        } onSize:^(NSInteger height) {
+            NSLog(@"Size %ld", (long)height);
+        } onClose:^() {
+            NSLog(@"关闭");
+        }];
+
+    }
 
 }
 
@@ -102,12 +127,23 @@ NSDictionary *options;
 ////        [newViewController showUp];
 //    }];
     NSLog(@"you clicked on popup survey");
-    [HYPopupDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
-        NSLog(@"onSubmit");
-    } onCancel:^{
-        NSLog(@"cancel");
-    } onError:^(NSString*  error) {
-    }];
+    if (sendId.length > 0) {
+        [HYPopupDialog makeDialogBySendIdWithContext:self sendId:sendId parameters:params options:options onSubmit:^{
+            NSLog(@"onSubmit");
+        } onCancel:^{
+            NSLog(@"cancel");
+        } onError:^(NSString*  error) {
+        }];
+
+    } else {
+        [HYPopupDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
+            NSLog(@"onSubmit");
+        } onCancel:^{
+            NSLog(@"cancel");
+        } onError:^(NSString*  error) {
+        }];
+
+    }
 }
 
 

@@ -84,10 +84,7 @@ public class HYPopupDialog: UIViewController {
     }
     
     static func checkContextStatus() -> Bool{
-        if (HYPopupDialog._context == nil) {
-            return false;
-        }
-        if (HYPopupDialog._context!.isViewLoaded && HYPopupDialog._context!.view.window != nil) {
+        if (HYPopupDialog._context != nil && HYPopupDialog._context!.isViewLoaded && HYPopupDialog._context!.view.window != nil) {
             return true;
         }
         NSLog("context already dismissed, will skip the popup")
@@ -158,6 +155,50 @@ public class HYPopupDialog: UIViewController {
         });
     }
     
+    /**
+        构建popupview
+     */
+    @objc public static func makeDialogBySendId(context: UIViewController, sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil
+                                         ) -> Void {
+        
+        HYPopupDialog._context = context;
+        HYPopupDialog._close = false;
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
+        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
+        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
+        let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
+
+        var mOptions : Dictionary<String, Any> = options;
+        mOptions.updateValue(true, forKey: "isDialogMode")
+        mOptions.updateValue("dialog", forKey: "showType")
+        NSLog("surveySDK->makeDialog will download config for survey sendId %@", sendId)
+                
+        HYSurveyService.downloadBySendId(server: server, sendId: sendId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { sid, cid, config, error in
+            if (config != nil && error == nil) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
+                    let canPop = HYPopupDialog.checkContextStatus()
+                    if (!canPop || HYPopupDialog._close) {
+                        NSLog("skip the popup");
+                        return;
+                    }
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sid!, channelId: cid!, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: nil);
+                    NSLog("surveySDK->makeDialog will show up")
+                    HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
+                    context.present(HYPopupDialog.lastInstance!, animated: true) {
+                        NSLog("Modal present!")
+                    }
+                }
+            } else if (onError != nil) {
+                NSLog("surveySDK->makeDialog failed to load config %@", error!)
+                onError!(error!);
+            }
+            
+        });
+    }
+    
 
     /**
      初始化view
@@ -168,7 +209,6 @@ public class HYPopupDialog: UIViewController {
             onCancel: Optional<() -> Void> = nil,
             onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
     ) {
-        let window = UIApplication.shared.windows.first;
         self.options = options;
         self.config = config;
         self.onLoadCallback = onLoad;
