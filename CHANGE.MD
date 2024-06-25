@@ -1,3 +1,6 @@
+# Version 0.3.1015
+ - 新增发送ID，兼容支持安全区
+
 # Version 0.1.107
  - HYPopupDialog 弹出增加检测context，如果context不再显示状态不再弹出。 合并解决 Bug#2， 需要精确设置context，如果PageA切换到PageB。context不能是全局的，必须是PageA。只要PageA不再显示了问卷就不再弹出
  - HYPopupDialog 增加 close 方法，允许取消关闭。[HYPopupDialog close] 合并解决 Bug#2， 如果无法做到控制context，那么也可以主动调用close方法关闭PopupDialog。
