@@ -107,7 +107,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.halfscreen = options.index(forKey: "halfscreen") != nil ? options["halfscreen"] as! Bool: false
-        controller.showType = options.index(forKey: "showType") != nil ? options["showType"] as! String: ""
+        controller.showType = options.index(forKey: "showType") != nil ? options["showType"] as! String: "embedded"
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
@@ -221,6 +221,14 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.webView = WKWebView(frame: self.frame, configuration: configuration)
         self.webView.navigationDelegate = self;
         self.webView.uiDelegate = self;
+        if debug {
+            if #available(iOS 16.4, *) {
+                self.webView.isInspectable = true
+            } else {
+                // Fallback on earlier versions
+            };
+        }
+        
         webView.isOpaque = false;
         webView.backgroundColor = UIColor.clear;
         
@@ -349,6 +357,17 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
         }
     }
     
+    private func getLanguage() -> String {
+        if let preferredLanguage = Locale.preferredLanguages.first {
+            let locale = Locale(identifier: preferredLanguage)
+            if let languageCode = locale.languageCode, let regionCode = locale.regionCode {
+                let languageTag = "\(languageCode)-\(regionCode.lowercased())"
+                return languageTag
+            }
+        }
+        return "zh-cn"
+    }
+    
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         DispatchQueue.main.async {
             if message.name == "logger" {
@@ -441,7 +460,9 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                 } else if type == "init" {
                     // lynkco hardcode project (only available for lynkco version)
-                    let data = ["server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    let languageTag = self.getLanguage()
+
+                    let data = ["language": languageTag, "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
                     let jsonData = try? JSONSerialization.data(withJSONObject: data)
                     let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                     self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")

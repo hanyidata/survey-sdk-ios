@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'HYSurveySDK'
-  s.version          = '0.3.1015'
+  s.version          = '0.3.1020'
   s.summary          = 'a tiny survey sdk for xmplus'
 
   s.swift_versions   = '4.0'
@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   
 #  s.resource_bundles = {
 #    'surveySDK' => ['surveySDK/Assets/*']
-#  }
+#  
   s.resources = ['surveySDK/Assets/*']
   
   s.frameworks = 'UIKit', 'WebKit', 'JavaScriptCore'
