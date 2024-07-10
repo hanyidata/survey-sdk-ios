@@ -21,6 +21,7 @@ NSString* accessCode = @"";
 NSString* euid = @"";
 NSString* project = @"";
 NSString* sendId = @"";
+NSString* language = @"zh-cn";
 
 //
 //NSString* surveyId = @"5623325575501824";
@@ -67,7 +68,7 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay",  @(true), @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
 }
 
 
