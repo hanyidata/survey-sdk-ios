@@ -40,6 +40,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var _height: Int?
     var _constraint: NSLayoutConstraint? = nil
     var appPaddingWidth: Int = 0;
+    var language : String = "";
     
     @IBOutlet var webView: WKWebView!
     
@@ -68,16 +69,20 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.onError = callback
     }
     
-//    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
-//        onSubmit: Optional<() -> Void> = nil,
-//        onCancel: Optional<() -> Void> = nil,
-//        onSize: Optional<(_ height: Int) -> Void> = nil,
-//        onClose: Optional<() -> Void> = nil,
-//        onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
-//        onError: Optional<() -> Void> = nil
-//    ) -> HYUISurveyView {
-//        return makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
-//    }
+    /**
+        获取系统推荐语言
+     */
+    private static func getSystemLanguage() -> String {
+        if let preferredLanguage = Locale.preferredLanguages.first {
+            let locale = Locale(identifier: preferredLanguage)
+            if let languageCode = locale.languageCode, let regionCode = locale.regionCode {
+                let languageTag = "\(languageCode)-\(regionCode.lowercased())"
+                return languageTag
+            }
+        }
+        return "zh-cn"
+    }
+
     /**
         内部构造SurveyController
      */
@@ -112,6 +117,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
+
+        controller.language = options.index(forKey: "language") != nil ? options["language"] as! String : getSystemLanguage();
 
         controller.setup()
         return controller
@@ -357,17 +364,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
         }
     }
     
-    private func getLanguage() -> String {
-        if let preferredLanguage = Locale.preferredLanguages.first {
-            let locale = Locale(identifier: preferredLanguage)
-            if let languageCode = locale.languageCode, let regionCode = locale.regionCode {
-                let languageTag = "\(languageCode)-\(regionCode.lowercased())"
-                return languageTag
-            }
-        }
-        return "zh-cn"
-    }
-    
+        
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         DispatchQueue.main.async {
             if message.name == "logger" {
@@ -460,9 +457,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                 } else if type == "init" {
                     // lynkco hardcode project (only available for lynkco version)
-                    let languageTag = self.getLanguage()
-
-                    let data = ["language": languageTag, "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    let data = ["language": self.language, "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
                     let jsonData = try? JSONSerialization.data(withJSONObject: data)
                     let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                     self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
