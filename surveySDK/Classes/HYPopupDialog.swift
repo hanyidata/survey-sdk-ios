@@ -17,6 +17,7 @@ public class HYPopupDialog: UIViewController {
     var config: Optional<Dictionary<String, Any>>;
     var _constraint: NSLayoutConstraint? = nil;
     var options : Dictionary<String, Any>?;
+    var surveyJson : Dictionary<String, Any>?;
     var animation: Bool = true;
     var animationDuration: Double = 0.5;
     var onLoadCallback: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil;
@@ -120,40 +121,68 @@ public class HYPopupDialog: UIViewController {
                                          onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
                                          ) -> Void {
         
+        return internalMakeDialog(context: context, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
+                                  onSubmit: onSubmit,
+                                  onCancel: onCancel,
+                                  onError: onError,
+                                  onLoad: onLoad
+        )
+    }
+    
+    private static func internalMakeDialog(context: UIViewController, sendId: String?, surveyId: String?, channelId: String?, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil,
+                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+                                         ) -> Void {
+        
         HYPopupDialog._context = context;
         HYPopupDialog._close = false;
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
         let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
         mOptions.updateValue("dialog", forKey: "showType")
-        NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
-                
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
+        NSLog("surveySDK->makeDialog will download config");
+        
+        HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { config, error in
+            
             if (config != nil && error == nil) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
                     let canPop = HYPopupDialog.checkContextStatus()
                     if (!canPop || HYPopupDialog._close) {
-                        NSLog("skip the popup");
+                        NSLog("surveySDK->skip the popup");
+                        if (onError != nil) {
+                            onError!("context is not visible, popup skip!");
+                        }
                         return;
                     }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
+                    let embedConfig = config!["embed"] as? [String : Any];
+                    var sid: String = surveyId ?? "";
+                    var cid: String = surveyId ?? "";
+                    if (sendId != nil && config?.index(forKey: "channel") != nil) {
+                        let channel = config!["channel"] as? [String : Any];
+                        sid = config?["id"] as! String
+                        cid = channel?["id"] as! String
+                        NSLog("surveySDK->unionStart sendId %s will show up sid: %s cid: %s", sendId!, sid, cid);
+                    }
+                    
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sid, channelId: cid, surveyJson: config, parameters: parameters, options: mOptions, config: embedConfig!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
                     NSLog("surveySDK->makeDialog will show up")
+                    
                     HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
                     context.present(HYPopupDialog.lastInstance!, animated: true) {
-                        NSLog("Modal present!")
+                        NSLog("surveySDK->Modal present!")
                     }
                 }
-            } else if (onError != nil) {
-                NSLog("surveySDK->makeDialog failed to load config %@", error!)
-                onError!(error!);
+
+            } else {
+                
             }
-            
         });
     }
+
     
     /**
         构建popupview
@@ -203,17 +232,18 @@ public class HYPopupDialog: UIViewController {
     /**
      初始化view
      */
-    private init(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+    private init(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                config: Dictionary<String, Any>,
             onSubmit: Optional<() -> Void> = nil,
             onCancel: Optional<() -> Void> = nil,
             onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
     ) {
+        self.surveyJson = surveyJson;
         self.options = options;
         self.config = config;
         self.onLoadCallback = onLoad;
         
-        survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
+        survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, parameters: parameters, options: options,
                                                      onSubmit:  onSubmit, onCancel: onCancel)
                 
         super.init(nibName: nil, bundle: nil);
@@ -340,7 +370,7 @@ public class HYPopupDialog: UIViewController {
         响应Load
      */
     func onLoad(config: Dictionary<String, Any>) {
-        NSLog("popupDialog->onLoad")
+//        NSLog("popupDialog->onLoad")
         let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
         if (embedBackGround) {
             self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;

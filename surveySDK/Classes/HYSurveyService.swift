@@ -12,6 +12,93 @@ import Foundation
   */
 public struct HYSurveyService {
     
+    
+    /**
+            统一开始
+     */
+    public static func unionStart(server: String, sendId: String?, surveyId: String?, channelId: String?, parameters: Dictionary<String, Any>, onCallback: Optional<([String : Any]?, String?) -> Void> = nil) {
+        if (onCallback == nil) {
+            return;
+        }
+        if !(sendId != nil || (surveyId != nil && channelId != nil)) {
+            onCallback!(nil, "参数错误");
+            return;
+        }
+
+        let url = "\(server)/surveys/union-start";
+        let clientId = UUID().uuidString;
+        
+        var request = URLRequest(url: URL(string: url)!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Create a dictionary with the data you want to send
+        let systemParametersWhiteList = ["externalUserId", "departmentCode", "externalCompanyId", "customerName", "customerGender"];
+        var json: [String: Any] = ["clientId": clientId];
+        
+        if (sendId != nil) {
+            json["sendToken"] = sendId;
+        } else {
+            if (surveyId != nil) {
+                json["surveyId"] = surveyId;
+            }
+            if (channelId != nil) {
+                json["channelId"] = channelId;
+            }
+        }
+        for item in systemParametersWhiteList {
+            if (parameters.index(forKey: item) != nil) {
+                json[item] = parameters[item];
+            }
+        }
+        if (parameters.index(forKey: "parameters") != nil) {
+            json["parameters"] = parameters["parameters"];
+        }
+
+        // Convert the dictionary to JSON data
+        let jsonData = try! JSONSerialization.data(withJSONObject: json, options: [])
+
+        // Set the JSON data as the HTTP body of the request
+        request.httpBody = jsonData
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            guard let data = data else {
+                  return
+            }
+
+            do {
+                let json: [String : Any] = try JSONSerialization.jsonObject(with: data as Data, options: []) as! [String : Any]
+                let code = json["code"] as? NSNumber;
+                if (code == 200) {
+                    let survey = json["data"] as? [String : Any];
+                    if (survey == nil || survey?.index(forKey: "channel") == nil) {
+                        onCallback!(nil,  "参数错误");
+                    }
+                    let surveyStatus = survey!["status"] as? String;
+                    let channel = survey!["channel"] as! [String : Any];
+                    let channelStatus = channel["status"] as? String;
+                    let doNotDisturb = survey!["doNotDisturb"] as? Bool;
+                    if (surveyStatus == "STOPPED" && channelStatus == "PAUSE" ) {
+                        onCallback!(survey, "问卷停用");
+                        return
+                    } else if (doNotDisturb == true) {
+                        onCallback!(survey, "免打扰屏蔽");
+                        return
+                    }
+                    onCallback!(survey, nil);
+                } else {
+                    let error = json["message"] as? String;
+                    onCallback!(nil,  error);
+                    return
+                }
+            } catch {
+                onCallback!(nil, "系统异常");
+            }
+        }
+        task.resume();
+    }
+    
     /**
      HYService download channel embed config
      */

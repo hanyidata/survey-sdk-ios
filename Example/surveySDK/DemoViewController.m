@@ -32,12 +32,12 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6564986681139200";
-NSString* channelId = @"6564987304321024";
+NSString* surveyId = @"6553091743348736";
+NSString* channelId = @"6553094090913792";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
-NSString* server = @"https://dev.xmplus.cn/api/survey";
+NSString* server = @"https://www.xmplus.cn/api/survey";
 
 
 //NSString* surveyId = @"4831576886942720";
@@ -149,6 +149,17 @@ NSDictionary *options;
 }
 
 
+-(void) button3Clicked:(UIButton*)sender {
+    [HYTestDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
+        NSLog(@"onSubmit");
+    } onCancel:^{
+        NSLog(@"cancel");
+    } onError:^(NSString*  error) {
+    }];
+}
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor: [UIColor whiteColor]];
@@ -167,6 +178,13 @@ NSDictionary *options;
     [_button2 setTitle:@"Popup Demo" forState:UIControlStateNormal];
     [_button2 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
     [_button2 setExclusiveTouch:YES];
+    
+    _button3 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [_button3 addTarget:self action:@selector(button3Clicked:) forControlEvents:UIControlEventTouchUpInside];
+    [_button3 setTitle:@"Popup TEST" forState:UIControlStateNormal];
+    [_button3 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
+    [_button3 setExclusiveTouch:YES];
+
 
     _label1 = [[UILabel alloc] init];
     _label1.text = @"item1";
@@ -185,6 +203,8 @@ NSDictionary *options;
     
     [_stackview addArrangedSubview:_button1];
     [_stackview addArrangedSubview:_button2];
+    [_stackview addArrangedSubview:_button3];
+
     [_stackview addArrangedSubview:_label1];
     [self.view addSubview:_stackview];
         
