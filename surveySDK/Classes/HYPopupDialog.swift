@@ -56,6 +56,7 @@ public class HYPopupDialog: UIViewController {
         if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardFrame.cgRectValue.height;
+                self.survey!.webView.scrollView.isScrollEnabled = false;
             }
         }
     }
@@ -64,6 +65,7 @@ public class HYPopupDialog: UIViewController {
         // Reset your view's Y position back to 0
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
+            self.survey!.webView.scrollView.isScrollEnabled = true;
         }
     }
 
@@ -146,9 +148,9 @@ public class HYPopupDialog: UIViewController {
         mOptions.updateValue("dialog", forKey: "showType")
         NSLog("surveySDK->makeDialog will download config");
         
-        HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { config, error in
+        HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
             
-            if (config != nil && error == nil) {
+            if (sr != nil && error == nil) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
                     let canPop = HYPopupDialog.checkContextStatus()
                     if (!canPop || HYPopupDialog._close) {
@@ -158,17 +160,7 @@ public class HYPopupDialog: UIViewController {
                         }
                         return;
                     }
-                    let embedConfig = config!["embed"] as? [String : Any];
-                    var sid: String = surveyId ?? "";
-                    var cid: String = surveyId ?? "";
-                    if (sendId != nil && config?.index(forKey: "channel") != nil) {
-                        let channel = config!["channel"] as? [String : Any];
-                        sid = config?["id"] as! String
-                        cid = channel?["id"] as! String
-                        NSLog("surveySDK->unionStart sendId %s will show up sid: %s cid: %s", sendId!, sid, cid);
-                    }
-                    
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sid, channelId: cid, surveyJson: config, parameters: parameters, options: mOptions, config: embedConfig!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
                     NSLog("surveySDK->makeDialog will show up")
                     
                     HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
@@ -195,37 +187,18 @@ public class HYPopupDialog: UIViewController {
         
         HYPopupDialog._context = context;
         HYPopupDialog._close = false;
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
-        let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
         mOptions.updateValue("dialog", forKey: "showType")
+        
         NSLog("surveySDK->makeDialog will download config for survey sendId %@", sendId)
-                
-        HYSurveyService.downloadBySendId(server: server, sendId: sendId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { sid, cid, config, error in
-            if (config != nil && error == nil) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
-                    let canPop = HYPopupDialog.checkContextStatus()
-                    if (!canPop || HYPopupDialog._close) {
-                        NSLog("skip the popup");
-                        return;
-                    }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sid!, channelId: cid!, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: nil);
-                    NSLog("surveySDK->makeDialog will show up")
-                    HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
-                    context.present(HYPopupDialog.lastInstance!, animated: true) {
-                        NSLog("Modal present!")
-                    }
-                }
-            } else if (onError != nil) {
-                NSLog("surveySDK->makeDialog failed to load config %@", error!)
-                onError!(error!);
-            }
-            
-        });
+        return internalMakeDialog(context: context, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, options: options,
+                                  onSubmit: onSubmit,
+                                  onCancel: onCancel,
+                                  onError: onError,
+                                  onLoad: nil
+        )
     }
     
 

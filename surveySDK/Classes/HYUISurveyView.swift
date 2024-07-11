@@ -169,16 +169,17 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
         let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
 
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
-            if (config != nil && error == nil) {
+        HYSurveyService.unionStart(server: server, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
+            if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad);
+                    let view : HYUISurveyView = makeSurveyController(surveyId: sr!.sid, channelId: sr!.cid, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad);
                     onReady!(view);
                 }
             } else {
                 onError!(error!);
             }
-        });
+
+        })
     }
     
     @objc public static func makeSurveyControllerAsync(sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
@@ -195,19 +196,18 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         }
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
 
-        HYSurveyService.downloadBySendId(server: server, sendId: sendId,  accessCode: accessCode, externalUserId: externalUserId, onCallback: { sid, cid, config, error in
-            if (sid != nil && config != nil && error == nil) {
+        HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, onCallback: { sr, error in
+            if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: sid!, channelId: cid!, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
+                    let view : HYUISurveyView = makeSurveyController(surveyId: sr!.sid, channelId: sr!.cid, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
                     onReady!(view);
                 }
             } else {
-                onError!(error ?? "系统错误");
+                onError!(error!);
             }
-        });
+
+        })
     }
     
     /**

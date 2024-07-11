@@ -32,12 +32,12 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6553091743348736";
-NSString* channelId = @"6553094090913792";
+NSString* surveyId = @"6598037722091520";
+NSString* channelId = @"6598038442987520";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
-NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* server = @"https://test.xmplus.cn/api/survey";
 
 
 //NSString* surveyId = @"4831576886942720";
@@ -150,14 +150,13 @@ NSDictionary *options;
 
 
 -(void) button3Clicked:(UIButton*)sender {
-    [HYTestDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
-        NSLog(@"onSubmit");
-    } onCancel:^{
-        NSLog(@"cancel");
-    } onError:^(NSString*  error) {
-    }];
+//    [HYTestDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
+//        NSLog(@"onSubmit");
+//    } onCancel:^{
+//        NSLog(@"cancel");
+//    } onError:^(NSString*  error) {
+//    }];
 }
-
 
 
 - (void)viewDidLoad {
