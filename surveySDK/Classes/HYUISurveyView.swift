@@ -312,8 +312,20 @@ public class HYUISurveyView: UIView, WKUIDelegate {
 //        self.webView.load(URLRequest(url: URL(string: "http://192.168.50.63:8080/#/pages/bridge")!));
         self.webView.loadFileURL(indexURL!, allowingReadAccessTo: indexURL!.deletingLastPathComponent());
 
+        // 监听设备方向变化
+        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
+    @objc func orientationChanged() {
+        // 更新 WebView 布局
+        webView.frame = self.bounds
+    }
+    
+    deinit {
+        // 移除通知监听
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    }
+
     /**
      获取版本号
      */
@@ -347,10 +359,10 @@ public class HYUISurveyView: UIView, WKUIDelegate {
 //        }
 //    }
 
-    deinit {
-        // 移除观察者
-        // webView.scrollView.removeObserver(self, forKeyPath: "contentSize")
-    }
+//    deinit {
+//        // 移除观察者
+//        // webView.scrollView.removeObserver(self, forKeyPath: "contentSize")
+//    }
     
 }
 
