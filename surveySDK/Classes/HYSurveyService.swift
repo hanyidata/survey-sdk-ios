@@ -72,10 +72,13 @@ public struct HYSurveyService {
         
         if (sendId != nil) {
             json["sendToken"] = sendId;
+            NSLog("[surveySDK] union start with sendId \(sendId!) clientId \(clientId)");
         } else {
             if (surveyId != nil && channelId != nil) {
                 json["surveyId"] = surveyId;
                 json["channelId"] = channelId;
+                
+                NSLog("[surveySDK] union start with sid \(surveyId!) cid \(channelId!) clientId \(clientId)");
             }
         }
         for item in systemParametersWhiteList {

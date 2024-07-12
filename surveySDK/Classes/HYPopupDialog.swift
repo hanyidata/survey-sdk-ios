@@ -146,7 +146,6 @@ public class HYPopupDialog: UIViewController {
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
         mOptions.updateValue("dialog", forKey: "showType")
-        NSLog("surveySDK->makeDialog will download config");
         
         HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
             
@@ -170,7 +169,9 @@ public class HYPopupDialog: UIViewController {
                 }
 
             } else {
-                
+                if (onError != nil) {
+                    onError!(error ?? "问卷暂停访问")
+                }
             }
         });
     }
@@ -192,7 +193,6 @@ public class HYPopupDialog: UIViewController {
         mOptions.updateValue(true, forKey: "isDialogMode")
         mOptions.updateValue("dialog", forKey: "showType")
         
-        NSLog("surveySDK->makeDialog will download config for survey sendId %@", sendId)
         return internalMakeDialog(context: context, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, options: options,
                                   onSubmit: onSubmit,
                                   onCancel: onCancel,
