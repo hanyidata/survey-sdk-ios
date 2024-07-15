@@ -16,6 +16,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var server : String = "production"
     var surveyId : String?
     var channelId : String?
+    var clientId : String?
     var delay : Int = 1000
     var debug : Bool = false
     var halfscreen : Bool = false
@@ -87,7 +88,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     /**
         内部构造SurveyController
      */
-    public static func makeSurveyControllerEx(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+    public static func makeSurveyControllerEx(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, clientId: String? = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
         onSubmit: Optional<() -> Void> = nil,
         onCancel: Optional<() -> Void> = nil,
         onSize: Optional<(_ height: Int) -> Void> = nil,
@@ -107,6 +108,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.onLoad = onLoad
         controller.onError = onError
         controller.surveyJson = surveyJson
+        controller.clientId = clientId
         
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
         controller.project = options.index(forKey: "project") != nil ? options["project"] as! String : "";
@@ -166,19 +168,16 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         }
         
         let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
 
         HYSurveyService.unionStart(server: server, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
             if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: sr!.sid, channelId: sr!.cid, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad);
+                    let view : HYUISurveyView = makeSurveyControllerEx(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, clientId: sr!.clientId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
                     onReady!(view);
                 }
             } else {
                 onError!(error!);
             }
-
         })
     }
     
@@ -312,18 +311,12 @@ public class HYUISurveyView: UIView, WKUIDelegate {
 //        self.webView.load(URLRequest(url: URL(string: "http://192.168.50.63:8080/#/pages/bridge")!));
         self.webView.loadFileURL(indexURL!, allowingReadAccessTo: indexURL!.deletingLastPathComponent());
 
-        // 监听设备方向变化
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
-    @objc func orientationChanged() {
-        // 更新 WebView 布局
-        webView.frame = self.bounds
-    }
+
+    
     
     deinit {
-        // 移除通知监听
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
 
     /**
@@ -339,7 +332,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     @objc public func getBuild() -> String {
         return self.build;
     }
-    
+
     /**
     显示
      */
@@ -485,6 +478,9 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                 } else if type == "init" {
                     // lynkco hardcode project (only available for lynkco version)
                     var data = ["language": self.language,  "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    if (self.clientId != nil) {
+                        data["clientId"] = self.clientId;
+                    }
                     if (self.surveyJson != nil) {
                         data["survey"] = self.surveyJson;
                     }

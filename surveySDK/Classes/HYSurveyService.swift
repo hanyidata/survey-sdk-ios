@@ -10,6 +10,7 @@ import Foundation
 public struct SurveyStartResponse {
     let sid: String;
     let cid: String;
+    let clientId: String;
     let surveyStatus: String;
     let channelStatus: String;
     let doNotDisturb: Bool;
@@ -18,7 +19,7 @@ public struct SurveyStartResponse {
     let channel: Dictionary<String, Any>;
     let channelConfig: Dictionary<String, Any>;
     
-    public static func fromJson(json: [String: Any]) -> SurveyStartResponse? {
+    public static func fromJson(clientId: String, json: [String: Any]) -> SurveyStartResponse? {
         let sid = (json["id"] as! NSNumber).stringValue
         do {
             if let surveyStatus = json["status"] as? String,
@@ -30,7 +31,7 @@ public struct SurveyStartResponse {
                     let cid = (channel["id"] as! NSNumber).stringValue
                     if let channelConfig = try JSONSerialization.jsonObject(with:jsonData, options: []) as? [String: Any] {
                         // Create Survey instance
-                        let sr = SurveyStartResponse(sid: sid, cid: cid, surveyStatus: surveyStatus, channelStatus: channelStatus,  doNotDisturb: doNotDisturb, raw: json, channel: channel, channelConfig: channelConfig)
+                        let sr = SurveyStartResponse(sid: sid, cid: cid, clientId: clientId, surveyStatus: surveyStatus, channelStatus: channelStatus,  doNotDisturb: doNotDisturb, raw: json, channel: channel, channelConfig: channelConfig)
                         return sr;
                     }
                 }
@@ -107,7 +108,11 @@ public struct HYSurveyService {
                 let code = json["code"] as? NSNumber;
                 if (code == 200) {
                     let survey = json["data"] as? [String : Any];
-                    let sr = SurveyStartResponse.fromJson(json: survey!)
+                    if (survey == nil) {
+                        onCallback!(nil, "系统错误");
+                        return;
+                    }
+                    let sr = SurveyStartResponse.fromJson(clientId: clientId, json: survey!)
                     
                     if (sr != nil) {
                         if (sr?.doNotDisturb == true) {

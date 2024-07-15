@@ -18,6 +18,7 @@ public class HYPopupDialog: UIViewController {
     var _constraint: NSLayoutConstraint? = nil;
     var options : Dictionary<String, Any>?;
     var surveyJson : Dictionary<String, Any>?;
+    var clientId : String?;
     var animation: Bool = true;
     var animationDuration: Double = 0.5;
     var onLoadCallback: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil;
@@ -43,7 +44,9 @@ public class HYPopupDialog: UIViewController {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
     }
+    
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -159,8 +162,8 @@ public class HYPopupDialog: UIViewController {
                         }
                         return;
                     }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
-                    NSLog("surveySDK->makeDialog will show up")
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, clientId: sr?.clientId, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
+                    NSLog("surveySDK->makeDialog will show up! clientId: %@", sr!.clientId)
                     
                     HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
                     context.present(HYPopupDialog.lastInstance!, animated: true) {
@@ -205,18 +208,19 @@ public class HYPopupDialog: UIViewController {
     /**
      初始化view
      */
-    private init(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+    private init(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, clientId: String?, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                config: Dictionary<String, Any>,
             onSubmit: Optional<() -> Void> = nil,
             onCancel: Optional<() -> Void> = nil,
             onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
     ) {
         self.surveyJson = surveyJson;
+        self.clientId = clientId;
         self.options = options;
         self.config = config;
         self.onLoadCallback = onLoad;
         
-        survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, parameters: parameters, options: options,
+        survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, clientId: self.clientId,  parameters: parameters, options: options,
                                                      onSubmit:  onSubmit, onCancel: onCancel)
                 
         super.init(nibName: nil, bundle: nil);
@@ -275,20 +279,23 @@ public class HYPopupDialog: UIViewController {
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
             ])
         } else if (embedVerticalAlign == "TOP") {
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
             ])
         } else {
             // bottom or default
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
             ])
         }
 

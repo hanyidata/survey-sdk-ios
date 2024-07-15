@@ -18,9 +18,9 @@
 Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
-NSString* euid = @"w2";
+NSString* euid = @"";
 NSString* project = @"";
-NSString* sendId = @"uYaa71RJfGwOyxyy";
+NSString* sendId = @"";
 NSString* language = @"zh-cn";
 
 //
@@ -32,12 +32,12 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6613886893283328";
-NSString* channelId = @"6613888574806016";
+NSString* surveyId = @"6625464840488960";
+NSString* channelId = @"6625466922633216";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
-NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* server = @"https://test.xmplus.cn/api/survey";
 
 
 //NSString* surveyId = @"4831576886942720";
