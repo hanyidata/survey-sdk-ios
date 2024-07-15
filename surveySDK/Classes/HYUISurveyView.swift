@@ -29,6 +29,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var parameters : Dictionary<String, Any>?
     var options : Dictionary<String, Any>?
     var surveyJson : Dictionary<String, Any>?
+    var channelConfig : Dictionary<String, Any>?
     var finished: Bool = false
     var version: String = ""
     var build: String = ""
@@ -88,7 +89,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     /**
         内部构造SurveyController
      */
-    public static func makeSurveyControllerEx(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, clientId: String? = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+    public static func makeSurveyControllerEx(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, channelConfig: Optional<Dictionary<String, Any>> = nil, clientId: String? = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
         onSubmit: Optional<() -> Void> = nil,
         onCancel: Optional<() -> Void> = nil,
         onSize: Optional<(_ height: Int) -> Void> = nil,
@@ -108,6 +109,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.onLoad = onLoad
         controller.onError = onError
         controller.surveyJson = surveyJson
+        controller.channelConfig = channelConfig
         controller.clientId = clientId
         
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
@@ -123,6 +125,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
 
         controller.language = options.index(forKey: "language") != nil ? options["language"] as! String : getSystemLanguage();
+
 
         controller.setup()
         return controller
@@ -172,7 +175,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         HYSurveyService.unionStart(server: server, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
             if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyControllerEx(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, clientId: sr!.clientId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
+                    let view : HYUISurveyView = makeSurveyControllerEx(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig, clientId: sr!.clientId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
                     onReady!(view);
                 }
             } else {
@@ -222,7 +225,13 @@ public class HYUISurveyView: UIView, WKUIDelegate {
      创建组件
      */
     @objc public func setup() {
-                
+        
+        
+        let parentHeight = Int(self.layer.frame.height);
+        if (self.channelConfig != nil) {
+            self.appPaddingWidth = Util.parsePx(value: Util.optString(config: self.channelConfig!, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+        }
+
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
         configuration.userContentController.add(self, name: "surveyProxy")
@@ -296,13 +305,12 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
         
-        let constraints = [
+    
+        NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(appPaddingWidth)),
             webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * appPaddingWidth)),
             webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(0)),
-            webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))
-        ]
-        NSLayoutConstraint.activate(constraints)
+            webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))])
 
         self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
         self._constraint?.priority = UILayoutPriority(100)
