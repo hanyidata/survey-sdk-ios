@@ -32,8 +32,8 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6625464840488960";
-NSString* channelId = @"6625466922633216";
+NSString* surveyId = @"6616146990215168";
+NSString* channelId = @"6616147424260096";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
