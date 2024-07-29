@@ -14,6 +14,7 @@ public struct SurveyStartResponse {
     let surveyStatus: String;
     let channelStatus: String;
     let doNotDisturb: Bool;
+    let style: Dictionary<String, Any>;
     
     let raw: Dictionary<String, Any>;
     let channel: Dictionary<String, Any>;
@@ -25,13 +26,15 @@ public struct SurveyStartResponse {
             if let surveyStatus = json["status"] as? String,
                let doNotDisturb = json["doNotDisturb"] as? Bool,
                let channel = json["channel"] as? [String : Any],
+               let style = json["style"] as? [String : Any],
                let channelStatus = channel["status"] as? String,
                let channelConfigStr = channel["configure"] as? String {
                 if let jsonData = channelConfigStr.data(using: .utf8) {
                     let cid = (channel["id"] as! NSNumber).stringValue
+                    
                     if let channelConfig = try JSONSerialization.jsonObject(with:jsonData, options: []) as? [String: Any] {
                         // Create Survey instance
-                        let sr = SurveyStartResponse(sid: sid, cid: cid, clientId: clientId, surveyStatus: surveyStatus, channelStatus: channelStatus,  doNotDisturb: doNotDisturb, raw: json, channel: channel, channelConfig: channelConfig)
+                        let sr = SurveyStartResponse(sid: sid, cid: cid, clientId: clientId, surveyStatus: surveyStatus, channelStatus: channelStatus,  doNotDisturb: doNotDisturb, style: style, raw: json, channel: channel, channelConfig: channelConfig)
                         return sr;
                     }
                 }

@@ -16,6 +16,9 @@ public class HYPopupDialog: UIViewController {
     var survey : Optional<HYUISurveyView>;
     var config: Optional<Dictionary<String, Any>>;
     var _constraint: NSLayoutConstraint? = nil;
+    var _previousHeight: CGFloat = CGFloat(0);
+    var _previousY: CGFloat = CGFloat(0);
+    var _keyboardOpen: Bool = false;
     var options : Dictionary<String, Any>?;
     var surveyJson : Dictionary<String, Any>?;
     var channelConfig : Dictionary<String, Any>?;
@@ -32,6 +35,7 @@ public class HYPopupDialog: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
         
         let clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : false
         if (clickDismiss) {
@@ -58,17 +62,39 @@ public class HYPopupDialog: UIViewController {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
-            if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardFrame.cgRectValue.height;
+            if !self._keyboardOpen {
+                self._previousY = self.survey!.frame.origin.y
+                let keyboardHeight = keyboardFrame.cgRectValue.height
+                // 获取安全区的顶部和底部插入高度
+                let safeAreaTop = view.safeAreaInsets.top
+                
+                
+                // 计算顶部底部剩余当前剩余高度
+                let topLeft = max(self.survey!.frame.origin.y - safeAreaTop, 0)
+                
+                // 可以上抬高度
+                // 如果顶部空间足够放下键盘就全部上抬，否则上抬最低高度
+                let raiseY = min(topLeft, keyboardHeight);
+//                let raiseY = CGFloat(150);
+                
+                NSLog("raise \(raiseY)");
+                
+                // 设置视图的新的 y 坐标
+                self.survey!.frame.origin.y -= raiseY
                 self.survey!.webView.scrollView.isScrollEnabled = false;
+                self._keyboardOpen = true
             }
         }
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
         // Reset your view's Y position back to 0
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
+        if self._keyboardOpen {
+            self.survey!.frame.origin.y = self._previousY
+            self._keyboardOpen = false
+            if (_previousHeight != 0) {
+                _constraint!.constant = _previousHeight
+            }
             self.survey!.webView.scrollView.isScrollEnabled = true;
         }
     }
@@ -78,7 +104,6 @@ public class HYPopupDialog: UIViewController {
         HYPopupDialog.parentViewController = parent
         // 开始观察
         HYPopupDialog.observation = parent.observe(\.view.window, options: [.new]) { _, change in
-            print("any change")
             if change.newValue == nil {
                 print("Parent view controller is no longer in the window")
             }
@@ -222,9 +247,9 @@ public class HYPopupDialog: UIViewController {
         self.channelConfig = channelConfig;
         self.onLoadCallback = onLoad;
         
-        survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, channelConfig: nil,  clientId: self.clientId,  parameters: parameters, options: options,
+        survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, channelConfig: channelConfig,  clientId: self.clientId,  parameters: parameters, options: options,
                                                      onSubmit:  onSubmit, onCancel: onCancel)
-                
+        
         super.init(nibName: nil, bundle: nil);
         
         survey?.setOnSize(callback: self.onSize);
@@ -324,6 +349,9 @@ public class HYPopupDialog: UIViewController {
         响应onSize
      */
     func onSize(height: Int) {
+        if (self._keyboardOpen) {
+            return
+        }
 //        self.popupView.contentSize = CGSizeMake(self.popupView.contentSize.width, CGFloat(height));
         let embedHeightMode = Util.optString(config: config!, key: "embedHeightMode", fallback: "AUTO");
 

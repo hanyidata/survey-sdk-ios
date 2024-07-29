@@ -28,6 +28,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var bord : Bool = false
     var parameters : Dictionary<String, Any>?
     var options : Dictionary<String, Any>?
+    var style : Dictionary<String, Any>?
     var surveyJson : Dictionary<String, Any>?
     var channelConfig : Dictionary<String, Any>?
     var finished: Bool = false
@@ -123,9 +124,12 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
-
+        
         controller.language = options.index(forKey: "language") != nil ? options["language"] as! String : getSystemLanguage();
-
+        
+        if (surveyJson != nil){
+            controller.style = surveyJson!.index(forKey: "style") != nil ? surveyJson!["style"] as! Dictionary : Dictionary();
+        }
 
         controller.setup()
         return controller
@@ -222,6 +226,34 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     }
     
     /**
+     颜色转换
+     */
+    func colorFromHex(_ hex: String) -> UIColor {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let r, g, b, a: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (r, g, b, a) = ((int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17, 255)
+        case 6: // RGB (24-bit)
+            (r, g, b, a) = (int >> 16, int >> 8 & 0xFF, int & 0xFF, 255)
+        case 7: // RGB + Alpha (28-bit, assume last digit is alpha)
+            (r, g, b, a) = (int >> 20 & 0xFF, int >> 12 & 0xFF, int >> 4 & 0xFF, (int & 0xF) * 17)
+        case 8: // ARGB (32-bit)
+            (r, g, b, a) = (int >> 24 & 0xFF, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (r, g, b, a) = (1, 1, 1, 1)
+        }
+        return UIColor(
+            red: CGFloat(r) / 255,
+            green: CGFloat(g) / 255,
+            blue: CGFloat(b) / 255,
+            alpha: CGFloat(a) / 255
+        )
+    }
+
+    /**
      创建组件
      */
     @objc public func setup() {
@@ -246,7 +278,6 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             return
         }
         
-        self.backgroundColor = UIColor(named: "red")
         self.webView = WKWebView(frame: self.frame, configuration: configuration)
 
         self.webView.navigationDelegate = self;
@@ -260,11 +291,18 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         }
         
         webView.isOpaque = false;
-        webView.backgroundColor = UIColor.clear;
-        
+        if (style != nil) {
+            let backgroundColor = style!.index(forKey: "backgroundColor") != nil ? style!["backgroundColor"] as! String : "#FFFFFF";
+            let colorHex = colorFromHex(backgroundColor)
+            webView.backgroundColor = colorHex;
+            self.backgroundColor = colorHex;
+        } else {
+            webView.backgroundColor = UIColor.white;
+            self.backgroundColor = UIColor.white;
+        }
         
 //        self.backgroundColor = UIColor.red.withAlphaComponent(0.4);
-        self.backgroundColor = UIColor.clear;
+//        self.backgroundColor = UIColor.clear;
 
         if let path = loadFile(res: "version", ex: "json")
         {
@@ -419,6 +457,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
     //                    self.frame.size.height = CGFloat(height)
                         
                         if (self._constraint != nil) {
+//                            self.webView.scrollView.contentSize.height = CGFloat(height);
                             self._constraint?.constant = CGFloat(height);
                             self.webView.layoutIfNeeded();
     //                        superview?.updateConstraintsIfNeeded();

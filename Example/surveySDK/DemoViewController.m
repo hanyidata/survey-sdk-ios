@@ -32,12 +32,12 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6616146990215168";
-NSString* channelId = @"6616147424260096";
+NSString* surveyId = @"6613886893283328";
+NSString* channelId = @"6613888574806016";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
-NSString* server = @"https://test.xmplus.cn/api/survey";
+NSString* server = @"https://www.xmplus.cn/api/survey";
 
 
 //NSString* surveyId = @"4831576886942720";
