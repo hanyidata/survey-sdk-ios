@@ -19,7 +19,6 @@ Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
 NSString* euid = @"";
-NSString* project = @"";
 NSString* sendId = @"";
 NSString* language = @"zh-cn";
 
@@ -32,8 +31,8 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6613886893283328";
-NSString* channelId = @"6613888574806016";
+NSString* surveyId = @"6717756797742080";
+NSString* channelId = @"6717757330615296";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
@@ -68,7 +67,9 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
+    
+//    [HYGlobalConfig setupProjectWithProject:@"lynkco"];
 }
 
 

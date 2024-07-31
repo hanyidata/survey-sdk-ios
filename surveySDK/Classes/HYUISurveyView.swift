@@ -21,7 +21,6 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var debug : Bool = false
     var halfscreen : Bool = false
     var showType : String = ""
-    var project : String = ""
     var force : Bool = false
     var isDialogMode : Bool = false
     var padding : Int = 0
@@ -114,7 +113,6 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.clientId = clientId
         
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
-        controller.project = options.index(forKey: "project") != nil ? options["project"] as! String : "";
         controller.delay = options.index(forKey: "delay") != nil ? options["delay"] as! Int : 1000
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
@@ -508,10 +506,12 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                         self.onClose!()
                     }
                 } else if type == "init" {
-                    // lynkco hardcode project (only available for lynkco version)
-                    var data = ["language": self.language,  "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    var data = ["language": self.language,  "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
                     if (self.clientId != nil) {
                         data["clientId"] = self.clientId;
+                    }
+                    if (!HYGlobalConfig.project.isEmpty) {
+                        data["project"] = HYGlobalConfig.project;
                     }
                     if (self.surveyJson != nil) {
                         data["survey"] = self.surveyJson;

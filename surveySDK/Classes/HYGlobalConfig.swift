@@ -15,12 +15,20 @@ public class HYGlobalConfig : NSObject {
     static var server : String = "https://www.xmplus.cn/api/survey";
     static var authRequired : Bool = false;
     static var verified : Bool = false;
+    static var project : String = "";
     
     /**
        全局配置问卷服务器
      */
     @objc public static func setup(server: String) -> Void {
         HYGlobalConfig.server = server;
+    }
+    
+    /**
+       全局配置问卷项目 专属项目定制相关谨慎使用
+     */
+    @objc public static func setupProject(project: String) -> Void {
+        HYGlobalConfig.project = project;
     }
 
     /**
