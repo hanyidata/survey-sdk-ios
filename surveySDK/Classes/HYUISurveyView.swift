@@ -158,7 +158,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     }
     
     /**
-        构建popupview async version
+        根据sid,cid弹出问卷
      */
     @objc public static func makeSurveyControllerAsync(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                                        onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
@@ -169,12 +169,21 @@ public class HYUISurveyView: UIView, WKUIDelegate {
                                                        onClose: Optional<() -> Void> = nil,
                                                        onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil
                                                            ) -> Void {
+        
         if (onReady == nil || onError == nil) {
             NSLog("onReady and onError is required in async call")
             return;
         }
         
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
+        if (!HYGlobalConfig.check()) {
+            NSLog("surveySDK->global access code is not ready or invalid");
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+        
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
 
         HYSurveyService.unionStart(server: server, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
             if (sr != nil && error == nil) {
@@ -188,6 +197,9 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         })
     }
     
+    /**
+     根据SendId弹出问卷
+     */
     @objc public static func makeSurveyControllerAsync(sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                                        onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
                                                        onError: Optional<(_ error: String) -> Void> = nil,
@@ -200,9 +212,14 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             NSLog("onReady and onError is required in async call")
             return;
         }
-        
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-
+        if (!HYGlobalConfig.check()) {
+            NSLog("surveySDK->global access code is not ready or invalid");
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
         HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, onCallback: { sr, error in
             if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
@@ -226,39 +243,9 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     }
     
     /**
-     颜色转换
-     */
-    func colorFromHex(_ hex: String) -> UIColor {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let r, g, b, a: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (r, g, b, a) = ((int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17, 255)
-        case 6: // RGB (24-bit)
-            (r, g, b, a) = (int >> 16, int >> 8 & 0xFF, int & 0xFF, 255)
-        case 7: // RGB + Alpha (28-bit, assume last digit is alpha)
-            (r, g, b, a) = (int >> 20 & 0xFF, int >> 12 & 0xFF, int >> 4 & 0xFF, (int & 0xF) * 17)
-        case 8: // ARGB (32-bit)
-            (r, g, b, a) = (int >> 24 & 0xFF, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (r, g, b, a) = (1, 1, 1, 1)
-        }
-        return UIColor(
-            red: CGFloat(r) / 255,
-            green: CGFloat(g) / 255,
-            blue: CGFloat(b) / 255,
-            alpha: CGFloat(a) / 255
-        )
-    }
-
-    /**
      创建组件
      */
     @objc public func setup() {
-        
-        
         let parentHeight = Int(self.layer.frame.height);
         if (self.channelConfig != nil) {
             self.appPaddingWidth = Util.parsePx(value: Util.optString(config: self.channelConfig!, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
@@ -293,7 +280,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         webView.isOpaque = false;
         if (style != nil) {
             let backgroundColor = style!.index(forKey: "backgroundColor") != nil ? style!["backgroundColor"] as! String : "#FFFFFF";
-            let colorHex = colorFromHex(backgroundColor)
+            let colorHex = Util.colorFromHex(backgroundColor)
             webView.backgroundColor = colorHex;
             self.backgroundColor = colorHex;
         } else {
@@ -301,8 +288,6 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             self.backgroundColor = UIColor.white;
         }
         
-//        self.backgroundColor = UIColor.red.withAlphaComponent(0.4);
-//        self.backgroundColor = UIColor.clear;
 
         if let path = loadFile(res: "version", ex: "json")
         {

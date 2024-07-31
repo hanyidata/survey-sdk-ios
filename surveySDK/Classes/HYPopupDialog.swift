@@ -160,6 +160,34 @@ public class HYPopupDialog: UIViewController {
         )
     }
     
+    
+    /**
+        构建popupview
+     */
+    @objc public static func makeDialogBySendId(context: UIViewController, sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil
+                                         ) -> Void {
+        
+        HYPopupDialog._context = context;
+        HYPopupDialog._close = false;
+
+        var mOptions : Dictionary<String, Any> = options;
+        mOptions.updateValue(true, forKey: "isDialogMode")
+        mOptions.updateValue("dialog", forKey: "showType")
+        
+        return internalMakeDialog(context: context, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, options: options,
+                                  onSubmit: onSubmit,
+                                  onCancel: onCancel,
+                                  onError: onError,
+                                  onLoad: nil
+        )
+    }
+    
+    /**
+      内部dialog逻辑
+     */
     private static func internalMakeDialog(context: UIViewController, sendId: String?, surveyId: String?, channelId: String?, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                          onSubmit: Optional<() -> Void> = nil,
                                          onCancel: Optional<() -> Void> = nil,
@@ -167,9 +195,17 @@ public class HYPopupDialog: UIViewController {
                                          onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
                                          ) -> Void {
         
+        if (!HYGlobalConfig.check()) {
+            NSLog("surveySDK->global access code is not ready or invalid");
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+
         HYPopupDialog._context = context;
         HYPopupDialog._close = false;
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
         let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
 
         var mOptions : Dictionary<String, Any> = options;
@@ -206,29 +242,6 @@ public class HYPopupDialog: UIViewController {
     }
 
     
-    /**
-        构建popupview
-     */
-    @objc public static func makeDialogBySendId(context: UIViewController, sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
-                                         onSubmit: Optional<() -> Void> = nil,
-                                         onCancel: Optional<() -> Void> = nil,
-                                         onError: Optional<(_: String) -> Void> = nil
-                                         ) -> Void {
-        
-        HYPopupDialog._context = context;
-        HYPopupDialog._close = false;
-
-        var mOptions : Dictionary<String, Any> = options;
-        mOptions.updateValue(true, forKey: "isDialogMode")
-        mOptions.updateValue("dialog", forKey: "showType")
-        
-        return internalMakeDialog(context: context, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, options: options,
-                                  onSubmit: onSubmit,
-                                  onCancel: onCancel,
-                                  onError: onError,
-                                  onLoad: nil
-        )
-    }
     
 
     /**
