@@ -16,6 +16,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var server : String = "production"
     var surveyId : String?
     var channelId : String?
+    var clientId : String?
     var delay : Int = 1000
     var debug : Bool = false
     var halfscreen : Bool = false
@@ -27,6 +28,9 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var bord : Bool = false
     var parameters : Dictionary<String, Any>?
     var options : Dictionary<String, Any>?
+    var style : Dictionary<String, Any>?
+    var surveyJson : Dictionary<String, Any>?
+    var channelConfig : Dictionary<String, Any>?
     var finished: Bool = false
     var version: String = ""
     var build: String = ""
@@ -86,7 +90,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     /**
         内部构造SurveyController
      */
-    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+    public static func makeSurveyControllerEx(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, channelConfig: Optional<Dictionary<String, Any>> = nil, clientId: String? = nil, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
         onSubmit: Optional<() -> Void> = nil,
         onCancel: Optional<() -> Void> = nil,
         onSize: Optional<(_ height: Int) -> Void> = nil,
@@ -105,6 +109,9 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.onClose = onClose
         controller.onLoad = onLoad
         controller.onError = onError
+        controller.surveyJson = surveyJson
+        controller.channelConfig = channelConfig
+        controller.clientId = clientId
         
         controller.assets = options.index(forKey: "assets") != nil ? options["assets"] as! String : "";
         controller.project = options.index(forKey: "project") != nil ? options["project"] as! String : "";
@@ -117,11 +124,26 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
         controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
-
+        
         controller.language = options.index(forKey: "language") != nil ? options["language"] as! String : getSystemLanguage();
+        
+        if (surveyJson != nil){
+            controller.style = surveyJson!.index(forKey: "style") != nil ? surveyJson!["style"] as! Dictionary : Dictionary();
+        }
 
         controller.setup()
         return controller
+    }
+    
+    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+        onSubmit: Optional<() -> Void> = nil,
+        onCancel: Optional<() -> Void> = nil,
+        onSize: Optional<(_ height: Int) -> Void> = nil,
+        onClose: Optional<() -> Void> = nil,
+        onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil,
+        onError: Optional<(_ error: String) -> Void> = nil
+    ) -> HYUISurveyView {
+        return makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: nil, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
     }
     
     @objc public static func makeSurveyControllerAsync(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
@@ -136,7 +158,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     }
     
     /**
-        构建popupview async version
+        根据sid,cid弹出问卷
      */
     @objc public static func makeSurveyControllerAsync(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                                        onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
@@ -147,27 +169,37 @@ public class HYUISurveyView: UIView, WKUIDelegate {
                                                        onClose: Optional<() -> Void> = nil,
                                                        onLoad: Optional<(_: Dictionary<String, Any>) -> Void> = nil
                                                            ) -> Void {
+        
         if (onReady == nil || onError == nil) {
             NSLog("onReady and onError is required in async call")
             return;
         }
         
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
+        if (!HYGlobalConfig.check()) {
+            NSLog("surveySDK->global access code is not ready or invalid");
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+        
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
 
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
-            if (config != nil && error == nil) {
+        HYSurveyService.unionStart(server: server, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
+            if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad);
+                    let view : HYUISurveyView = makeSurveyControllerEx(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig, clientId: sr!.clientId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
                     onReady!(view);
                 }
             } else {
                 onError!(error!);
             }
-        });
+        })
     }
     
+    /**
+     根据SendId弹出问卷
+     */
     @objc public static func makeSurveyControllerAsync(sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                                        onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
                                                        onError: Optional<(_ error: String) -> Void> = nil,
@@ -180,21 +212,25 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             NSLog("onReady and onError is required in async call")
             return;
         }
-        
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
-
-        HYSurveyService.downloadBySendId(server: server, sendId: sendId,  accessCode: accessCode, externalUserId: externalUserId, onCallback: { sid, cid, config, error in
-            if (sid != nil && config != nil && error == nil) {
+        if (!HYGlobalConfig.check()) {
+            NSLog("surveySDK->global access code is not ready or invalid");
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
+        HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, onCallback: { sr, error in
+            if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: sid!, channelId: cid!, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
+                    let view : HYUISurveyView = makeSurveyController(surveyId: sr!.sid, channelId: sr!.cid, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
                     onReady!(view);
                 }
             } else {
-                onError!(error ?? "系统错误");
+                onError!(error!);
             }
-        });
+
+        })
     }
     
     /**
@@ -210,12 +246,17 @@ public class HYUISurveyView: UIView, WKUIDelegate {
      创建组件
      */
     @objc public func setup() {
-                
+        let parentHeight = Int(self.layer.frame.height);
+        if (self.channelConfig != nil) {
+            self.appPaddingWidth = Util.parsePx(value: Util.optString(config: self.channelConfig!, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+        }
+
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
         configuration.userContentController.add(self, name: "surveyProxy")
         configuration.userContentController.add(self, name: "error")
         if debug {
+//            configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
             configuration.userContentController.add(self, name: "logger")
         }
         
@@ -224,8 +265,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             return
         }
         
-        
         self.webView = WKWebView(frame: self.frame, configuration: configuration)
+
         self.webView.navigationDelegate = self;
         self.webView.uiDelegate = self;
         if debug {
@@ -237,11 +278,16 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         }
         
         webView.isOpaque = false;
-        webView.backgroundColor = UIColor.clear;
+        if (style != nil) {
+            let backgroundColor = style!.index(forKey: "backgroundColor") != nil ? style!["backgroundColor"] as! String : "#FFFFFF";
+            let colorHex = Util.colorFromHex(backgroundColor)
+            webView.backgroundColor = colorHex;
+            self.backgroundColor = colorHex;
+        } else {
+            webView.backgroundColor = UIColor.white;
+            self.backgroundColor = UIColor.white;
+        }
         
-        
-//        self.backgroundColor = UIColor.red.withAlphaComponent(0.4);
-        self.backgroundColor = UIColor.clear;
 
         if let path = loadFile(res: "version", ex: "json")
         {
@@ -282,13 +328,12 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.webView)
         
-        let constraints = [
+    
+        NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(appPaddingWidth)),
             webView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-1 * appPaddingWidth)),
             webView.topAnchor.constraint(equalTo: self.topAnchor, constant: CGFloat(0)),
-            webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))
-        ]
-        NSLayoutConstraint.activate(constraints)
+            webView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: CGFloat(0))])
 
         self._constraint = self.heightAnchor.constraint(equalToConstant: CGFloat(0))
         self._constraint?.priority = UILayoutPriority(100)
@@ -299,6 +344,12 @@ public class HYUISurveyView: UIView, WKUIDelegate {
 
     }
     
+
+    
+    
+    deinit {
+    }
+
     /**
      获取版本号
      */
@@ -312,7 +363,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     @objc public func getBuild() -> String {
         return self.build;
     }
-    
+
     /**
     显示
      */
@@ -332,10 +383,10 @@ public class HYUISurveyView: UIView, WKUIDelegate {
 //        }
 //    }
 
-    deinit {
-        // 移除观察者
-        // webView.scrollView.removeObserver(self, forKeyPath: "contentSize")
-    }
+//    deinit {
+//        // 移除观察者
+//        // webView.scrollView.removeObserver(self, forKeyPath: "contentSize")
+//    }
     
 }
 
@@ -391,6 +442,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
     //                    self.frame.size.height = CGFloat(height)
                         
                         if (self._constraint != nil) {
+//                            self.webView.scrollView.contentSize.height = CGFloat(height);
                             self._constraint?.constant = CGFloat(height);
                             self.webView.layoutIfNeeded();
     //                        superview?.updateConstraintsIfNeeded();
@@ -457,7 +509,13 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                 } else if type == "init" {
                     // lynkco hardcode project (only available for lynkco version)
-                    let data = ["language": self.language, "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    var data = ["language": self.language,  "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay, "project": self.project,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    if (self.clientId != nil) {
+                        data["clientId"] = self.clientId;
+                    }
+                    if (self.surveyJson != nil) {
+                        data["survey"] = self.surveyJson;
+                    }
                     let jsonData = try? JSONSerialization.data(withJSONObject: data)
                     let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
                     self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('init', { detail:  \(jsonText!)}))")
