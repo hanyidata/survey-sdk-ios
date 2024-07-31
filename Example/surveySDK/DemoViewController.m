@@ -15,21 +15,15 @@
 @implementation DemoViewController
 
 
-Boolean halfscreen = true;
-Boolean globalConfig = true;
-NSString* accessCode = NULL;
-//NSString* accessCode = @"1233114638330048512";
+Boolean halfscreen = false;
+//NSString* accessCode = @"";
+NSString* accessCode = @"";
 NSString* euid = @"";
 NSString* project = @"";
 NSString* sendId = @"";
 NSString* language = @"zh-cn";
 
 //
-<<<<<<< HEAD
-NSString* surveyId = @"6417370258754560";
-NSString* channelId = @"6417382901173248";
-NSString* server = @"https://test.xmplus.cn/api/survey";
-=======
 //NSString* surveyId = @"5623325575501824";
 //NSString* channelId = @"5623326819536896";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
@@ -38,14 +32,13 @@ NSString* server = @"https://test.xmplus.cn/api/survey";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6613886893283328";
-NSString* channelId = @"6613888574806016";
+NSString* surveyId = @"6564986681139200";
+NSString* channelId = @"6564987304321024";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
-NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* server = @"https://dev.xmplus.cn/api/survey";
 
->>>>>>> develop
 
 //NSString* surveyId = @"4831576886942720";
 //NSString* channelId = @"4831596133686272";
@@ -54,7 +47,7 @@ NSString* server = @"https://www.xmplus.cn/api/survey";
 //
 //NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
-//https://mktcslynkco-uat.geely-test.com/cem/touchs/surveyPublish/app?id=6138603223408640&cid=6138605818109952
+
 //UAT
 //NSString* surveyId = @"4475002070663168";
 //NSString* channelId = @"4475389028433920";
@@ -66,7 +59,6 @@ NSString* server = @"https://www.xmplus.cn/api/survey";
 NSDictionary* params;
 NSDictionary *options;
 
-
 + (void)initialize {
     if(!params)
         params = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -74,18 +66,9 @@ NSDictionary *options;
                   euid, @"externalUserId",
                   nil];
     
-    if (globalConfig) {
+    if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", project, @"project", @(halfscreen), @"halfscreen", nil];
-        
-    } else {
-        options = [[NSDictionary alloc] initWithObjectsAndKeys:
-<<<<<<< HEAD
-                   @"Assets", @"assets", @(true), @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
-    }
-=======
-                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
->>>>>>> develop
+                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
 }
 
 
@@ -134,47 +117,16 @@ NSDictionary *options;
             NSLog(@"关闭");
         }];
 
-<<<<<<< HEAD
-    }  onError:^(NSString* error) {
-        NSLog(@"%@", error);
-    }  onSubmit:^() {
-        NSLog(@"提交");
-    } onCancel:^() {
-        NSLog(@"取消");
-    } onSize:^(NSInteger height) {
-        NSLog(@"Size %ld", (long)height);
-        CGRect frameReact = _survey.frame;
-//        frameReact.size.height = height;
-//        frameReact.size.width = self.view.frame.size.width / 2;
-        _survey.frame = frameReact;
-    } onClose:^() {
-        NSLog(@"关闭");
-=======
->>>>>>> develop
     }
 
 }
 
 -(void) button2Clicked:(UIButton*)sender {
-<<<<<<< HEAD
-    
-    NSLog(@"you clicked on popup survey");
-    [HYPopupDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
-        NSLog(@"onSubmit");
-    } onCancel:^{
-        NSLog(@"cancel");
-    } onError:^(NSString*  error) {
-        NSLog(@"error: %@", error);
-    }];
-//                                  onLoad:^(NSDictionary<NSString *,id> * _) {
-//        NSLog(@"onLoad");
-=======
 //    DemoDialogViewController *newViewController = [DemoDialogViewController setUpWithSurveyId:surveyId channelId:channelId server:server parameters:params options:options];
 //    newViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 //
 //    [self presentViewController:newViewController animated:YES completion:^{
 ////        [newViewController showUp];
->>>>>>> develop
 //    }];
     NSLog(@"you clicked on popup survey");
     if (sendId.length > 0) {
@@ -183,7 +135,6 @@ NSDictionary *options;
         } onCancel:^{
             NSLog(@"cancel");
         } onError:^(NSString*  error) {
-            NSLog(@"error: %@", error);
         }];
 
     } else {
@@ -192,42 +143,16 @@ NSDictionary *options;
         } onCancel:^{
             NSLog(@"cancel");
         } onError:^(NSString*  error) {
-            NSLog(@"error: %@", error);
         }];
 
     }
 }
 
 
--(void) button3Clicked:(UIButton*)sender {
-//    [HYTestDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
-//        NSLog(@"onSubmit");
-//    } onCancel:^{
-//        NSLog(@"cancel");
-//    } onError:^(NSString*  error) {
-//    }];
-}
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-<<<<<<< HEAD
-    //  [self setTitle:@"My Child View"];
-//    view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-//    table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-//    table.delegate = self;
-//    table.dataSource = self;
-//
-//    [self.view addSubview:tableView];
-    
-//    [HYG]
-    if (globalConfig) {
-        [HYGlobalConfig setupWithServer:server accessCode:accessCode authRequired:false];
-    }
-=======
     [self.view setBackgroundColor: [UIColor whiteColor]];
 
->>>>>>> develop
     [self.view setBackgroundColor:UIColor.grayColor];
     
     
@@ -242,13 +167,6 @@ NSDictionary *options;
     [_button2 setTitle:@"Popup Demo" forState:UIControlStateNormal];
     [_button2 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
     [_button2 setExclusiveTouch:YES];
-    
-    _button3 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [_button3 addTarget:self action:@selector(button3Clicked:) forControlEvents:UIControlEventTouchUpInside];
-    [_button3 setTitle:@"Popup TEST" forState:UIControlStateNormal];
-    [_button3 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
-    [_button3 setExclusiveTouch:YES];
-
 
     _label1 = [[UILabel alloc] init];
     _label1.text = @"item1";
@@ -267,15 +185,12 @@ NSDictionary *options;
     
     [_stackview addArrangedSubview:_button1];
     [_stackview addArrangedSubview:_button2];
-    [_stackview addArrangedSubview:_button3];
-
     [_stackview addArrangedSubview:_label1];
     [self.view addSubview:_stackview];
         
-    CGFloat width = halfscreen ? self.view.frame.size.width / 2 : self.view.frame.size.width;
     [_stackview.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor].active = true;
     [_stackview.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor].active = true;
-    [_stackview.widthAnchor constraintEqualToConstant:width].active = true;
+    [_stackview.widthAnchor constraintEqualToConstant:self.view.frame.size.width].active = true;
 }
 
 @end

@@ -8,11 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'HYSurveySDK'
-<<<<<<< HEAD
-  s.version          = '0.2.1012'
-=======
   s.version          = '0.4.6'
->>>>>>> develop
   s.summary          = 'a tiny survey sdk for xmplus'
 
   s.swift_versions   = '4.0'
@@ -20,11 +16,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://gitee.com/hanyidata/survey-sdk-ios'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'yangjun' => 'yangjun@surveyplus.cn' }
-<<<<<<< HEAD
-  s.source           = { :git => 'https://gitee.com/hanyidata/survey-sdk-ios.git', :tag => '0.2.1012' }
-=======
   s.source           = { :git => 'https://gitee.com/hanyidata/survey-sdk-ios.git', :tag => s.version }
->>>>>>> develop
 
   s.ios.deployment_target = '11.0'
 
