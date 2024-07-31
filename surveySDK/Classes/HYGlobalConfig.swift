@@ -15,7 +15,7 @@ public class HYGlobalConfig : NSObject {
     static var server : String = "https://www.xmplus.cn/api/survey";
     static var authRequired : Bool = false;
     static var verified : Bool = false;
-    static var project : String = "";
+    static var project : String = "lynkco"; // 项目专属定义
     
     /**
        全局配置问卷服务器
