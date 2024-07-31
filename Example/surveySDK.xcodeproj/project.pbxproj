@@ -10,6 +10,7 @@
 		44040B262A14845100977018 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44040B252A14845100977018 /* SwiftUIView.swift */; };
 		44040B282A1484F300977018 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44040B272A1484F300977018 /* app.swift */; };
 		44D388A72A332465009ED633 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D388A62A332465009ED633 /* DemoViewController.m */; };
+		44D9BE262BE9C25C005119D8 /* DemoDialogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44D9BE252BE9C25C005119D8 /* DemoDialogViewController.m */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -24,6 +25,8 @@
 		449EFA532A9D9EC6003CEEEB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		44D388A32A332392009ED633 /* DemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
 		44D388A62A332465009ED633 /* DemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
+		44D9BE252BE9C25C005119D8 /* DemoDialogViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoDialogViewController.m; sourceTree = "<group>"; };
+		44D9BE272BE9C271005119D8 /* DemoDialogViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoDialogViewController.h; sourceTree = "<group>"; };
 		5B63744E8428B33B866A395D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* surveySDK-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "surveySDK-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 				44040B272A1484F300977018 /* app.swift */,
 				44D388A32A332392009ED633 /* DemoViewController.h */,
 				44D388A62A332465009ED633 /* DemoViewController.m */,
+				44D9BE252BE9C25C005119D8 /* DemoDialogViewController.m */,
+				44D9BE272BE9C271005119D8 /* DemoDialogViewController.h */,
 			);
 			name = "Example for surveySDK";
 			path = surveySDK;
@@ -158,7 +163,7 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = NR27DT49ZB;
+						DevelopmentTeam = 3SQ9KB52J5;
 						LastSwiftMigration = 1420;
 					};
 				};
@@ -248,6 +253,7 @@
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				44D388A72A332465009ED633 /* DemoViewController.m in Sources */,
 				44040B262A14845100977018 /* SwiftUIView.swift in Sources */,
+				44D9BE262BE9C25C005119D8 /* DemoDialogViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,12 +386,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = NR27DT49ZB;
+				DEVELOPMENT_TEAM = 3SQ9KB52J5;
 				INFOPLIST_FILE = surveySDK/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.xmplus.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "cn.xmplus.demo.surveySDK-example2-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "surveySDK/surveySDK-example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -400,12 +407,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = NR27DT49ZB;
+				DEVELOPMENT_TEAM = 3SQ9KB52J5;
 				INFOPLIST_FILE = surveySDK/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.xmplus.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "cn.xmplus.demo.surveySDK-example2-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "surveySDK/surveySDK-example-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
