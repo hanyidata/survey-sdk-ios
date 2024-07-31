@@ -74,6 +74,12 @@ public struct HYSurveyService {
         let systemParametersWhiteList = ["externalUserId", "departmentCode", "externalCompanyId", "customerName", "customerGender"];
         var json: [String: Any] = ["clientId": clientId];
         
+        let accessCode  = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : HYGlobalConfig.accessCode
+        if (!accessCode.isEmpty) {
+            let additionData: [String: Any] = ["accessCode": accessCode];
+            json["additionData"] = additionData;
+        }
+
         if (sendId != nil) {
             json["sendToken"] = sendId;
             NSLog("[surveySDK] union start with sendId \(sendId!) clientId \(clientId)");
