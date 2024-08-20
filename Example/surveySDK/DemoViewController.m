@@ -18,7 +18,7 @@
 Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
-NSString* euid = @"";
+NSString* euid = @"w";
 NSString* sendId = @"";
 NSString* language = @"zh-cn";
 
@@ -31,8 +31,8 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6717756797742080";
-NSString* channelId = @"6717757330615296";
+NSString* surveyId = @"6834803023996928";
+NSString* channelId = @"6834805666862080";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 

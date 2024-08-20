@@ -276,16 +276,17 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         }
         
         webView.isOpaque = false;
+        var backgroundColor:UIColor = UIColor.white;
         if (style != nil) {
-            let backgroundColor = style!.index(forKey: "backgroundColor") != nil ? style!["backgroundColor"] as! String : "#FFFFFF";
-            let colorHex = Util.colorFromHex(backgroundColor)
-            webView.backgroundColor = colorHex;
-            self.backgroundColor = colorHex;
-        } else {
-            webView.backgroundColor = UIColor.white;
-            self.backgroundColor = UIColor.white;
+            let backgroundColorStr = style!.index(forKey: "backgroundColor") != nil ? style!["backgroundColor"] as! String : "#FFFFFF";
+            let showBackground = style!.index(forKey: "showBackground") != nil ? style!["showBackground"] as! Bool : false;
+            if (showBackground) {
+                backgroundColor = Util.colorFromHex(backgroundColorStr);
+            }
         }
-        
+        webView.backgroundColor = backgroundColor;
+        self.backgroundColor = backgroundColor;
+
 
         if let path = loadFile(res: "version", ex: "json")
         {
