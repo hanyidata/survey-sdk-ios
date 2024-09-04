@@ -18,9 +18,8 @@
 Boolean halfscreen = false;
 //NSString* accessCode = @"";
 NSString* accessCode = @"";
-NSString* euid = @"";
-NSString* project = @"";
-NSString* sendId = @"";
+NSString* euid = @"w";
+NSString* sendId = @"93a4sVIZmKDQdaNM";
 NSString* language = @"zh-cn";
 
 //
@@ -32,12 +31,12 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6564986681139200";
-NSString* channelId = @"6564987304321024";
+NSString* surveyId = @"6834803023996928";
+NSString* channelId = @"6834805666862080";
 //NSString* sendId = @"BddfddRImjktRzRk";
 
 
-NSString* server = @"https://dev.xmplus.cn/api/survey";
+//NSString* server = @"https://www.xmplus.cn/api/survey";
 
 
 //NSString* surveyId = @"4831576886942720";
@@ -45,7 +44,7 @@ NSString* server = @"https://dev.xmplus.cn/api/survey";
 ////NSString* surveyId =  @"4475020361170944";
 ////NSString* channelId = @"4496490408345600";
 //
-//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 
 //UAT
@@ -68,7 +67,8 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"force", @(true), @"debug", server, @"server", project, @"project", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
+    
 }
 
 
@@ -135,6 +135,7 @@ NSDictionary *options;
         } onCancel:^{
             NSLog(@"cancel");
         } onError:^(NSString*  error) {
+            NSLog(@"error: %@", error);
         }];
 
     } else {
@@ -143,9 +144,20 @@ NSDictionary *options;
         } onCancel:^{
             NSLog(@"cancel");
         } onError:^(NSString*  error) {
+            NSLog(@"error: %@", error);
         }];
 
     }
+}
+
+
+-(void) button3Clicked:(UIButton*)sender {
+//    [HYTestDialog makeDialogWithContext:self surveyId:surveyId channelId:channelId parameters:params options:options onSubmit:^{
+//        NSLog(@"onSubmit");
+//    } onCancel:^{
+//        NSLog(@"cancel");
+//    } onError:^(NSString*  error) {
+//    }];
 }
 
 
@@ -167,6 +179,13 @@ NSDictionary *options;
     [_button2 setTitle:@"Popup Demo" forState:UIControlStateNormal];
     [_button2 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
     [_button2 setExclusiveTouch:YES];
+    
+    _button3 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [_button3 addTarget:self action:@selector(button3Clicked:) forControlEvents:UIControlEventTouchUpInside];
+    [_button3 setTitle:@"Popup TEST" forState:UIControlStateNormal];
+    [_button3 setTitleColor: UIColor.blackColor forState: UIControlStateNormal];
+    [_button3 setExclusiveTouch:YES];
+
 
     _label1 = [[UILabel alloc] init];
     _label1.text = @"item1";
@@ -185,6 +204,8 @@ NSDictionary *options;
     
     [_stackview addArrangedSubview:_button1];
     [_stackview addArrangedSubview:_button2];
+    [_stackview addArrangedSubview:_button3];
+
     [_stackview addArrangedSubview:_label1];
     [self.view addSubview:_stackview];
         

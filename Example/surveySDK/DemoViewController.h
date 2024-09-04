@@ -19,6 +19,8 @@
 @property(strong) UITableView *table;
 @property(strong) UIButton *button1;
 @property(strong) UIButton *button2;
+@property(strong) UIButton *button3;
+
 @property(strong) UILabel *label1;
 @property(strong) UILabel *label2;
 

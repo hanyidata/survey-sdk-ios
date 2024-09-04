@@ -16,7 +16,13 @@ public class HYPopupDialog: UIViewController {
     var survey : Optional<HYUISurveyView>;
     var config: Optional<Dictionary<String, Any>>;
     var _constraint: NSLayoutConstraint? = nil;
+    var _previousHeight: CGFloat = CGFloat(0);
+    var _previousY: CGFloat = CGFloat(0);
+    var _keyboardOpen: Bool = false;
     var options : Dictionary<String, Any>?;
+    var surveyJson : Dictionary<String, Any>?;
+    var channelConfig : Dictionary<String, Any>?;
+    var clientId : String?;
     var animation: Bool = true;
     var animationDuration: Double = 0.5;
     var onLoadCallback: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil;
@@ -30,6 +36,7 @@ public class HYPopupDialog: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         
+        
         let clickDismiss = self.options?.index(forKey: "clickDismiss") != nil ? self.options?["clickDismiss"] as! Bool : false
         if (clickDismiss) {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleClick(_:)))
@@ -42,7 +49,9 @@ public class HYPopupDialog: UIViewController {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
     }
+    
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -53,16 +62,40 @@ public class HYPopupDialog: UIViewController {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
-            if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardFrame.cgRectValue.height;
+            if !self._keyboardOpen {
+                self._previousY = self.survey!.frame.origin.y
+                let keyboardHeight = keyboardFrame.cgRectValue.height
+                // 获取安全区的顶部和底部插入高度
+                let safeAreaTop = view.safeAreaInsets.top
+                
+                
+                // 计算顶部底部剩余当前剩余高度
+                let topLeft = max(self.survey!.frame.origin.y - safeAreaTop, 0)
+                
+                // 可以上抬高度
+                // 如果顶部空间足够放下键盘就全部上抬，否则上抬最低高度
+                let raiseY = min(topLeft, keyboardHeight);
+//                let raiseY = CGFloat(150);
+                
+                NSLog("raise \(raiseY)");
+                
+                // 设置视图的新的 y 坐标
+                self.survey!.frame.origin.y -= raiseY
+                self.survey!.webView.scrollView.isScrollEnabled = false;
+                self._keyboardOpen = true
             }
         }
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
         // Reset your view's Y position back to 0
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
+        if self._keyboardOpen {
+            self.survey!.frame.origin.y = self._previousY
+            self._keyboardOpen = false
+            if (_previousHeight != 0) {
+                _constraint!.constant = _previousHeight
+            }
+            self.survey!.webView.scrollView.isScrollEnabled = true;
         }
     }
 
@@ -71,7 +104,6 @@ public class HYPopupDialog: UIViewController {
         HYPopupDialog.parentViewController = parent
         // 开始观察
         HYPopupDialog.observation = parent.observe(\.view.window, options: [.new]) { _, change in
-            print("any change")
             if change.newValue == nil {
                 print("Parent view controller is no longer in the window")
             }
@@ -120,40 +152,14 @@ public class HYPopupDialog: UIViewController {
                                          onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
                                          ) -> Void {
         
-        HYPopupDialog._context = context;
-        HYPopupDialog._close = false;
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
-        let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
-
-        var mOptions : Dictionary<String, Any> = options;
-        mOptions.updateValue(true, forKey: "isDialogMode")
-        mOptions.updateValue("dialog", forKey: "showType")
-        NSLog("surveySDK->makeDialog will download config for survey %@", surveyId)
-                
-        HYSurveyService.donwloadConfig(server: server, surveyId: surveyId, channelId: channelId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { config, error in
-            if (config != nil && error == nil) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
-                    let canPop = HYPopupDialog.checkContextStatus()
-                    if (!canPop || HYPopupDialog._close) {
-                        NSLog("skip the popup");
-                        return;
-                    }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: surveyId, channelId: channelId, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
-                    NSLog("surveySDK->makeDialog will show up")
-                    HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
-                    context.present(HYPopupDialog.lastInstance!, animated: true) {
-                        NSLog("Modal present!")
-                    }
-                }
-            } else if (onError != nil) {
-                NSLog("surveySDK->makeDialog failed to load config %@", error!)
-                onError!(error!);
-            }
-            
-        });
+        return internalMakeDialog(context: context, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
+                                  onSubmit: onSubmit,
+                                  onCancel: onCancel,
+                                  onError: onError,
+                                  onLoad: onLoad
+        )
     }
+    
     
     /**
         构建popupview
@@ -166,56 +172,97 @@ public class HYPopupDialog: UIViewController {
         
         HYPopupDialog._context = context;
         HYPopupDialog._close = false;
-        let server = options.index(forKey: "server") != nil ? options["server"] as! String : "https://www.xmplus.cn/api/survey"
-        let accessCode = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : ""
-        let externalUserId = parameters.index(forKey: "externalUserId") != nil ? parameters["externalUserId"] as! String : ""
+
+        var mOptions : Dictionary<String, Any> = options;
+        mOptions.updateValue(true, forKey: "isDialogMode")
+        mOptions.updateValue("dialog", forKey: "showType")
+        
+        return internalMakeDialog(context: context, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, options: options,
+                                  onSubmit: onSubmit,
+                                  onCancel: onCancel,
+                                  onError: onError,
+                                  onLoad: nil
+        )
+    }
+    
+    /**
+      内部dialog逻辑
+     */
+    private static func internalMakeDialog(context: UIViewController, sendId: String?, surveyId: String?, channelId: String?, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil,
+                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+                                         ) -> Void {
+        
+        if (!HYGlobalConfig.check()) {
+            NSLog("surveySDK->global access code is not ready or invalid");
+            if (onError != nil) {
+                onError!("global access code is not ready or invalid");
+            }
+            return;
+        }
+
+        HYPopupDialog._context = context;
+        HYPopupDialog._close = false;
+        let server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
         let showDelay = options.index(forKey: "showDelay") != nil ? options["showDelay"] as! Int : 0
 
         var mOptions : Dictionary<String, Any> = options;
         mOptions.updateValue(true, forKey: "isDialogMode")
         mOptions.updateValue("dialog", forKey: "showType")
-        NSLog("surveySDK->makeDialog will download config for survey sendId %@", sendId)
-                
-        HYSurveyService.downloadBySendId(server: server, sendId: sendId, accessCode: accessCode, externalUserId: externalUserId, onCallback: { sid, cid, config, error in
-            if (config != nil && error == nil) {
+        
+        HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: surveyId, channelId: channelId, parameters: parameters, onCallback: { sr, error in
+            
+            if (sr != nil && error == nil) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
                     let canPop = HYPopupDialog.checkContextStatus()
                     if (!canPop || HYPopupDialog._close) {
-                        NSLog("skip the popup");
+                        NSLog("surveySDK->skip the popup");
+                        if (onError != nil) {
+                            onError!("context is not visible, popup skip!");
+                        }
                         return;
                     }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sid!, channelId: cid!, parameters: parameters, options: mOptions, config: config!, onSubmit: onSubmit, onCancel: onCancel, onLoad: nil);
-                    NSLog("surveySDK->makeDialog will show up")
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig,  clientId: sr?.clientId, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
+                    NSLog("surveySDK->makeDialog will show up! clientId: %@", sr!.clientId)
+                    
                     HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
                     context.present(HYPopupDialog.lastInstance!, animated: true) {
-                        NSLog("Modal present!")
+                        NSLog("surveySDK->Modal present!")
                     }
                 }
-            } else if (onError != nil) {
-                NSLog("surveySDK->makeDialog failed to load config %@", error!)
-                onError!(error!);
+
+            } else {
+                if (onError != nil) {
+                    onError!(error ?? "问卷暂停访问")
+                }
             }
-            
         });
     }
+
+    
     
 
     /**
      初始化view
      */
-    private init(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+    private init(surveyId: String, channelId: String, surveyJson: Optional<Dictionary<String, Any>> = nil, channelConfig: Optional<Dictionary<String, Any>> = nil,  clientId: String?, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                config: Dictionary<String, Any>,
             onSubmit: Optional<() -> Void> = nil,
             onCancel: Optional<() -> Void> = nil,
             onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
     ) {
+        self.surveyJson = surveyJson;
+        self.clientId = clientId;
         self.options = options;
         self.config = config;
+        self.channelConfig = channelConfig;
         self.onLoadCallback = onLoad;
         
-        survey = HYUISurveyView.makeSurveyController(surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
+        survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, channelConfig: channelConfig,  clientId: self.clientId,  parameters: parameters, options: options,
                                                      onSubmit:  onSubmit, onCancel: onCancel)
-                
+        
         super.init(nibName: nil, bundle: nil);
         
         survey?.setOnSize(callback: self.onSize);
@@ -272,20 +319,23 @@ public class HYPopupDialog: UIViewController {
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
             ])
         } else if (embedVerticalAlign == "TOP") {
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
             ])
         } else {
             // bottom or default
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                survey!.widthAnchor.constraint(equalToConstant: CGFloat(view.frame.width - 2 * CGFloat(appPaddingWidth))),
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
             ])
         }
 
@@ -312,6 +362,9 @@ public class HYPopupDialog: UIViewController {
         响应onSize
      */
     func onSize(height: Int) {
+        if (self._keyboardOpen) {
+            return
+        }
 //        self.popupView.contentSize = CGSizeMake(self.popupView.contentSize.width, CGFloat(height));
         let embedHeightMode = Util.optString(config: config!, key: "embedHeightMode", fallback: "AUTO");
 
@@ -340,7 +393,7 @@ public class HYPopupDialog: UIViewController {
         响应Load
      */
     func onLoad(config: Dictionary<String, Any>) {
-        NSLog("popupDialog->onLoad")
+//        NSLog("popupDialog->onLoad")
         let embedBackGround = Util.optBool(config: config, key: "embedBackGround", fallback: true);
         if (embedBackGround) {
             self.view.layer.backgroundColor = UIColor.black.withAlphaComponent(0.6).cgColor;
