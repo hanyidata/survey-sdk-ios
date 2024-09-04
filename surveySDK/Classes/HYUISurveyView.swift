@@ -511,9 +511,6 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     if (self.clientId != nil) {
                         data["clientId"] = self.clientId;
                     }
-                    if (!HYGlobalConfig.project.isEmpty) {
-                        data["project"] = HYGlobalConfig.project;
-                    }
                     if (self.surveyJson != nil) {
                         data["survey"] = self.surveyJson;
                     }
