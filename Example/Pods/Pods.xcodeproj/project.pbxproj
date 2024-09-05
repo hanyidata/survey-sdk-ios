@@ -75,7 +75,7 @@
 		56328EA7B1318DA552B3E697188C70A4 /* surveySDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "surveySDK-prefix.pch"; sourceTree = "<group>"; };
 		57D8444699FACA78AA82635465980E77 /* Pods-surveySDK_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-surveySDK_Example-dummy.m"; sourceTree = "<group>"; };
 		5F3518016CFD7421D8D460D6BD4A736E /* Pods-surveySDK_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-surveySDK_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		72F477756ECA6256A3A5396633A283AD /* surveySDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = surveySDK.podspec; sourceTree = "<group>"; tabWidth = 2; };
+		72F477756ECA6256A3A5396633A283AD /* HYSurveySDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = HYSurveySDK.podspec; sourceTree = "<group>"; tabWidth = 2; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		76E4F3EC78831E9A20809396A6EFB508 /* surveySDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = surveySDK.debug.xcconfig; sourceTree = "<group>"; };
 		7980E79F55C1C7BB1EB91A85CDD2EB23 /* surveySDK-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "surveySDK-dummy.m"; sourceTree = "<group>"; };
@@ -134,7 +134,7 @@
 			children = (
 				11101CDF63BDDB12C2368D12D64E34C5 /* LICENSE */,
 				BF46F6BD04DE148FA02A8BF770199CC9 /* README.md */,
-				72F477756ECA6256A3A5396633A283AD /* surveySDK.podspec */,
+				72F477756ECA6256A3A5396633A283AD /* HYSurveySDK.podspec */,
 			);
 			name = Pod;
 			sourceTree = "<group>";
