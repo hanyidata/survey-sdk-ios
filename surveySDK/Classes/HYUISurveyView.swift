@@ -144,6 +144,25 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         return makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: nil, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: onLoad, onError: onError)
     }
     
+    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+        onSubmit: Optional<() -> Void> = nil,
+        onCancel: Optional<() -> Void> = nil,
+        onSize: Optional<(_ height: Int) -> Void> = nil,
+        onClose: Optional<() -> Void> = nil
+    ) -> HYUISurveyView {
+        return makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: nil, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil, onError: nil)
+    }
+    
+    @objc public static func makeSurveyController(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+        onSubmit: Optional<() -> Void> = nil,
+        onCancel: Optional<() -> Void> = nil,
+        onSize: Optional<(_ height: Int) -> Void> = nil,
+        onClose: Optional<() -> Void> = nil,
+        onError: Optional<(_ error: String) -> Void> = nil
+    ) -> HYUISurveyView {
+        return makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: nil, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose, onLoad: nil, onError: onError)
+    }
+    
     @objc public static func makeSurveyControllerAsync(surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                                        onReady: Optional<(_ view: HYUISurveyView) -> Void> = nil,
                                                        onError: Optional<(_ error: String) -> Void> = nil,
