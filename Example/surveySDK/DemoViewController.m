@@ -63,7 +63,7 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay", @(showClose), @"showClose", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
     
 }
 

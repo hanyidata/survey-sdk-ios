@@ -20,6 +20,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     var delay : Int = 1000
     var debug : Bool = false
     var halfscreen : Bool = false
+    var showClose : Bool = true
     var showType : String = ""
     var force : Bool = false
     var isDialogMode : Bool = false
@@ -117,6 +118,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.padding = options.index(forKey: "padding") != nil ? options["padding"] as! Int : 0
         controller.debug = options.index(forKey: "debug") != nil ? options["debug"] as! Bool: false
         controller.halfscreen = options.index(forKey: "halfscreen") != nil ? options["halfscreen"] as! Bool: false
+        controller.showClose = options.index(forKey: "showClose") != nil ? options["showClose"] as! Bool: true
         controller.showType = options.index(forKey: "showType") != nil ? options["showType"] as! String: "embedded"
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
@@ -526,7 +528,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                         self.onClose!()
                     }
                 } else if type == "init" {
-                    var data = ["language": self.language,  "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!] as [String: Any]
+                    var data = ["language": self.language,  "server": self.server, "surveyId": self.surveyId!, "channelId": self.channelId!, "delay": self.delay,  "halfscreen": self.halfscreen, "showType": self.showType, "parameters": self.parameters!, "showClose": self.showClose] as [String: Any]
                     if (self.clientId != nil) {
                         data["clientId"] = self.clientId;
                     }
