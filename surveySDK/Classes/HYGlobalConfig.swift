@@ -12,6 +12,7 @@ import Foundation
  */
 public class HYGlobalConfig : NSObject {
     static var accessCode : String = "";
+    static var orgCode : String = "";
     static var server : String = "https://www.xmplus.cn/api/survey";
     static var authRequired : Bool = false;
     static var verified : Bool = false;
@@ -26,8 +27,9 @@ public class HYGlobalConfig : NSObject {
     /**
        全局配置问卷服务器，认证设置
      */
-    @objc public static func setup(server: String, accessCode: String, authRequired: Bool) -> Void {
+    @objc public static func setup(server: String, orgCode: String, accessCode: String, authRequired: Bool) -> Void {
         HYGlobalConfig.server = server;
+        HYGlobalConfig.orgCode = orgCode;
         HYGlobalConfig.accessCode = accessCode;
         HYGlobalConfig.authRequired = authRequired;
         

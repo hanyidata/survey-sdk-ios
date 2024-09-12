@@ -75,20 +75,21 @@ public struct HYSurveyService {
         var json: [String: Any] = ["clientId": clientId];
         
         let accessCode  = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : HYGlobalConfig.accessCode
-        if (!accessCode.isEmpty) {
-            let additionData: [String: Any] = ["accessCode": accessCode];
-            json["additionData"] = additionData;
+        // 检查 accessCode 是否不为空且不等于 HYGlobalConfig.accessCode
+        if !accessCode.isEmpty && accessCode != HYGlobalConfig.accessCode {
+            let additionData: [String: Any] = ["accessCode": accessCode]
+            json["additionData"] = additionData
         }
 
         if (sendId != nil) {
             json["sendToken"] = sendId;
-            NSLog("[surveySDK] union start with sendId \(sendId!) clientId \(clientId)");
+            NSLog("[surveySDK] union start with sendId \(sendId!) clientId \(clientId) server \(server)");
         } else {
             if (surveyId != nil && channelId != nil) {
                 json["surveyId"] = surveyId;
                 json["channelId"] = channelId;
                 
-                NSLog("[surveySDK] union start with sid \(surveyId!) cid \(channelId!) clientId \(clientId)");
+                NSLog("[surveySDK] union start with sid \(surveyId!) cid \(channelId!) clientId \(clientId) server \(server)");
             }
         }
         for item in systemParametersWhiteList {

@@ -16,10 +16,15 @@
 
 
 Boolean halfscreen = false;
-//NSString* accessCode = @"";
+Boolean showClose = false;
+Boolean authRequired = false;
+
 NSString* accessCode = @"";
-NSString* euid = @"w";
-NSString* sendId = @"93a4sVIZmKDQdaNM";
+//NSString* accessCode = @"1283860798057988096";
+NSString* euid = @"";
+NSString* orgCode = @"";
+//NSString* orgCode = @"lynkco_cem";
+NSString* sendId = @"";
 NSString* language = @"zh-cn";
 
 //
@@ -31,34 +36,25 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6834803023996928";
-NSString* channelId = @"6834805666862080";
+NSString* surveyId = @"5464915992601600";
+NSString* channelId = @"5464928863544320";
 //NSString* sendId = @"BddfddRImjktRzRk";
-
-
-//NSString* server = @"https://www.xmplus.cn/api/survey";
-
-
-//NSString* surveyId = @"4831576886942720";
-//NSString* channelId = @"4831596133686272";
-////NSString* surveyId =  @"4475020361170944";
-////NSString* channelId = @"4496490408345600";
-//
 NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
 
 
-//UAT
-//NSString* surveyId = @"4475002070663168";
-//NSString* channelId = @"4475389028433920";
-//NSString* surveyId =  @"4475020361170944";
-//NSString* channelId = @"4496490408345600";
-
-//NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+//NSString* surveyId = @"6829192408645632";
+//NSString* channelId = @"6880930353772544";
+//NSString* server = @"https://www.xmplus.cn/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
 
 + (void)initialize {
+    // 全局设置
+    if (authRequired) {
+        [HYGlobalConfig setupWithServer:server orgCode:orgCode accessCode:accessCode authRequired:true];
+    }
+    
     if(!params)
         params = [[NSDictionary alloc] initWithObjectsAndKeys:
                   accessCode, @"accessCode",
@@ -67,7 +63,7 @@ NSDictionary *options;
     
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay", @(showClose), @"showClose", language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
     
 }
 

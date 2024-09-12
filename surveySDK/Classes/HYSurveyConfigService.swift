@@ -17,7 +17,11 @@ public struct HYSurveyConfigService {
             return;
         }
         
-        let url = "\(server)/surveys/init-access-code/\(accessCode)";
+        var url = "\(server)/surveys/init-access-code/\(accessCode)";
+        if (!HYGlobalConfig.orgCode.isEmpty) {
+            url = "\(server)/surveys/init-access-code/\(HYGlobalConfig.orgCode)/\(accessCode)";
+        }
+        NSLog("surveySDK->authcheck with url \(url)");
         let task = URLSession.shared.dataTask(with: URL(string: url)!) { data, response, error in
             
             guard let data = data else {
