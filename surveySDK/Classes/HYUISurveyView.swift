@@ -122,7 +122,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         controller.showType = options.index(forKey: "showType") != nil ? options["showType"] as! String: "embedded"
         controller.force = options.index(forKey: "force") != nil ? options["force"] as! Bool: false
         controller.bord = options.index(forKey: "bord") != nil ? options["bord"] as! Bool: false
-        controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : "production"
+        controller.server = options.index(forKey: "server") != nil ? options["server"] as! String : HYGlobalConfig.server
         controller.isDialogMode = options.index(forKey: "isDialogMode") != nil ? options["isDialogMode"] as! Bool: false
         
         controller.language = options.index(forKey: "language") != nil ? options["language"] as! String : getSystemLanguage();

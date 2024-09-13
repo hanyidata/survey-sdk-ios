@@ -36,10 +36,10 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"5464915992601600";
-NSString* channelId = @"5464928863544320";
+NSString* surveyId = @"6949244674686976";
+NSString* channelId = @"6949245294067712";
 //NSString* sendId = @"BddfddRImjktRzRk";
-NSString* server = @"https://mktcs-uat.lynkco-test.com/api/survey";
+NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
 
 
 //NSString* surveyId = @"6829192408645632";
@@ -51,6 +51,8 @@ NSDictionary *options;
 
 + (void)initialize {
     // 全局设置
+    [HYGlobalConfig setupWithServer:server];
+    
     if (authRequired) {
         [HYGlobalConfig setupWithServer:server orgCode:orgCode accessCode:accessCode authRequired:true];
     }
@@ -61,10 +63,14 @@ NSDictionary *options;
                   euid, @"externalUserId",
                   nil];
     
+//    if(!options)
+//        options = [[NSDictionary alloc] initWithObjectsAndKeys:
+//                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
+
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", server, @"server", @(halfscreen), @"halfscreen", nil];
-    
+                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", @(halfscreen), @"halfscreen", nil];
+
 }
 
 
