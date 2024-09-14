@@ -297,7 +297,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         }
         
         webView.isOpaque = false;
-        var backgroundColor:UIColor = UIColor.white;
+        var backgroundColor:UIColor = UIColor.clear;
         if (style != nil) {
             let backgroundColorStr = style!.index(forKey: "backgroundColor") != nil ? style!["backgroundColor"] as! String : "#FFFFFF";
             let showBackground = style!.index(forKey: "showBackground") != nil ? style!["showBackground"] as! Bool : false;
@@ -306,7 +306,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
             }
         }
         webView.backgroundColor = backgroundColor;
-        self.backgroundColor = backgroundColor;
+        self.backgroundColor = UIColor.clear;
 
 
         if let path = loadFile(res: "version", ex: "json")
@@ -500,16 +500,31 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                         config = (event?["configure"]! as? [String: Any])!;
                     }
                     
-                    if (!self.isDialogMode){
-                        let parentWidth = Int(self.layer.frame.width);
-                        let parentHeight = Int(self.layer.frame.height);
-                        let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
-                        self.appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+                    let parentWidth = Int(self.layer.frame.width);
+                    let parentHeight = Int(self.layer.frame.height);
+                    let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
+                    self.appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+                    let embedVerticalAlign = Util.optString(config: config, key: "embedVerticalAlign", fallback: "CENTER");
 
-                        if (appBorderRadius > 0) {
-                            self.webView.clipsToBounds = true;
-                            self.webView.layer.cornerRadius = CGFloat(appBorderRadius);
+                    if (appBorderRadius > 0) {
+                        self.webView.clipsToBounds = true;
+                        self.webView.layer.cornerRadius = CGFloat(appBorderRadius);
+                        
+                        if (self.isDialogMode) {
+                            switch embedVerticalAlign {
+                                case "TOP":
+                                    self.webView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner];
+                                    break;
+                                case "BOTTOM":
+                                    self.webView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner];
+                                    break;
+                                default:
+                                    self.webView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner];
+                            }
+                        } else {
+                            self.webView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner];
                         }
+                 
                     }
                                     
                     if self.onLoad != nil {

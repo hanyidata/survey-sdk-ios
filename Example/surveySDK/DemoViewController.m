@@ -36,15 +36,21 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6949244674686976";
-NSString* channelId = @"6949245294067712";
+//NSString* surveyId = @"6891526120855552";
+//NSString* channelId = @"6891532881876992";
 //NSString* sendId = @"BddfddRImjktRzRk";
-NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
+//NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
 
 
+//test
+NSString* surveyId = @"6976713187259392";
+NSString* channelId = @"6976713454711808";
+
+//dev
 //NSString* surveyId = @"6829192408645632";
 //NSString* channelId = @"6880930353772544";
-//NSString* server = @"https://www.xmplus.cn/api/survey";
+
+NSString* server = @"https://www.xmplus.cn/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -165,9 +171,8 @@ NSDictionary *options;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view setBackgroundColor: [UIColor whiteColor]];
 
-    [self.view setBackgroundColor:UIColor.grayColor];
+    [self.view setBackgroundColor:UIColor.darkGrayColor];
     
     
     _button1 =  [UIButton buttonWithType:UIButtonTypeRoundedRect];

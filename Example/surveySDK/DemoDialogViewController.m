@@ -60,7 +60,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view setBackgroundColor: [UIColor whiteColor]];
+//    [self.view setBackgroundColor: [UIColor whiteColor]];
 //    [self setTitle: @"Popup Demo Controller"];
     
     

@@ -269,46 +269,14 @@ public class HYPopupDialog: UIViewController {
         survey?.setOnClose(callback: self.onClose);
         survey?.setOnLoad(callback: self.onLoad);
 
-        let parentWidth = Int(self.view.frame.height);
         self.animation = options.index(forKey: "animation") != nil ? options["animation"] as! Bool : false
         self.animationDuration = options.index(forKey: "animationDuration") != nil ? options["animationDuration"] as! Double : 0.5
         
         let embedHeightMode: String = Util.optString(config: config, key: "embedHeightMode", fallback: "AUTO")
         let embedHeight: Int = Util.parsePx(value: config["embedHeight"] as! String, max: Int(view.frame.height));
-        let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
-        let appPaddingWidth: Int = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px")
-, max: Int(view.frame.width));
         let embedVerticalAlign = Util.optString(config: config, key: "embedVerticalAlign", fallback: "CENTER");
 
-        if (appBorderRadius > 0) {
-            if #available(iOS 11.0, *) {
-                survey!.clipsToBounds = true
-                survey!.layer.cornerRadius = CGFloat(appBorderRadius);
-                switch (embedVerticalAlign) {
-                    case "CENTER":
-                    survey!.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-                        break
-                    case "TOP":
-                    survey!.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-                        break;
-                    case "BOTTOM":
-                    survey!.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-                        break
-                    default:
-                        break
-                }
-            }
-        }
-        
-        
-//        popupView.addSubview(survey!);
         survey!.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            survey!.centerXAnchor.constraint(equalTo: survey!.centerXAnchor),
-//            survey!.topAnchor.constraint(equalTo: survey!.topAnchor),
-//            survey!.widthAnchor.constraint(equalTo: survey!.widthAnchor, multiplier: CGFloat(1))
-//        ])
-
         modalTransitionStyle = .crossDissolve;
         
         view.addSubview(survey!)
@@ -319,23 +287,23 @@ public class HYPopupDialog: UIViewController {
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
-                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(0)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(0))
             ])
         } else if (embedVerticalAlign == "TOP") {
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                survey!.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
-                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
+                survey!.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), // 使用安全区域的顶部锚点
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(0)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(0))
             ])
         } else {
             // bottom or default
             NSLayoutConstraint.activate([
                 survey!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 survey!.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(appPaddingWidth)),
-                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(appPaddingWidth))
+                survey!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CGFloat(0)),
+                survey!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -CGFloat(0))
             ])
         }
 
@@ -365,7 +333,6 @@ public class HYPopupDialog: UIViewController {
         if (self._keyboardOpen) {
             return
         }
-//        self.popupView.contentSize = CGSizeMake(self.popupView.contentSize.width, CGFloat(height));
         let embedHeightMode = Util.optString(config: config!, key: "embedHeightMode", fallback: "AUTO");
 
         if (embedHeightMode != "FIX" && _constraint != nil) {

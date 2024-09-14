@@ -75,8 +75,7 @@ public struct HYSurveyService {
         var json: [String: Any] = ["clientId": clientId];
         
         let accessCode  = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : HYGlobalConfig.accessCode
-        // 检查 accessCode 是否不为空且不等于 HYGlobalConfig.accessCode
-        if !accessCode.isEmpty && accessCode != HYGlobalConfig.accessCode {
+        if (!accessCode.isEmpty)  {
             let additionData: [String: Any] = ["accessCode": accessCode]
             json["additionData"] = additionData
         }
