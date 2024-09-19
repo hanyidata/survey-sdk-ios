@@ -36,21 +36,21 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-//NSString* surveyId = @"6891526120855552";
-//NSString* channelId = @"6891532881876992";
+NSString* surveyId = @"6960496112091136";
+NSString* channelId = @"6960496869556224";
 //NSString* sendId = @"BddfddRImjktRzRk";
-//NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
+NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
 
 
-//test
-NSString* surveyId = @"6976713187259392";
-NSString* channelId = @"6976713454711808";
+////test
+//NSString* surveyId = @"6976713187259392";
+//NSString* channelId = @"6976713454711808";
 
 //dev
 //NSString* surveyId = @"6829192408645632";
 //NSString* channelId = @"6880930353772544";
 
-NSString* server = @"https://www.xmplus.cn/api/survey";
+//NSString* server = @"https://www.xmplus.cn/api/survey";
 
 NSDictionary* params;
 NSDictionary *options;
@@ -75,7 +75,7 @@ NSDictionary *options;
 
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"clickDismiss",  @(true),  @"force", @(true), @"debug", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"autoheight",  @(true),  @"force", @(false), @"debug", @(halfscreen), @"halfscreen", nil];
 
 }
 
@@ -110,9 +110,10 @@ NSDictionary *options;
 
     } else {
         [HYUISurveyView makeSurveyControllerAsyncWithSurveyId:surveyId channelId:channelId parameters:params options:options  onReady:^(HYUISurveyView* view) {
-                NSLog(@"ready");
-                _survey = view;
-                [_stackview addArrangedSubview:_survey];
+            NSLog(@"ready");
+            _survey = view;
+            [_stackview addArrangedSubview:_survey];
+            [_stackview layoutIfNeeded];
         }  onError:^(NSString* error) {
             NSLog(@"%@", error);
         }  onSubmit:^() {
@@ -120,7 +121,7 @@ NSDictionary *options;
         } onCancel:^() {
             NSLog(@"取消");
         } onSize:^(NSInteger height) {
-            NSLog(@"Size %ld", (long)height);
+            NSLog(@"makeSurveyControllerAsyncWithSurveyId Size %ld", (long)height);
         } onClose:^() {
             NSLog(@"关闭");
         }];
