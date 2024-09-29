@@ -24,7 +24,6 @@ NSString* accessCode = @"";
 NSString* euid = @"";
 NSString* orgCode = @"";
 //NSString* orgCode = @"lynkco_cem";
-NSString* sendId = @"";
 NSString* language = @"zh-cn";
 
 //
@@ -36,15 +35,28 @@ NSString* language = @"zh-cn";
 //NSString* surveyId = @"6094902492655616";
 //NSString* channelId = @"6094905475723264";
 
-NSString* surveyId = @"6960496112091136";
-NSString* channelId = @"6960496869556224";
-//NSString* sendId = @"BddfddRImjktRzRk";
-NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
+//NSString* surveyId = @"6960496112091136";
+//NSString* channelId = @"6960496869556224";
+//NSString* server = @"https://galaxy-h5-test.geely-test.com/api/survey";
+
+
+//dev
+//NSString* surveyId = @"6829595371814912";
+//NSString* channelId = @"6954118720976896";
+//NSString* server = @"https://www.xmplus.cn/api/survey";
+
+// dang
+//NSString* surveyId = @"6829595371814912";
+//NSString* channelId = @"6954118720976896";
+//NSString* sendId = @"eB2fGS6uxKEKzEY8";
+//NSString* server = @"https://www.xmplus.cn/api/survey";
 
 
 ////test
-//NSString* surveyId = @"6976713187259392";
-//NSString* channelId = @"6976713454711808";
+NSString* surveyId = @"6976713187259392";
+NSString* channelId = @"6976713454711808";
+NSString* sendId = @"ucH3QI6Rz0ei687o";
+NSString* server = @"https://www.xmplus.cn/api/survey";
 
 //dev
 //NSString* surveyId = @"6829192408645632";

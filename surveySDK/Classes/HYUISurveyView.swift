@@ -242,7 +242,8 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         HYSurveyService.unionStart(server: server, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, onCallback: { sr, error in
             if (sr != nil && error == nil) {
                 DispatchQueue.main.async {
-                    let view : HYUISurveyView = makeSurveyController(surveyId: sr!.sid, channelId: sr!.cid, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose);
+                    let view : HYUISurveyView = HYUISurveyView.makeSurveyControllerEx(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr?.raw, channelConfig: sr?.channelConfig,  clientId: sr?.clientId,  parameters: parameters, options: options, onSubmit:  onSubmit, onCancel: onCancel, onSize: onSize, onClose: onClose)
+
                     onReady!(view);
                 }
             } else {
