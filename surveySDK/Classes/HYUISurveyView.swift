@@ -422,7 +422,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         NSLog("survey page load finished")
-        print("Content Size: \(webView.scrollView.contentSize)")
+//        print("Content Size: \(webView.scrollView.contentSize)")
     }
     
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -495,7 +495,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                 } else if type == "load" {
                     //embedBackGround, embedHeightMode, embedVerticalAlign
-                    print("Content Size: \(self.webView.scrollView.contentSize)")
+//                    print("Content Size: \(self.webView.scrollView.contentSize)")
                     var config : [String: Any] = [:];
                     if (event?["configure"] != nil) {
                         config = (event?["configure"]! as? [String: Any])!;

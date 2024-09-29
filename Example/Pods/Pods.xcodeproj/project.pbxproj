@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0BF012A83F4434D04AE8EC4014A3DD0A /* surveySDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7980E79F55C1C7BB1EB91A85CDD2EB23 /* surveySDK-dummy.m */; };
+		440005112CA8FE8B003E37B0 /* version.txt in Resources */ = {isa = PBXBuildFile; fileRef = 440005102CA8FE8B003E37B0 /* version.txt */; };
 		44031A522A09F8B300B082BA /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 44031A512A09F8B300B082BA /* Assets */; };
 		44040B052A13694500977018 /* surveySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E996E5796D17C9D1C9A80658340ACC57 /* surveySDK.framework */; };
 		44040B062A13694500977018 /* surveySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E996E5796D17C9D1C9A80658340ACC57 /* surveySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		44040B242A13E69400977018 /* HYSurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44040B232A13E69400977018 /* HYSurveyView.swift */; };
 		441D6DF92A36C04F00537DE0 /* surveySDK-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 441D6DF82A36C04F00537DE0 /* surveySDK-Bridging-Header.h */; };
 		444340062C59D80600EF3909 /* HYSurveyConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444340052C59D80600EF3909 /* HYSurveyConfigService.swift */; };
 		444340082C59D80F00EF3909 /* HYGlobalConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444340072C59D80F00EF3909 /* HYGlobalConfig.swift */; };
@@ -61,8 +61,8 @@
 		0AA262C74D71F1824B1137E3427329EF /* Pods_surveySDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_surveySDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11101CDF63BDDB12C2368D12D64E34C5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		16FA506376C38976141EC13B7E52BC37 /* Pods-surveySDK_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-surveySDK_Example-Info.plist"; sourceTree = "<group>"; };
+		440005102CA8FE8B003E37B0 /* version.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = version.txt; sourceTree = "<group>"; };
 		44031A512A09F8B300B082BA /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = surveySDK/Assets; sourceTree = "<group>"; };
-		44040B232A13E69400977018 /* HYSurveyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HYSurveyView.swift; path = surveySDK/Classes/HYSurveyView.swift; sourceTree = "<group>"; };
 		441D6DF82A36C04F00537DE0 /* surveySDK-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surveySDK-Bridging-Header.h"; sourceTree = "<group>"; };
 		444340052C59D80600EF3909 /* HYSurveyConfigService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HYSurveyConfigService.swift; path = surveySDK/Classes/HYSurveyConfigService.swift; sourceTree = "<group>"; };
 		444340072C59D80F00EF3909 /* HYGlobalConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HYGlobalConfig.swift; path = surveySDK/Classes/HYGlobalConfig.swift; sourceTree = "<group>"; };
@@ -150,12 +150,12 @@
 		8C490456F73B0576AAB4FCBDFB338CC5 /* surveySDK */ = {
 			isa = PBXGroup;
 			children = (
+				440005102CA8FE8B003E37B0 /* version.txt */,
 				444340072C59D80F00EF3909 /* HYGlobalConfig.swift */,
 				444340052C59D80600EF3909 /* HYSurveyConfigService.swift */,
 				44E54C162A49939E006BD3E4 /* HYPopupDialog.swift */,
 				44E54C182A49939E006BD3E4 /* HYSurveyService.swift */,
 				44E54C172A49939E006BD3E4 /* Util.swift */,
-				44040B232A13E69400977018 /* HYSurveyView.swift */,
 				44031A512A09F8B300B082BA /* Assets */,
 				490E4802AE9A30566EF260BEF24BC951 /* HYUISurveyView.swift */,
 				6C862F428B9E473B86BF0578D661D9B3 /* Pod */,
@@ -321,6 +321,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44031A522A09F8B300B082BA /* Assets in Resources */,
+				440005112CA8FE8B003E37B0 /* version.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +341,6 @@
 			files = (
 				444340062C59D80600EF3909 /* HYSurveyConfigService.swift in Sources */,
 				491001E364F2CB2DBB1F615A8789B15E /* HYUISurveyView.swift in Sources */,
-				44040B242A13E69400977018 /* HYSurveyView.swift in Sources */,
 				44E54C1B2A49939E006BD3E4 /* HYSurveyService.swift in Sources */,
 				44E54C1A2A49939E006BD3E4 /* Util.swift in Sources */,
 				0BF012A83F4434D04AE8EC4014A3DD0A /* surveySDK-dummy.m in Sources */,

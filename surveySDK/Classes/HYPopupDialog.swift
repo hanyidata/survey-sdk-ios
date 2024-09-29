@@ -30,7 +30,8 @@ public class HYPopupDialog: UIViewController {
     static var lastInstance: HYPopupDialog? = nil;
     static var observation: NSKeyValueObservation?
     static var parentViewController: UIViewController?
-    static var _context: UIViewController? = nil;
+    
+    static weak var _context: UIViewController? = nil;
     static var _close: Bool = false;
 
     override public func viewDidLoad() {
@@ -50,13 +51,6 @@ public class HYPopupDialog: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 
-    }
-    
-
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     
@@ -115,13 +109,14 @@ public class HYPopupDialog: UIViewController {
         self.dismissView()
     }
     
-    static func checkContextStatus() -> Bool{
-        if (HYPopupDialog._context != nil && HYPopupDialog._context!.isViewLoaded && HYPopupDialog._context!.view.window != nil) {
-            return true;
+    static func checkContextStatus() -> Bool {
+        if let context = HYPopupDialog._context, context.isViewLoaded && context.view.window != nil {
+            return true
         }
         NSLog("context already dismissed, will skip the popup")
-        return false;
+        return false
     }
+
     
     @objc public static func makeDialog(context: UIViewController, surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
                                          onSubmit: Optional<() -> Void> = nil,
@@ -378,21 +373,27 @@ public class HYPopupDialog: UIViewController {
         
     }
     
+    deinit {
+        // 释放 KVO 观察者
+        HYPopupDialog.observation?.invalidate()
+        HYPopupDialog.observation = nil
+        
+        // 额外的安全释放，防止资源遗漏（可选）
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
     /**
         popup消失
      */
-    @objc func dismissView(){
+    @objc func dismissView() {
         NSLog("dismiss popup")
-        self.dismiss(animated: animation, completion: nil)
-        HYPopupDialog.lastInstance = nil;
+        self.dismiss(animated: animation, completion: {
+            HYPopupDialog._close = false // 重置关闭状态
+        })
+        HYPopupDialog.lastInstance = nil
     }
     
-//    public override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        let window = UIApplication.shared.windows.first
-//        let bottomPadding = window?.safeAreaInsets.bottom ?? 0
-//        additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: -bottomPadding, right: 0)
-//    }
 
 }
 
