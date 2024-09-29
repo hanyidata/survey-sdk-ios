@@ -255,10 +255,16 @@ public class HYUISurveyView: UIView, WKUIDelegate {
     /**
      加载资源文件
      */
+    /**
+     加载资源文件
+     */
     private func loadFile(res: String, ex: String) -> URL? {
         // 获取 framework 中的 bundle
         let myBundle = Bundle(for: Self.self)
-                
+        
+        // 打印 Bundle 的完整路径
+        print("Bundle path: \(myBundle.bundleURL.path)")
+        
         // 构建资源路径，直接访问 Assets 文件夹
         if let assetsURL = myBundle.url(forResource: "Assets", withExtension: nil) {
             let resourceURL = assetsURL.appendingPathComponent("\(res).\(ex)")
@@ -267,7 +273,7 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         
         return nil
     }
-
+    
     
     /**
      创建组件
