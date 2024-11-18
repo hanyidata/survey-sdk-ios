@@ -53,10 +53,10 @@ NSString* language = @"zh-cn";
 
 
 ////test
-NSString* surveyId = @"6976713187259392";
-NSString* channelId = @"6976713454711808";
-NSString* sendId = @"ucH3QI6Rz0ei687o";
-NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* surveyId = @"7287934914739200";
+NSString* channelId = @"7287936083311616";
+NSString* sendId = @"";
+NSString* server = @"https://dev.xmplus.cn/api/survey";
 
 //dev
 //NSString* surveyId = @"6829192408645632";
@@ -70,6 +70,7 @@ NSDictionary *options;
 + (void)initialize {
     // 全局设置
     [HYGlobalConfig setupWithServer:server];
+    [HYGlobalConfig configEncryptWithEnable:true];
     
     if (authRequired) {
         [HYGlobalConfig setupWithServer:server orgCode:orgCode accessCode:accessCode authRequired:true];
@@ -87,7 +88,7 @@ NSDictionary *options;
 
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"autoheight",  @(true),  @"force", @(false), @"debug", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"autoheight",  @(true),  @"force", @(true), @"debug", @(halfscreen), @"halfscreen", nil];
 
 }
 

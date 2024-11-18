@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CommonCrypto
 
 /**
  问卷全局配置b
@@ -80,5 +81,8 @@ public class HYGlobalConfig : NSObject {
         }
         return true;
     }
- 
+    
+    @objc public static func check() -> Bool {
+        
+    }
 }

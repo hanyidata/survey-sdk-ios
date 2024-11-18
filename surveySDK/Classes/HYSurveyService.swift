@@ -51,6 +51,54 @@ public struct SurveyStartResponse {
   */
 public struct HYSurveyService {
     
+
+    static func encryptData(data: [String: Any]) -> [String: Any] {
+        // 检查数据是否为空
+        guard !data.isEmpty else {
+            return data
+        }
+
+        // 获取RSA密钥和AES密钥长度配置
+        let rsaKey = HYGlobalConfig.encryptKey
+        let digits = HYGlobalConfig.encryptedKeyDigits
+
+        var result: [String: Any] = [:]
+        
+        // 检查加密是否启用且RSA密钥是否有效
+        if HYGlobalConfig.encryptedEnabled, rsaKey.isEmpty {
+            return data
+        }
+
+        // 生成随机AES密钥
+        let aesKey = CryptoUtils.generateKey(length: digits)
+
+        do {
+            // 使用RSA加密AES密钥
+            let encryptedKey = try CryptoUtils.rsaEncrypt(publicKeyStr: rsaKey, data: aesKey)
+
+            // 将输入数据转换为JSON字符串
+            let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
+            guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+                throw NSError(domain: "Invalid JSON", code: -1, userInfo: nil)
+            }
+
+            // 使用AES加密数据
+            let encryptedData = try CryptoUtils.aesEncrypt(data: jsonString, keyStr: aesKey)
+
+            // 将加密结果放入字典中
+            result["encryptType"] = "rsa/aes"
+            result["encryptedKey"] = encryptedKey
+            result["encryptedData"] = encryptedData
+
+            print("encrypt data encrypted")
+            return result
+        } catch {
+            print("encrypt failed: \(error.localizedDescription)")
+        }
+
+        return result
+    }
+
     /**
             统一开始
      */
@@ -72,7 +120,7 @@ public struct HYSurveyService {
 
         // Create a dictionary with the data you want to send
         let systemParametersWhiteList = ["externalUserId", "departmentCode", "externalCompanyId", "customerName", "customerGender"];
-        var json: [String: Any] = ["clientId": clientId];
+        var json: [String: Any] = ["clientId": clientId, "collectorMethod": "APP"];
         
         let accessCode  = parameters.index(forKey: "accessCode") != nil ? parameters["accessCode"] as! String : HYGlobalConfig.accessCode
         if (!accessCode.isEmpty)  {
@@ -99,9 +147,21 @@ public struct HYSurveyService {
         if (parameters.index(forKey: "parameters") != nil) {
             json["parameters"] = parameters["parameters"];
         }
+        
+        
 
         // Convert the dictionary to JSON data
-        let jsonData = try! JSONSerialization.data(withJSONObject: json, options: [])
+        var jsonData = try! JSONSerialization.data(withJSONObject: json, options: [])
+
+        if HYGlobalConfig.encryptedEnabled {
+            // 调用加密方法并获取加密后的字典
+            let encryptedDataDict = encryptData(data: json)
+            // 将加密后的字典转换为JSON数据
+            if !encryptedDataDict.isEmpty {
+                jsonData = try! JSONSerialization.data(withJSONObject: encryptedDataDict, options: [])
+            }
+            NSLog("[surveySDK] union start encrypt post data");
+        }
 
         // Set the JSON data as the HTTP body of the request
         request.httpBody = jsonData

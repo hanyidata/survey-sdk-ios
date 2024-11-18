@@ -266,9 +266,10 @@ public class HYUISurveyView: UIView, WKUIDelegate {
      创建组件
      */
     @objc public func setup() {
-        let parentHeight = Int(self.layer.frame.height);
+//        let parentHeight = Int(self.layer.frame.height);
+        let parentWidth = Int(UIScreen.main.bounds.width);
         if (self.channelConfig != nil) {
-            self.appPaddingWidth = Util.parsePx(value: Util.optString(config: self.channelConfig!, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+            self.appPaddingWidth = Util.parsePx(value: Util.optString(config: self.channelConfig!, key: "appPaddingWidth", fallback: "0px"), max: parentWidth);
         }
 
         let configuration = WKWebViewConfiguration()
@@ -502,11 +503,11 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                     
                     let parentWidth = Int(self.layer.frame.width);
-                    let parentHeight = Int(self.layer.frame.height);
+//                    let parentHeight = Int(self.layer.frame.height);
                     let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);
-                    self.appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentHeight);
+                    self.appPaddingWidth = Util.parsePx(value: Util.optString(config: config, key: "appPaddingWidth", fallback: "0px"), max: parentWidth);
                     let embedVerticalAlign = Util.optString(config: config, key: "embedVerticalAlign", fallback: "CENTER");
-
+//
                     if (appBorderRadius > 0) {
                         self.webView.clipsToBounds = true;
                         self.webView.layer.cornerRadius = CGFloat(appBorderRadius);
@@ -550,6 +551,10 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                     if (self.surveyJson != nil) {
                         data["survey"] = self.surveyJson;
+                    }
+                    if HYGlobalConfig.encryptedEnabled {
+                        data["isEncrypted"] = true;
+                        data["encryptKey"] = HYGlobalConfig.encryptKey;
                     }
                     let jsonData = try? JSONSerialization.data(withJSONObject: data)
                     let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
