@@ -1,88 +1,104 @@
-//
-//  Util.swift
-//  surveySDK
-//
-//  Created by Winston on 2023/6/26.
-//
-
 import Foundation
 import CommonCrypto
 
-/**
- 问卷全局配置b
- */
-public class HYGlobalConfig : NSObject {
-    static var accessCode : String = "";
-    static var orgCode : String = "";
-    static var server : String = "https://www.xmplus.cn/api/survey";
-    static var authRequired : Bool = false;
-    static var verified : Bool = false;
+class CryptoUtils {
     
-    // encryption
-    static var encryptedEnabled : Bool = false;
-    static var encryptKey : String = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCXXNq8cWVpuY+EHIZ/IMa5Tg2tUutCzkUmjykRKToqtGUOWLLK9V2NiBFWYkTimLp5OSGvvP3SyOBMqXqGFRNjDwXKtMdHYAIJBRbnck3DVpuF5jlBJo0K5uCrAtrqPuccClwAy1V/GwT2ns1A8LgSLjh9A7iJ0rcQqixXo+ttLwIDAQAB";
-    static var encryptedKeyDigits : Int = 16;
-    
-    /**
-       全局配置问卷服务器
-     */
-    @objc public static func setup(server: String) -> Void {
-        HYGlobalConfig.server = server;
+    // 生成随机的AES密钥
+    static func generateKey(length: Int) -> String {
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        var key = ""
+        for _ in 0..<length {
+            let randomIndex = Int(arc4random_uniform(UInt32(characters.count)))
+            key.append(characters[characters.index(characters.startIndex, offsetBy: randomIndex)])
+        }
+        return key
     }
     
-    /**
-       全局配置问卷服务器
-     */
-    @objc public static func setup(server: String, orgCode: String) -> Void {
-        HYGlobalConfig.server = server;
-        HYGlobalConfig.orgCode = orgCode;
-    }
+    // AES加密
+    static func aesEncrypt(data: String, keyStr: String) throws -> String {
+            let keyData = Data(keyStr.utf8)
+            let ivData = Data(keyStr.utf8) // 使用密钥作为IV
 
-    /**
-       全局配置问卷服务器，认证设置
-     */
-    @objc public static func setup(server: String, orgCode: String, accessCode: String, authRequired: Bool) -> Void {
-        HYGlobalConfig.server = server;
-        HYGlobalConfig.orgCode = orgCode;
-        HYGlobalConfig.accessCode = accessCode;
-        HYGlobalConfig.authRequired = authRequired;
-        
-        if (authRequired && !accessCode.isEmpty) {
-            // verify the access code
-            HYSurveyConfigService.authCheck(server: server, accessCode: accessCode, onCallback: { pass, error in
-                if (pass) {
-                    NSLog("auth check passed");
-                    HYGlobalConfig.verified = true;
-                } else {
-                    NSLog("auth check failed \(error)");
+            guard let dataToEncrypt = data.data(using: .utf8) else {
+                throw NSError(domain: "Invalid data", code: -1, userInfo: nil)
+            }
+
+            // 创建临时缓冲区来存储加密结果
+            let encryptedDataLength = dataToEncrypt.count + kCCBlockSizeAES128
+            var numBytesEncrypted: size_t = 0
+            var encryptedData = Data(count: encryptedDataLength)
+
+            // 执行加密操作，并使用临时缓冲区存储结果
+            let cryptStatus = encryptedData.withUnsafeMutableBytes { encryptedBytes in
+                dataToEncrypt.withUnsafeBytes { dataBytes in
+                    ivData.withUnsafeBytes { ivBytes in
+                        keyData.withUnsafeBytes { keyBytes in
+                            CCCrypt(CCOperation(kCCEncrypt),
+                                    CCAlgorithm(kCCAlgorithmAES),
+                                    CCOptions(kCCOptionPKCS7Padding),
+                                    keyBytes.baseAddress, kCCKeySizeAES128,
+                                    ivBytes.baseAddress,
+                                    dataBytes.baseAddress, dataToEncrypt.count,
+                                    encryptedBytes.baseAddress, encryptedDataLength,
+                                    &numBytesEncrypted)
+                        }
+                    }
                 }
-            });
-        }
+            }
+
+            guard cryptStatus == kCCSuccess else {
+                throw NSError(domain: "Encryption failed", code: Int(cryptStatus), userInfo: nil)
+            }
+
+            // 调整加密后的数据长度
+            encryptedData.removeSubrange(numBytesEncrypted..<encryptedData.count)
+
+            // 返回 Base64 编码的加密数据
+            return encryptedData.base64EncodedString()
     }
     
-    /**
-       全局配置问卷加密
-     */
-    @objc public static func configEncrypt(enable: Bool) -> Void {
-        HYGlobalConfig.encryptedEnabled = enable;
-    }
-    
-    /**
-       全局配置问卷加密
-     */
-    @objc public static func configEncrypt(enable: Bool, encryptKey: String) -> Void {
-        HYGlobalConfig.encryptedEnabled = enable;
-        HYGlobalConfig.encryptKey = encryptKey;
-    }
-    
-    @objc public static func check() -> Bool {
-        if (HYGlobalConfig.authRequired && !HYGlobalConfig.verified) {
-            return false;
-        }
-        return true;
-    }
-    
-    @objc public static func check() -> Bool {
+    // RSA加密
+    static func rsaEncrypt(publicKeyStr: String, data: String) throws -> String {
+        let base64EncodedData = data.data(using: .utf8)?.base64EncodedString() ?? ""
         
+        let keyString = publicKeyStr
+            .replacingOccurrences(of: "-----BEGIN PUBLIC KEY-----", with: "")
+            .replacingOccurrences(of: "-----END PUBLIC KEY-----", with: "")
+            .replacingOccurrences(of: "\\s", with: "", options: .regularExpression)
+        
+        guard let keyData = Data(base64Encoded: keyString) else {
+            throw NSError(domain: "Invalid public key", code: -1, userInfo: nil)
+        }
+        
+        let attributes: [CFString: Any] = [
+            kSecAttrKeyType: kSecAttrKeyTypeRSA,
+            kSecAttrKeyClass: kSecAttrKeyClassPublic,
+            kSecAttrKeySizeInBits: 1024
+        ]
+        
+        var error: Unmanaged<CFError>?
+        guard let publicKey = SecKeyCreateWithData(keyData as CFData, attributes as CFDictionary, &error) else {
+            throw error!.takeRetainedValue() as Error
+        }
+        
+        guard let dataToEncrypt = base64EncodedData.data(using: .utf8) else {
+            throw NSError(domain: "Invalid data", code: -1, userInfo: nil)
+        }
+        
+        var encryptedData = Data(count: SecKeyGetBlockSize(publicKey))
+        var encryptedDataLength = encryptedData.count
+        
+        let status = encryptedData.withUnsafeMutableBytes { encryptedBytes in
+            dataToEncrypt.withUnsafeBytes { dataBytes in
+                SecKeyEncrypt(publicKey, SecPadding.PKCS1, dataBytes.baseAddress!, dataToEncrypt.count, encryptedBytes.baseAddress!, &encryptedDataLength)
+            }
+        }
+        
+        guard status == errSecSuccess else {
+            throw NSError(domain: "RSA Encryption failed", code: Int(status), userInfo: nil)
+        }
+        
+        encryptedData.count = encryptedDataLength
+        return encryptedData.base64EncodedString()
     }
 }
