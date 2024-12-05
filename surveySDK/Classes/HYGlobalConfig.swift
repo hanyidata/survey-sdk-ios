@@ -17,10 +17,9 @@ public class HYGlobalConfig : NSObject {
     static var authRequired : Bool = false;
     static var verified : Bool = false;
     
-    // encryption
-    static var encryptedEnabled : Bool = false;
-    static var encryptKey : String = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCXXNq8cWVpuY+EHIZ/IMa5Tg2tUutCzkUmjykRKToqtGUOWLLK9V2NiBFWYkTimLp5OSGvvP3SyOBMqXqGFRNjDwXKtMdHYAIJBRbnck3DVpuF5jlBJo0K5uCrAtrqPuccClwAy1V/GwT2ns1A8LgSLjh9A7iJ0rcQqixXo+ttLwIDAQAB";
-    static var encryptedKeyDigits : Int = 16;
+    static var encEnabled : Bool = true;
+    static var encKeu : String = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCXXNq8cWVpuY+EHIZ/IMa5Tg2tUutCzkUmjykRKToqtGUOWLLK9V2NiBFWYkTimLp5OSGvvP3SyOBMqXqGFRNjDwXKtMdHYAIJBRbnck3DVpuF5jlBJo0K5uCrAtrqPuccClwAy1V/GwT2ns1A8LgSLjh9A7iJ0rcQqixXo+ttLwIDAQAB";
+    static var encKeuDigits : Int = 16;
     
     /**
        全局配置问卷服务器
@@ -59,20 +58,6 @@ public class HYGlobalConfig : NSObject {
         }
     }
     
-    /**
-       全局配置问卷加密
-     */
-    @objc public static func configEncrypt(enable: Bool) -> Void {
-        HYGlobalConfig.encryptedEnabled = enable;
-    }
-    
-    /**
-       全局配置问卷加密
-     */
-    @objc public static func configEncrypt(enable: Bool, encryptKey: String) -> Void {
-        HYGlobalConfig.encryptedEnabled = enable;
-        HYGlobalConfig.encryptKey = encryptKey;
-    }
     
     @objc public static func check() -> Bool {
         if (HYGlobalConfig.authRequired && !HYGlobalConfig.verified) {

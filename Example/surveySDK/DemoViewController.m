@@ -70,7 +70,6 @@ NSDictionary *options;
 + (void)initialize {
     // 全局设置
     [HYGlobalConfig setupWithServer:server];
-    [HYGlobalConfig configEncryptWithEnable:true];
     
     if (authRequired) {
         [HYGlobalConfig setupWithServer:server orgCode:orgCode accessCode:accessCode authRequired:true];

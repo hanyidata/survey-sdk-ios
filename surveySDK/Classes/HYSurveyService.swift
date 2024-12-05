@@ -59,13 +59,13 @@ public struct HYSurveyService {
         }
 
         // 获取RSA密钥和AES密钥长度配置
-        let rsaKey = HYGlobalConfig.encryptKey
-        let digits = HYGlobalConfig.encryptedKeyDigits
+        let rsaKey = HYGlobalConfig.encKeu
+        let digits = HYGlobalConfig.encKeuDigits
 
         var result: [String: Any] = [:]
         
         // 检查加密是否启用且RSA密钥是否有效
-        if HYGlobalConfig.encryptedEnabled, rsaKey.isEmpty {
+        if HYGlobalConfig.encEnabled, rsaKey.isEmpty {
             return data
         }
 
@@ -153,7 +153,7 @@ public struct HYSurveyService {
         // Convert the dictionary to JSON data
         var jsonData = try! JSONSerialization.data(withJSONObject: json, options: [])
 
-        if HYGlobalConfig.encryptedEnabled {
+        if HYGlobalConfig.encEnabled {
             // 调用加密方法并获取加密后的字典
             let encryptedDataDict = encryptData(data: json)
             // 将加密后的字典转换为JSON数据

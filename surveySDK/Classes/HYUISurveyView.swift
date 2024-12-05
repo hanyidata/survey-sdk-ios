@@ -552,9 +552,9 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     if (self.surveyJson != nil) {
                         data["survey"] = self.surveyJson;
                     }
-                    if HYGlobalConfig.encryptedEnabled {
+                    if HYGlobalConfig.encEnabled {
                         data["isEncrypted"] = true;
-                        data["encryptKey"] = HYGlobalConfig.encryptKey;
+                        data["encryptKey"] = HYGlobalConfig.encKeu;
                     }
                     let jsonData = try? JSONSerialization.data(withJSONObject: data)
                     let jsonText = String.init(data: jsonData!, encoding: String.Encoding.utf8)
