@@ -158,6 +158,8 @@ NSDictionary *options;
             NSLog(@"cancel");
         } onError:^(NSString*  error) {
             NSLog(@"error: %@", error);
+        } onClose:^ {
+            NSLog(@"close");
         }];
 
     } else {
@@ -167,6 +169,8 @@ NSDictionary *options;
             NSLog(@"cancel");
         } onError:^(NSString*  error) {
             NSLog(@"error: %@", error);
+        } onClose:^ {
+            NSLog(@"close");
         }];
 
     }

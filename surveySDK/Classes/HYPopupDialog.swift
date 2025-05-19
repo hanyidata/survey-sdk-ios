@@ -26,7 +26,8 @@ public class HYPopupDialog: UIViewController {
     var animation: Bool = true;
     var animationDuration: Double = 0.5;
     var onLoadCallback: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil;
-    
+    var onCloseCallback: Optional<() -> Void> = nil;
+
     static var lastInstance: HYPopupDialog? = nil;
     static var observation: NSKeyValueObservation?
     static var parentViewController: UIViewController?
@@ -126,6 +127,15 @@ public class HYPopupDialog: UIViewController {
         makeDialog(context: context, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onError: onError, onLoad: nil)
     }
     
+    @objc public static func makeDialog(context: UIViewController, surveyId: String, channelId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil,
+                                         onClose: Optional<() -> Void> = nil
+    ) -> Void {
+        makeDialog(context: context, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options, onSubmit: onSubmit, onCancel: onCancel, onError: onError, onLoad: nil, onClose: onClose)
+    }
+    
     /**
             主动关闭弹窗
      */
@@ -144,14 +154,16 @@ public class HYPopupDialog: UIViewController {
                                          onSubmit: Optional<() -> Void> = nil,
                                          onCancel: Optional<() -> Void> = nil,
                                          onError: Optional<(_: String) -> Void> = nil,
-                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil,
+                                         onClose: Optional<() -> Void> = nil
                                          ) -> Void {
         
         return internalMakeDialog(context: context, sendId: nil, surveyId: surveyId, channelId: channelId, parameters: parameters, options: options,
                                   onSubmit: onSubmit,
                                   onCancel: onCancel,
                                   onError: onError,
-                                  onLoad: onLoad
+                                  onLoad: onLoad,
+                                  onClose: onClose
         )
     }
     
@@ -176,7 +188,34 @@ public class HYPopupDialog: UIViewController {
                                   onSubmit: onSubmit,
                                   onCancel: onCancel,
                                   onError: onError,
-                                  onLoad: nil
+                                  onLoad: nil,
+                                  onClose: nil
+        )
+    }
+    
+    /**
+        构建popupview
+     */
+    @objc public static func makeDialogBySendId(context: UIViewController, sendId: String, parameters: Dictionary<String, Any>, options: Dictionary<String, Any>,
+                                         onSubmit: Optional<() -> Void> = nil,
+                                         onCancel: Optional<() -> Void> = nil,
+                                         onError: Optional<(_: String) -> Void> = nil,
+                                         onClose: Optional<() -> Void> = nil
+                                         ) -> Void {
+        
+        HYPopupDialog._context = context;
+        HYPopupDialog._close = false;
+
+        var mOptions : Dictionary<String, Any> = options;
+        mOptions.updateValue(true, forKey: "isDialogMode")
+        mOptions.updateValue("dialog", forKey: "showType")
+        
+        return internalMakeDialog(context: context, sendId: sendId, surveyId: nil, channelId: nil, parameters: parameters, options: options,
+                                  onSubmit: onSubmit,
+                                  onCancel: onCancel,
+                                  onError: onError,
+                                  onLoad: nil,
+                                  onClose: onClose
         )
     }
     
@@ -187,7 +226,8 @@ public class HYPopupDialog: UIViewController {
                                          onSubmit: Optional<() -> Void> = nil,
                                          onCancel: Optional<() -> Void> = nil,
                                          onError: Optional<(_: String) -> Void> = nil,
-                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+                                         onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil,
+                                         onClose: Optional<() -> Void> = nil
                                          ) -> Void {
         
         if (!HYGlobalConfig.check()) {
@@ -219,7 +259,7 @@ public class HYPopupDialog: UIViewController {
                         }
                         return;
                     }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig,  clientId: sr?.clientId, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad);
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig,  clientId: sr?.clientId, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad, onClose: onClose);
                     NSLog("surveySDK->makeDialog will show up! clientId: %@", sr!.clientId)
                     
                     HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
@@ -246,7 +286,8 @@ public class HYPopupDialog: UIViewController {
                config: Dictionary<String, Any>,
             onSubmit: Optional<() -> Void> = nil,
             onCancel: Optional<() -> Void> = nil,
-            onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil
+            onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil,
+            onClose: Optional<() -> Void> = nil
     ) {
         self.surveyJson = surveyJson;
         self.clientId = clientId;
@@ -254,7 +295,8 @@ public class HYPopupDialog: UIViewController {
         self.config = config;
         self.channelConfig = channelConfig;
         self.onLoadCallback = onLoad;
-        
+        self.onCloseCallback = onClose;
+
         survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, channelConfig: channelConfig,  clientId: self.clientId,  parameters: parameters, options: options,
                                                      onSubmit:  onSubmit, onCancel: onCancel)
         
@@ -370,7 +412,9 @@ public class HYPopupDialog: UIViewController {
      */
     func onClose() {
         self.dismissView();
-        
+        if self.onCloseCallback != nil {
+            self.onCloseCallback!();
+        }
     }
     
     deinit {
