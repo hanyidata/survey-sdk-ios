@@ -21,15 +21,24 @@ Boolean authRequired = false;
 
 NSString* accessCode = @"";
 //NSString* accessCode = @"1283860798057988096";
+//NSString* euid = @"w1";
 NSString* euid = @"";
+
 NSString* orgCode = @"";
 //NSString* orgCode = @"lynkco_cem";
 NSString* language = @"zh-cn";
 
+
+//NSString* surveyId = @"9011236850736128";
+//NSString* channelId = @"9015979088893952";
+//NSString* server = @"https://dev.xmplus.cn/api/survey";
+
+
 //
-//NSString* surveyId = @"5623325575501824";
-//NSString* channelId = @"5623326819536896";
+//NSString* surveyId = @"4547467812864";
+//NSString* channelId = @"4548282425344";
 //NSString* server = @"https://test.xmplus.cn/api/survey";
+
 //NSString* surveyId = @"5697821736660992";
 //NSString* channelId = @"5697830732525568";
 //NSString* surveyId = @"6094902492655616";
@@ -41,9 +50,9 @@ NSString* language = @"zh-cn";
 
 
 //dev
-//NSString* surveyId = @"6829595371814912";
-//NSString* channelId = @"6954118720976896";
-//NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* surveyId = @"6829595371814912";
+NSString* channelId = @"6954118720976896";
+NSString* server = @"https://www.xmplus.cn/api/survey";
 
 // dang
 //NSString* surveyId = @"6829595371814912";
@@ -53,10 +62,11 @@ NSString* language = @"zh-cn";
 
 
 ////test
-NSString* surveyId = @"6834803023996928";
-NSString* channelId = @"6834805666862080";
+//NSString* surveyId = @"8771474281056256";
+//NSString* channelId = @"8771630021152768";
+//NSString* server = @"https://www.xmplus.cn/api/survey";
+
 NSString* sendId = @"";
-NSString* server = @"https://www.xmplus.cn/api/survey";
 
 //dev
 //NSString* surveyId = @"6829192408645632";
@@ -88,7 +98,7 @@ NSDictionary *options;
 
     if(!options)
         options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                   @"Assets", @"assets", @(0), @"showDelay",  language, @"language",  @(true),  @"autoheight",  @(true),  @"force", @(true), @"debug", @(halfscreen), @"halfscreen", nil];
+                   @"Assets", @"assets", @(10), @"delay", language, @"language", @(true), @"debug", @(halfscreen), @"halfscreen", nil];
 
 }
 

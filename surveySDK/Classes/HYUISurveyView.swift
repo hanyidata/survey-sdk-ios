@@ -396,6 +396,18 @@ public class HYUISurveyView: UIView, WKUIDelegate {
         self.webView.evaluateJavaScript("document.dispatchEvent(new CustomEvent('show'))")
     }
     
+    // 临时添加 cancel() 方法，避免崩溃并定位调用
+    @objc func cancel() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return } // 避免循环引用导致的释放问题
+            NSLog("⚠️ 检测到调用了 cancel() 方法，来源：\(Thread.callStackSymbols)")
+            self.onCancel?()
+            self.removeFromSuperview()
+            self.onClose?()
+        }
+    }
+
+
     // KVO 回调
 //    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 //        if keyPath == "contentSize", let scrollView = object as? UIScrollView {

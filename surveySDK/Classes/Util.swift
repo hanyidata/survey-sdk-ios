@@ -56,5 +56,20 @@ public struct Util {
             alpha: CGFloat(a) / 255
         )
     }
-
+    
+    public static func convertToString(_ value: Any?) -> String? {
+        guard let value = value else { return nil }
+        
+        if let stringValue = value as? String {
+            return stringValue
+        } else if let numberValue = value as? NSNumber {
+            return numberValue.stringValue
+        } else if let intValue = value as? Int {
+            return String(intValue)
+        } else if let doubleValue = value as? Double {
+            return String(doubleValue)
+        }
+        
+        return nil
+    }
 }

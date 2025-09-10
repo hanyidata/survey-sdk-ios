@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 public struct SurveyStartResponse {
     let sid: String;
     let cid: String;
@@ -21,28 +22,58 @@ public struct SurveyStartResponse {
     let channelConfig: Dictionary<String, Any>;
     
     public static func fromJson(clientId: String, json: [String: Any]) -> SurveyStartResponse? {
-        let sid = (json["id"] as! NSNumber).stringValue
-        do {
-            if let surveyStatus = json["status"] as? String,
-               let doNotDisturb = json["doNotDisturb"] as? Bool,
-               let channel = json["channel"] as? [String : Any],
-               let style = json["style"] as? [String : Any],
-               let channelStatus = channel["status"] as? String,
-               let channelConfigStr = channel["configure"] as? String {
-                if let jsonData = channelConfigStr.data(using: .utf8) {
-                    let cid = (channel["id"] as! NSNumber).stringValue
-                    
-                    if let channelConfig = try JSONSerialization.jsonObject(with:jsonData, options: []) as? [String: Any] {
-                        // Create Survey instance
-                        let sr = SurveyStartResponse(sid: sid, cid: cid, clientId: clientId, surveyStatus: surveyStatus, channelStatus: channelStatus,  doNotDisturb: doNotDisturb, style: style, raw: json, channel: channel, channelConfig: channelConfig)
-                        return sr;
-                    }
-                }
-            }
-        } catch {
-            NSLog("failed to parse \(json)")
+        // 解析 sid
+        guard let sid = Util.convertToString(json["id"]) else {
+            NSLog("解析 sid 失败")
+            return nil
         }
-        return nil;
+        
+        // 提取基础字段
+        guard let surveyStatus = json["status"] as? String,
+              let doNotDisturb = json["doNotDisturb"] as? Bool,
+              let channel = json["channel"] as? [String: Any],
+              let style = json["style"] as? [String: Any] else {
+            NSLog("基础字段解析失败")
+            return nil
+        }
+        
+        // 解析 channel 相关字段
+        guard let channelStatus = channel["status"] as? String,
+              let channelConfigStr = channel["configure"] as? String,
+              let cid = Util.convertToString(channel["id"]) else {
+            NSLog("channel 字段解析失败")
+            return nil
+        }
+        
+        // 解析 channelConfig
+        guard let jsonData = channelConfigStr.data(using: .utf8) else {
+            NSLog("channelConfig 字符串转数据失败")
+            return nil
+        }
+        
+        do {
+            guard let channelConfig = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] else {
+                NSLog("channelConfig 不是有效的字典类型")
+                return nil
+            }
+            
+            // 创建返回对象
+            return SurveyStartResponse(
+                sid: sid,
+                cid: cid,
+                clientId: clientId,
+                surveyStatus: surveyStatus,
+                channelStatus: channelStatus,
+                doNotDisturb: doNotDisturb,
+                style: style,
+                raw: json,
+                channel: channel,
+                channelConfig: channelConfig
+            )
+        } catch {
+            NSLog("解析 channelConfig 失败: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
 
