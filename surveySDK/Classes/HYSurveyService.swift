@@ -218,7 +218,13 @@ public struct HYSurveyService {
                         if (sr?.doNotDisturb == true) {
                             onCallback!(sr, "开启免打扰配置，该问卷无法打开");
                         } else {
-                            onCallback!(sr, nil);
+                            let embedPercent = sr?.channelConfig["embedPercent"] as? Int ?? 100
+                            if (Util.shouldDisplay(probability: embedPercent)) {
+                                onCallback!(sr, nil);
+                            } else {
+                                // 如果概率判定不弹出直接忽略
+                                onCallback!(nil, "显示概率控制忽略显示");
+                            }
                         }
                     } else {
                         onCallback!(nil, "参数错误");

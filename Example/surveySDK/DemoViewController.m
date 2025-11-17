@@ -50,9 +50,9 @@ NSString* language = @"zh-cn";
 
 
 //dev
-NSString* surveyId = @"6829595371814912";
-NSString* channelId = @"6954118720976896";
-NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* surveyId = @"9382932427837440";
+NSString* channelId = @"9382933000884224";
+NSString* server = @"https://dev.xmplus.cn/api/survey";
 
 // dang
 //NSString* surveyId = @"6829595371814912";

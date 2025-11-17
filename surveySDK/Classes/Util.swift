@@ -72,4 +72,24 @@ public struct Util {
         
         return nil
     }
+    
+    /**
+     显示概率判定
+     */
+    public static func shouldDisplay(probability: Int) -> Bool {
+        // 边界值处理：概率≤0直接不显示，≥100直接显示
+        if probability <= 0 {
+            return false
+        }
+        if probability >= 100 {
+            return true
+        }
+        
+        // 生成0-99的随机数（包含0和99）
+        let randomValue = Int.random(in: 0..<100)
+        
+        // 随机数小于概率值则显示
+        return randomValue < probability
+    }
+
 }
