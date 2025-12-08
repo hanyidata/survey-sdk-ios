@@ -50,21 +50,21 @@ NSString* language = @"zh-cn";
 
 
 //dev
-NSString* surveyId = @"9382932427837440";
-NSString* channelId = @"9382933000884224";
-NSString* server = @"https://dev.xmplus.cn/api/survey";
+//NSString* surveyId = @"9382932427837440";
+//NSString* channelId = @"9382933000884224";
+//NSString* server = @"https://dev.xmplus.cn/api/survey";
 
 // dang
-//NSString* surveyId = @"6829595371814912";
-//NSString* channelId = @"6954118720976896";
-//NSString* sendId = @"eB2fGS6uxKEKzEY8";
+//NSString* surveyId = @"9464275683573760";
+//NSString* channelId = @"9464276659798016";
+//NSString* sendId = @"AtourAPPOrders";
 //NSString* server = @"https://www.xmplus.cn/api/survey";
 
 
 ////test
-//NSString* surveyId = @"8771474281056256";
-//NSString* channelId = @"8771630021152768";
-//NSString* server = @"https://www.xmplus.cn/api/survey";
+NSString* surveyId = @"9350065761384448";
+NSString* channelId = @"9350098660259840";
+NSString* server = @"https://test.xmplus.cn/api/survey";
 
 NSString* sendId = @"";
 
@@ -126,7 +126,7 @@ NSDictionary *options;
         } onCancel:^() {
             NSLog(@"取消");
         } onSize:^(NSInteger height) {
-            NSLog(@"Size %ld", (long)height);
+            NSLog(@"Survey Size %ld", (long)height);
         } onClose:^() {
             NSLog(@"关闭");
         }];
