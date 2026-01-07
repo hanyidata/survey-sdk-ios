@@ -144,6 +144,7 @@ public class HYPopupDialog: UIViewController {
         HYPopupDialog._close = true;
         if (HYPopupDialog.lastInstance != nil) {
             HYPopupDialog.lastInstance?.dismissView()
+            HYPopupDialog.lastInstance = nil;
         }
     }
     
@@ -259,7 +260,13 @@ public class HYPopupDialog: UIViewController {
                         }
                         return;
                     }
-                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig,  clientId: sr?.clientId, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad, onClose: onClose);
+                    HYPopupDialog.lastInstance = HYPopupDialog(surveyId: sr!.sid, channelId: sr!.cid, surveyJson: sr!.raw, channelConfig: sr!.channelConfig,  clientId: sr?.clientId, parameters: parameters, options: mOptions, config: sr!.channelConfig, onSubmit: onSubmit, onCancel: onCancel, onLoad: onLoad, onClose: onClose, onError: { errorMsg in
+                            NSLog("surveySDK->Dialog error: %@", errorMsg);
+                            close();
+                            if (onError != nil) {
+                                onError!(errorMsg);
+                            }
+                    });
                     NSLog("surveySDK->makeDialog will show up! clientId: %@", sr!.clientId)
                     
                     HYPopupDialog.lastInstance!.modalPresentationStyle = .overFullScreen
@@ -287,7 +294,8 @@ public class HYPopupDialog: UIViewController {
             onSubmit: Optional<() -> Void> = nil,
             onCancel: Optional<() -> Void> = nil,
             onLoad: Optional<(_ config: Dictionary<String, Any>) -> Void> = nil,
-            onClose: Optional<() -> Void> = nil
+            onClose: Optional<() -> Void> = nil,
+            onError: Optional<(String) -> Void> = nil
     ) {
         self.surveyJson = surveyJson;
         self.clientId = clientId;
@@ -298,7 +306,7 @@ public class HYPopupDialog: UIViewController {
         self.onCloseCallback = onClose;
 
         survey = HYUISurveyView.makeSurveyControllerEx(surveyId: surveyId, channelId: channelId, surveyJson: self.surveyJson, channelConfig: channelConfig,  clientId: self.clientId,  parameters: parameters, options: options,
-                                                     onSubmit:  onSubmit, onCancel: onCancel)
+                                                       onSubmit:  onSubmit, onCancel: onCancel, onError: onError)
         
         super.init(nibName: nil, bundle: nil);
         

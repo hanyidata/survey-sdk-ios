@@ -468,26 +468,26 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                         let value = event?["value"]! as? [String: Any]
                         var height = Int(value?["height"]! as! Double)
                         let width = Int(value?["width"]! as! Double)
-
+                        
                         height = min(Int(UIScreen.main.bounds.height) - 100, height);
                         if (width == 0) {
                             return
                         }
-    //                    self.frame.size.height = CGFloat(height)
+                        //                    self.frame.size.height = CGFloat(height)
                         
                         if (self._constraint != nil) {
-//                            self.webView.scrollView.contentSize.height = CGFloat(height);
+                            //                            self.webView.scrollView.contentSize.height = CGFloat(height);
                             self._constraint?.constant = CGFloat(height);
                             self.webView.layoutIfNeeded();
-    //                        superview?.updateConstraintsIfNeeded();
-    //                        superview?.layoutIfNeeded();
-    //                        superview?.layoutSubviews();
-    //                        superview?.sizeToFit();
+                            //                        superview?.updateConstraintsIfNeeded();
+                            //                        superview?.layoutIfNeeded();
+                            //                        superview?.layoutSubviews();
+                            //                        superview?.sizeToFit();
                         }
                         self.layoutIfNeeded();
-                                        
+                        
                         if self.onSize != nil {
-    //                        NSLog("onSize \(height)")
+                            //                        NSLog("onSize \(height)")
                             self.onSize!(height)
                         }
                     } else {
@@ -495,7 +495,7 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     }
                 } else if type == "close" {
                     self.frame.size.height = CGFloat(0)
-    //                self.superview?.frame.size.height = CGFloat(0)
+                    //                self.superview?.frame.size.height = CGFloat(0)
                     self.webView.removeFromSuperview()
                     self.removeFromSuperview()
                     if self.onClose != nil {
@@ -506,6 +506,15 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     if self.onSubmit != nil {
                         self.onSubmit!()
                     }
+                } else if type == "loadfailed" {
+                    let error = event?["error"]! as? String ?? "survey load failed error"
+                    NSLog("[surveySDK] load failed: \(error)")
+                    self.frame.size.height = CGFloat(0)
+                    self.webView.removeFromSuperview()
+                    self.removeFromSuperview()
+                    if self.onError != nil {
+                        self.onError!(error);
+                    }
                 } else if type == "load" {
                     //embedBackGround, embedHeightMode, embedVerticalAlign
 //                    print("Content Size: \(self.webView.scrollView.contentSize)")
@@ -513,7 +522,6 @@ extension HYUISurveyView: WKNavigationDelegate, WKScriptMessageHandler {
                     if (event?["configure"] != nil) {
                         config = (event?["configure"]! as? [String: Any])!;
                     }
-                    
                     let parentWidth = Int(self.layer.frame.width);
 //                    let parentHeight = Int(self.layer.frame.height);
                     let appBorderRadius = Util.parsePx(value: Util.optString(config: config, key: "appBorderRadius", fallback: "0px"), max: parentWidth);

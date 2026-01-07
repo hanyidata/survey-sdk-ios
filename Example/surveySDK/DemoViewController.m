@@ -62,9 +62,9 @@ NSString* language = @"zh-cn";
 
 
 ////test
-NSString* surveyId = @"9350065761384448";
-NSString* channelId = @"9350098660259840";
-NSString* server = @"https://test.xmplus.cn/api/survey";
+NSString* surveyId = @"9695254736208896";
+NSString* channelId = @"9695256907402240";
+NSString* server = @"https://www.xmplus.cn/api/survey";
 
 NSString* sendId = @"";
 
@@ -120,7 +120,7 @@ NSDictionary *options;
                 _survey = view;
                 [_stackview addArrangedSubview:_survey];
         }  onError:^(NSString* error) {
-            NSLog(@"%@", error);
+            NSLog(@"error: %@", error);
         }  onSubmit:^() {
             NSLog(@"提交");
         } onCancel:^() {
@@ -138,7 +138,7 @@ NSDictionary *options;
             [_stackview addArrangedSubview:_survey];
             [_stackview layoutIfNeeded];
         }  onError:^(NSString* error) {
-            NSLog(@"%@", error);
+            NSLog(@"error: %@", error);
         }  onSubmit:^() {
             NSLog(@"提交");
         } onCancel:^() {
