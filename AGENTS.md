@@ -32,6 +32,13 @@ Validate the podspec before publishing:
 pod lib lint HYSurveySDK.podspec
 ```
 
+Prepare and validate releases with the project skill:
+
+```sh
+.agents/skills/release-ios-sdk/scripts/prepare-release.sh 0.4.39 \
+  --changelog-entry "User-facing change"
+```
+
 ## Coding Style & Naming Conventions
 
 Use Swift for SDK code and Objective-C only where the sample app already does. Match existing style: 4-space indentation, UIKit/WebKit APIs, `HY` prefixes for public SDK types, and camelCase for methods and properties. Keep public Objective-C bridge methods annotated with `@objc` when they are part of the SDK surface. Avoid broad refactors in generated web assets; replace them only as a complete H5 build.
@@ -44,13 +51,12 @@ Tests use XCTest in `Example/Tests/`. Add focused tests for Swift utility or ser
 
 Git history uses short, direct commit subjects such as `bump 0.4.37`, `fix padding issue`, and `add onclose`. Keep commits similarly concise and scoped. PRs should include the SDK behavior changed, affected integration path, manual test notes, and screenshots or screen recordings for popup or embedded survey UI changes.
 
-## Release Notes
+## Version, Changelog & Release Rules
 
-For a release, update `HYSurveySDK.podspec` `s.version`, ensure `surveySDK/Assets/version.json` and H5 filenames are intentional, commit the changes, then tag the final commit with the same version:
+For every release, keep `HYSurveySDK.podspec`, `version.txt`, `surveySDK/Assets/version.json`, generated H5 filenames, `CHANGE.MD`, and the Git tag on exactly the same plain semantic version. Changelog entries are mandatory: collect confirmed user-facing changes before preparation, and stop to ask the user when none are available.
 
-```sh
-git tag 0.4.38
-git push origin develop --tags
-```
+Use `.agents/skills/release-ios-sdk/SKILL.md` for the guarded prepare, validate, source-sync, lint, and publish workflow. Preparation must not tag or push. Require clean iOS and UI worktrees, complete H5 asset replacement, a successful sample build, and `pod lib lint` before publication unless the user explicitly accepts skipping lint.
 
-The podspec source points to Gitee and resolves `:tag => s.version`, so publish the same tag to every remote used by consumers.
+The podspec source points to Gitee while `origin` points to GitHub. Before tagging, require the final iOS release commit on the `develop` branch of both repositories. Publish and verify the same immutable tag on both remotes; a GitHub-only tag does not satisfy the CocoaPods source contract. Never move or force-push a release tag.
+
+Preserve all existing user changes. Do not reset, stash, or discard a dirty worktree automatically. Never store remote credentials in the repository or print them in release logs.

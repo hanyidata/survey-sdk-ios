@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release iOS SDK"
+  short_description: "Prepare, validate, and tag the Survey iOS SDK safely"
+  default_prompt: "Use $release-ios-sdk to prepare and safely publish a new Survey iOS SDK version."

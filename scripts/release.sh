@@ -10,7 +10,6 @@ Options:
   --remote NAME          Git remote to push the current branch and tag. Default: origin
   --branch NAME          Branch to push. Default: current branch
   --no-push              Commit and tag locally, but do not push
-  --skip-source-push     Do not push to the podspec s.source git URL
   --skip-lint            Skip pod lib lint even when CocoaPods is installed
   --require-lint         Fail if CocoaPods is missing or pod lib lint fails
   -h, --help             Show this help
@@ -29,7 +28,6 @@ VERSION=""
 REMOTE="origin"
 BRANCH=""
 PUSH=true
-PUSH_SOURCE=true
 SKIP_LINT=false
 REQUIRE_LINT=false
 
@@ -47,10 +45,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-push)
       PUSH=false
-      shift
-      ;;
-    --skip-source-push)
-      PUSH_SOURCE=false
       shift
       ;;
     --skip-lint)
@@ -122,7 +116,7 @@ echo "  asset version:         $CURRENT_ASSET_VERSION"
 echo "  version.txt:           $CURRENT_TEXT_VERSION"
 echo "  podspec source git:    ${SOURCE_GIT_URL:-not found}"
 echo "  push enabled:          $PUSH"
-echo "  push source repo:      $PUSH_SOURCE"
+echo "  source repo sync:      manual"
 echo
 echo "Current git status:"
 git status --short
@@ -179,14 +173,6 @@ git tag "$VERSION"
 if [[ "$PUSH" == true ]]; then
   git push "$REMOTE" "$BRANCH"
   git push "$REMOTE" "$VERSION"
-
-  if [[ "$PUSH_SOURCE" == true && -n "$SOURCE_GIT_URL" ]]; then
-    ORIGIN_URL="$(git remote get-url "$REMOTE" 2>/dev/null || true)"
-    if [[ "$SOURCE_GIT_URL" != "$ORIGIN_URL" ]]; then
-      git push "$SOURCE_GIT_URL" "HEAD:$BRANCH"
-      git push "$SOURCE_GIT_URL" "$VERSION"
-    fi
-  fi
 fi
 
 echo "Release $VERSION complete."
